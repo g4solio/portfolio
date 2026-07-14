@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "static-out",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "out", "-l", "3999"],
+      "port": 3999
+    },
+    {
+      "name": "dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
+    }
+  ]
+}
