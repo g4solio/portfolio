@@ -6,20 +6,14 @@ import { mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-const grid = [];
-for (let x = 0; x <= 1200; x += 52) grid.push(`M${x} 0V630`);
-for (let y = 0; y <= 630; y += 52) grid.push(`M0 ${y}H1200`);
-
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
-  <rect width="1200" height="630" fill="#08090c"/>
-  <path d="${grid.join("")}" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
-  <rect x="60" y="60" width="1080" height="510" fill="none" stroke="rgba(184,255,69,0.35)" stroke-width="2"/>
-  <text x="110" y="150" font-family="JetBrains Mono" font-size="26" fill="#9aa1ae" letter-spacing="6">DAVIDE.GOZZI // SOFTWARE ENGINEER</text>
-  <text x="104" y="290" font-family="Space Grotesk" font-weight="700" font-size="84" fill="#f2f1eb">I make complex systems</text>
-  <text x="104" y="390" font-family="Space Grotesk" font-weight="700" font-size="84" fill="#b8ff45">understandable.</text>
-  <text x="110" y="480" font-family="JetBrains Mono" font-size="22" fill="#9aa1ae" letter-spacing="3">INDUSTRIAL · REAL-TIME · DISTRIBUTED SYSTEMS</text>
-  <circle cx="1046" cy="141" r="7" fill="#b8ff45"/>
-  <text x="1030" y="150" font-family="JetBrains Mono" font-size="22" fill="#b8ff45" text-anchor="end" letter-spacing="4">ONLINE</text>
+  <rect width="1200" height="630" fill="#f7f5f1"/>
+  <line x1="100" y1="150" x2="1100" y2="150" stroke="#dad6cb" stroke-width="2"/>
+  <text x="100" y="128" font-family="JetBrains Mono" font-size="24" fill="#2b5bc7">davide gozzi — software engineer</text>
+  <text x="96" y="300" font-family="Space Grotesk" font-weight="600" font-size="72" fill="#1b1b18">Software that has to</text>
+  <text x="96" y="384" font-family="Space Grotesk" font-weight="600" font-size="72" fill="#1b1b18">keep working.</text>
+  <text x="100" y="480" font-family="JetBrains Mono" font-size="22" fill="#4c4b44">distributed services · legacy platforms · real machines</text>
+  <line x1="100" y1="530" x2="1100" y2="530" stroke="#dad6cb" stroke-width="2"/>
 </svg>`;
 
 const dir = await mkdtemp(join(tmpdir(), "og-fonts-"));

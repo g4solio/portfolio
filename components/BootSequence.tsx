@@ -3,15 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { animate, stagger } from "animejs";
 
-const bootLines = [
-  ["LOADING REAL-WORLD EXPERIENCE", "OK"],
-  ["CONNECTING DISTRIBUTED SYSTEMS", "OK"],
-  ["ENABLING INDUSTRIAL PROTOCOLS", "OK"],
-  ["EXTENDING CAPABILITIES WITH AI", "OK"],
-  ["SPIDER-SENSE FOR EDGE CASES", "ACTIVE"],
-  ["STARTING OSUS", "READY"],
-];
-
 export function BootSequence({ onComplete }: { onComplete: () => void }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(true);
@@ -21,105 +12,77 @@ export function BootSequence({ onComplete }: { onComplete: () => void }) {
     if (!root) return;
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const hasBooted = window.sessionStorage.getItem("davide-portfolio-booted") === "true";
+    const hasBooted = window.sessionStorage.getItem("dg-booted") === "true";
 
     if (reduceMotion || hasBooted) {
-      setVisible(false);
-      onComplete();
+      // queueMicrotask (not rAF): must also run in hidden/background tabs
+      queueMicrotask(() => {
+        setVisible(false);
+        onComplete();
+      });
       return;
     }
 
-    const lines = root.querySelectorAll(".boot-line");
-    const mark = root.querySelector(".boot-mark");
-    const beam = root.querySelector(".boot-beam");
-
-    animate(lines, {
+    animate(root.querySelectorAll(".boot-row"), {
       opacity: { from: 0 },
-      translateX: { from: -18 },
-      delay: stagger(115),
-      duration: 460,
-      ease: "out(3)",
+      translateY: { from: 6 },
+      delay: stagger(110),
+      duration: 240,
+      ease: "out(2)",
     });
 
-    if (mark) {
-      animate(mark, {
-        opacity: { from: 0 },
-        scale: { from: 0.75 },
-        delay: 180,
-        duration: 650,
-        ease: "out(4)",
-      });
-    }
+    // ~1.3s total: the name line travels into the header wordmark while the
+    // page fades in underneath, so the boot ends as part of the page.
+    const exitTimer = window.setTimeout(() => {
+      window.sessionStorage.setItem("dg-booted", "true");
+      onComplete();
 
-    const beamTimer = window.setTimeout(() => {
-      if (beam) {
-        animate(beam, {
-          scaleX: [0, 1],
-          opacity: [0, 1],
-          duration: 520,
+      const name = root.querySelector<HTMLElement>(".boot-name");
+      const target = document.querySelector<HTMLElement>(".wordmark");
+      if (name && target) {
+        const from = name.getBoundingClientRect();
+        const to = target.getBoundingClientRect();
+        name.style.transformOrigin = "top left";
+        animate(name, {
+          translateX: to.left - from.left,
+          translateY: to.top - from.top,
+          scale: to.height / from.height,
+          duration: 360,
           ease: "inOut(3)",
         });
       }
-    }, 1050);
-
-    // Hand off into the hero: the console lifts away while the page fades in
-    // underneath, so the boot reads as the first frame of the site, not a splash.
-    const exitTimer = window.setTimeout(() => {
-      window.sessionStorage.setItem("davide-portfolio-booted", "true");
-      onComplete();
-      const consoleEl = root.querySelector(".boot-console");
-      if (consoleEl) {
-        animate(consoleEl, {
-          opacity: [1, 0],
-          translateY: [0, -52],
-          duration: 460,
-          ease: "in(2)",
-        });
-      }
+      animate(root.querySelectorAll(".boot-row:not(.boot-name)"), {
+        opacity: [1, 0],
+        duration: 200,
+        ease: "linear",
+      });
       animate(root, {
         opacity: [1, 0],
-        duration: 560,
-        delay: 140,
+        duration: 260,
+        delay: 220,
         ease: "linear",
         onComplete: () => setVisible(false),
       });
-    }, 2250);
+    }, 900);
 
-    return () => {
-      window.clearTimeout(beamTimer);
-      window.clearTimeout(exitTimer);
-    };
+    return () => window.clearTimeout(exitTimer);
   }, [onComplete]);
 
   if (!visible) return null;
 
+  const skip = () => {
+    window.sessionStorage.setItem("dg-booted", "true");
+    setVisible(false);
+    onComplete();
+  };
+
   return (
-    <div ref={rootRef} className="boot-screen" role="status" aria-live="polite">
-      <button className="boot-skip" type="button" onClick={() => {
-        window.sessionStorage.setItem("davide-portfolio-booted", "true");
-        setVisible(false);
-        onComplete();
-      }}>
-        Skip intro
-      </button>
-      <div className="boot-console">
-        <div className="boot-heading">
-          <span className="boot-mark" aria-hidden="true">DG</span>
-          <div>
-            <p>DAVIDE.GOZZI</p>
-            <span>{"// SYSTEM BOOT"}</span>
-          </div>
-        </div>
-        <div className="boot-lines">
-          {bootLines.map(([label, status]) => (
-            <div className="boot-line" key={label}>
-              <span>{label}</span>
-              <i aria-hidden="true" />
-              <strong>{status}</strong>
-            </div>
-          ))}
-        </div>
-        <div className="boot-beam" aria-hidden="true" />
+    <div ref={rootRef} className="boot" role="status" aria-live="polite">
+      <button className="boot-skip" type="button" onClick={skip}>skip</button>
+      <div className="boot-stack">
+        <p className="boot-row boot-name">davide gozzi</p>
+        <p className="boot-row">loading real-world experience … ok</p>
+        <p className="boot-row">spider-sense for edge cases … active</p>
       </div>
     </div>
   );

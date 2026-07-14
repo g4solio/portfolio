@@ -5,31 +5,32 @@ import "./globals.css";
 // TODO: confirm final GitHub Pages URL (assumes user site g4solio.github.io).
 const siteUrl = "https://g4solio.github.io";
 
+const description =
+  "Software engineer in Modena, Italy. I design and evolve software that has to keep working: distributed services, legacy platforms and systems connected to real machines.";
+
 export const metadata: Metadata = {
-  title: "Davide Gozzi — Software Engineer",
-  description:
-    "I don't chase complexity. I make it understandable. Software engineer building industrial, real-time and distributed systems — from Unity games to machines on factory floors.",
+  title: "Davide Gozzi — Software engineer",
+  description,
   metadataBase: new URL(siteUrl),
   openGraph: {
-    title: "Davide Gozzi — Software Engineer",
-    description:
-      "I make complex systems understandable. Industrial real-time software, distributed systems, and OSUS — an independent product lab.",
+    title: "Davide Gozzi — Software engineer",
+    description,
     url: siteUrl,
     siteName: "Davide Gozzi",
     type: "website",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Davide Gozzi — I make complex systems understandable." }],
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Davide Gozzi — Software engineer" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Davide Gozzi — Software Engineer",
-    description: "I make complex systems understandable.",
+    title: "Davide Gozzi — Software engineer",
+    description,
     images: ["/og.png"],
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#08090c",
-  colorScheme: "dark",
+  themeColor: "#f7f5f1",
+  colorScheme: "light",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
