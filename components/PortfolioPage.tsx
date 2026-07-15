@@ -69,6 +69,7 @@ export function PortfolioPage() {
                   <a href="mailto:david3gozz1@gmail.com">Email</a>
                   <a href="https://www.linkedin.com/in/davide-gozzi5/" target="_blank" rel="noreferrer">LinkedIn</a>
                   <a href="https://github.com/g4solio" target="_blank" rel="noreferrer">GitHub</a>
+                  <a href="https://steamcommunity.com/profiles/76561197986572794/" target="_blank" rel="noreferrer">Steam</a>
                 </p>
               </div>
               <dl className="hero-facts">
@@ -171,6 +172,7 @@ export function PortfolioPage() {
               <a href="mailto:david3gozz1@gmail.com">david3gozz1@gmail.com</a>
               <a href="https://www.linkedin.com/in/davide-gozzi5/" target="_blank" rel="noreferrer">LinkedIn</a>
               <a href="https://github.com/g4solio" target="_blank" rel="noreferrer">GitHub</a>
+              <a href="https://steamcommunity.com/profiles/76561197986572794/" target="_blank" rel="noreferrer">Steam</a>
             </p>
           </section>
         </main>
