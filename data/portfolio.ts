@@ -43,7 +43,7 @@ export const chapters: Chapter[] = [
     role: "Junior programmer, later particle effects",
     layout: "side",
     lead: [
-      "I started working during my fourth year of high school, mostly because school had stopped being difficult and I wanted problems that didn’t come with a solutions page. StarworkGC was a small independent game startup building a games in Unity, and I joined as a junior programmer — later doing particle effects as well.",
+      "I started working during my fourth year of high school, mostly because school had stopped being difficult and I wanted problems that didn’t come with a solutions page. StarworkGC was a small independent game startup building games in Unity, and I joined as a junior programmer — later doing particle effects as well.",
       "It’s where object-oriented programming, design patterns and teamwork stopped being school topics. My code had teammates, a build and players waiting on it.",
     ],
     decision: {

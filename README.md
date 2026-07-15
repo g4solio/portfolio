@@ -1,79 +1,145 @@
 # Davide Gozzi — Engineering Portfolio
 
-A static engineering portfolio built with Next.js, TypeScript and Anime.js, designed as an
-industrial-editorial casebook: paper ground, ink typography, one drawing-blue accent, hairline
-rules instead of cards. Professional experience reads as six first-person chapters with four
-expandable case studies and ink-line SVG diagrams; OSUS closes the page as a small project
-index.
+[Live portfolio](https://g4solio.github.io/portfolio/) ·
+[CV](https://g4solio.github.io/portfolio/Davide_Gozzi_CV.pdf) ·
+[LinkedIn](https://www.linkedin.com/in/davide-gozzi5/) ·
+[GitHub](https://github.com/g4solio)
+
+![Davide Gozzi portfolio preview](public/og.png)
+
+An industrial-editorial portfolio about software that has to keep working:
+distributed services, legacy platforms, document systems, and applications
+connected to real machines.
+
+The site presents my professional experience as a series of first-person
+chapters, with selected engineering decisions expanded into concise case
+studies. OSUS closes the page as an independent product and engineering lab.
+
+## What is inside
+
+- Six professional chapters, from Unity development during high school to
+  industrial software consulting.
+- Four engineering notes covering real-time collision prediction,
+  configuration-driven document schemas, backward-compatible distributed
+  execution, and industrial quality data.
+- A short account of how I use AI-assisted development to extend my range
+  without outsourcing technical judgment.
+- OSUS projects, led by a live preview of RosettAI.
+- A downloadable one-page CV and a verifiable EF SET English certificate.
+
+## Design direction
+
+The visual system is deliberately closer to an engineering casebook than a
+developer dashboard:
+
+- warm paper ground and ink typography;
+- one drawing-blue accent;
+- hairline rules instead of card-heavy UI;
+- chapter-specific editorial layouts;
+- diagrams used to explain decisions, not decorate the page;
+- restrained motion with no scroll hijacking.
+
+The opening boot sequence lasts roughly 1.3 seconds, runs once per browser
+session, is immediately skippable, and morphs into the page header.
+
+## Technology
+
+- Next.js and React
+- TypeScript
+- Anime.js for progressive motion
+- Static export
+- GitHub Actions and GitHub Pages
+- Self-hosted Space Grotesk, Inter, and JetBrains Mono fonts
+
+The project has no backend dependency and requires no runtime secrets.
 
 ## Run locally
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
 Open `http://localhost:3000`.
 
-## Production build
+## Quality checks
 
 ```bash
+npm run lint
 npm run build
 ```
 
-Next.js writes the static site to `out/`. No server, no secrets, no backend dependency.
+The production build is exported to `out/`.
 
-## Deploy on GitHub Pages
+Regenerate the Open Graph image with:
 
-1. Create a repository named `g4solio.github.io` for a user site, or use any repository name for a project site.
-2. Push this project to the `main` branch.
-3. Open **Settings → Pages → Build and deployment** and select **GitHub Actions** as the source.
-4. The included workflow (`.github/workflows/deploy-pages.yml`) builds and deploys automatically.
+```bash
+npm run og
+```
 
-`next.config.ts` detects project repositories and adds the required base path. A repository
-ending in `.github.io` is served from the domain root.
+## Deployment
 
-## Main editing points
+The workflow in `.github/workflows/deploy-pages.yml` builds and publishes the
+static export whenever `main` is updated.
 
-- Chapter copy, case studies and OSUS projects: `data/portfolio.ts`
-- Page structure and section copy: `components/PortfolioPage.tsx`
-- Chapter rendering: `components/Chapters.tsx`
-- Case-study diagrams (inline SVG): `components/Schematic.tsx`
-- Visual system (paper/ink tokens): `app/globals.css`
-- Boot sequence (~1.3s, morphs into the header wordmark): `components/BootSequence.tsx`
-- Social preview image: `npm run og` regenerates `public/og.png` from `scripts/og.mjs`
+GitHub Pages must use **GitHub Actions** as its publishing source.
 
-## Fonts
+`next.config.ts` derives the correct `basePath` and `assetPrefix` from
+`GITHUB_REPOSITORY`, allowing the same project to work as either a user site or
+a repository site.
 
-Space Grotesk, Inter and JetBrains Mono are self-hosted as variable woff2 files in
-`app/fonts/` (originally from the `@fontsource-variable` packages, SIL Open Font License)
-and loaded through `next/font/local`. No external font requests at runtime.
+## Project map
 
-## Motion and accessibility
+```text
+app/
+  fonts/                  self-hosted variable fonts
+  globals.css             visual system and responsive layout
+  layout.tsx              metadata and social preview configuration
 
-- The boot intro runs once per browser session, is skippable, and hands off into the hero.
-- `prefers-reduced-motion` disables all animation; content is never gated behind motion.
-- Without JavaScript the full page renders and the boot overlay never appears
-  (`html.js` gating in `globals.css`).
-- Case studies are native `<details>/<summary>` elements — keyboard accessible, and the
-  open/draw animations are progressive enhancement on top.
-- No scroll hijacking; scrolling is always native.
+components/
+  BootSequence.tsx        session boot and wordmark hand-off
+  Chapters.tsx            professional chapter layouts
+  PortfolioPage.tsx       page structure and main copy
+  Schematic.tsx           inline engineering diagrams
 
-## Assumptions and open TODOs
+data/
+  portfolio.ts            experience, decisions, and OSUS project data
 
-- **Site URL**: metadata assumes `https://g4solio.github.io` (`app/layout.tsx`). Update
-  `siteUrl` if the repository or username differs.
-- **CV download**: not included yet; add a link in the contact section when a final
-  one-page CV exists.
-- **Client naming**: Credemtel and System Ceramics are named with the owner's approval
-  (July 2026).
-- **EF SET**: presented strictly as English *comprehension* (Reading 78 / Listening 90);
-  do not reword it as a writing/speaking certification.
-- **OSUS projects**: intentionally not linked to repositories; descriptions only. The index
-  is typographic for now — real screenshots/artifacts slot in when available (see the TODO
-  in `components/PortfolioPage.tsx`).
-- **Pop-culture budget**: exactly three references (hero line, boot spider-sense, 404 page).
-  Do not add more.
-- **Phone number**: deliberately not published anywhere on the site.
-- Add real metrics or project imagery only when they can be defended in an interview and
-  cleared for confidentiality.
+public/
+  Davide_Gozzi_CV.pdf     downloadable one-page CV
+  og.png                  social preview image
+
+scripts/
+  og.mjs                  Open Graph image generator
+```
+
+## Accessibility and resilience
+
+- Semantic HTML and a skip link.
+- Native `<details>` and `<summary>` for expandable engineering notes.
+- Full keyboard navigation.
+- `prefers-reduced-motion` support.
+- No content is gated behind animation.
+- Without JavaScript, the complete page remains readable and the boot overlay
+  does not appear.
+- Fonts are self-hosted and make no external requests.
+
+## Content principles
+
+The portfolio intentionally avoids invented metrics and exaggerated ownership.
+
+Professional diagrams are reconstructed to explain engineering decisions
+without exposing client source code, confidential infrastructure, credentials,
+or internal data. Client and product names are used only where cleared for
+public presentation.
+
+The EF SET credential is described precisely as **C2 English comprehension**;
+the linked certificate covers reading and listening.
+
+## License
+
+Copyright © 2026 Davide Gozzi. All rights reserved.
+
+The repository is public for review and portfolio transparency. No license is
+granted for reuse of its source code, design, writing, diagrams, or other
+content unless explicitly agreed in writing.
