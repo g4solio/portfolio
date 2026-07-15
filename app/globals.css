@@ -397,7 +397,8 @@ h2 {
   }
 
   .chapter-wide {
-    grid-column: 1 / -1;
+    /* start at the prose column so the decision aligns with the text above it */
+    grid-column: 2 / -1;
     grid-row: 2;
   }
 
@@ -432,7 +433,7 @@ h2 {
   }
 
   .chapter-wide {
-    grid-column: 1 / -1;
+    grid-column: 2 / -1;
   }
 }
 
@@ -639,6 +640,34 @@ main > section.osus {
   color: var(--ink-faint);
   font-family: var(--mono);
   font-size: 12px;
+}
+
+/* Live embed: render at 2x and scale down so the desktop layout shows */
+.osus-artifact--live {
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+}
+
+.osus-artifact--live iframe {
+  width: 200%;
+  height: 200%;
+  border: 0;
+  transform: scale(0.5);
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+
+.osus-artifact--live figcaption {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 10px 16px;
+  border-top: 1px solid var(--rule);
+  background: var(--paper);
+}
+
+.osus-artifact--live figcaption a {
+  color: inherit;
 }
 
 @media (min-width: 900px) {

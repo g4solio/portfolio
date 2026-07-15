@@ -63,12 +63,12 @@ export const chapters: Chapter[] = [
   },
   {
     number: "02",
-    years: "2017–2018",
+    years: "2017",
     employer: "Melazeta",
     role: "Development intern",
     layout: "interlude",
     lead: [
-      "Two short school-work placements on Unity mobile projects: a Winx dress-up app that shipped on the Play Store, then Unity UI, in-app purchases and some early augmented-reality work. My first contact with constraints that had nothing to do with code — artists with their own deadlines, assets arriving late, a release date that didn’t move. We shipped anyway.",
+      "A couple of months as a school-work intern on Unity mobile projects: a Winx dress-up app that shipped on the Play Store, plus Unity UI, in-app purchases and some early augmented-reality work. My first contact with constraints that had nothing to do with code — artists with their own deadlines, assets arriving late, a release date that didn’t move. We shipped anyway.",
     ],
     note: "shipped: Winx dress-up app — Google Play",
     stack: "Unity UI, mobile, in-app purchases, AR.",
@@ -186,6 +186,7 @@ export const osusFeature = {
   summary:
     "An asynchronous translation platform for documents where everything except the language must survive: layout, structure, embedded data. Built around observable processing, validation, retries and fidelity checks.",
   status: "active build",
+  url: "https://rosettai.osus.it/",
   tone: "blue" as const,
 };
 
@@ -193,19 +194,19 @@ export const osusProjects: OsusProject[] = [
   {
     name: "FCHForge",
     summary: "Makes industrial feed-collector configuration visible and manageable.",
-    status: "exploring",
+    status: "pre-alpha",
     tone: "amber",
   },
   {
     name: "OSUS Ecosystem",
     summary: "Shared identity, trust and integration layer for the other projects.",
-    status: "building",
+    status: "pre-alpha",
     tone: "green",
   },
   {
     name: "Sounds",
     summary: "Music, played together.",
-    status: "concept",
+    status: "pre-alpha",
     tone: "red",
   },
 ];

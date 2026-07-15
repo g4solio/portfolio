@@ -122,13 +122,18 @@ export function PortfolioPage() {
 
               <div className="osus-feature">
                 <div className={`osus-feature-copy tone-${osusFeature.tone}`}>
-                  <h3>{osusFeature.name}</h3>
+                  <h3>
+                    <a href={osusFeature.url} target="_blank" rel="noreferrer">{osusFeature.name}</a>
+                  </h3>
                   <p>{osusFeature.summary}</p>
                   <span className="osus-status"><i aria-hidden="true" />{osusFeature.status}</span>
                 </div>
-                {/* Reserved area for a real screenshot when the first public build exists. */}
-                <figure className="osus-artifact" aria-label="Reserved area for a RosettAI screenshot">
-                  <figcaption>screenshot reserved — first public build</figcaption>
+                <figure className="osus-artifact osus-artifact--live">
+                  {/* ponytail: live iframe preview, swap for a static screenshot if the embed ever breaks */}
+                  <iframe src={osusFeature.url} title="RosettAI — live preview" loading="lazy" tabIndex={-1} />
+                  <figcaption>
+                    <a href={osusFeature.url} target="_blank" rel="noreferrer">rosettai.osus.it — live ↗</a>
+                  </figcaption>
                 </figure>
               </div>
 
