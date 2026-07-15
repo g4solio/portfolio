@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { animate } from "animejs";
 import { BootSequence } from "./BootSequence";
 import { Chapters } from "./Chapters";
-import { osusProjects } from "@/data/portfolio";
+import { osusFeature, osusProjects } from "@/data/portfolio";
 
 const prefersReducedMotion = () =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -58,61 +58,90 @@ export function PortfolioPage() {
         <main id="main">
           <section id="top" className="hero">
             <h1>DAVIDE GOZZI</h1>
-            <p className="hero-role">Software engineer — Modena, Italy</p>
-            <p className="hero-statement">
-              I design and evolve software that has to keep working: distributed services,
-              legacy platforms and systems connected to real machines.
-            </p>
-            <p className="hero-neighborhood">Your friendly neighborhood .NET developer.</p>
-            <p className="hero-links">
-              <a href="mailto:david3gozz1@gmail.com">Email</a>
-              <a href="https://www.linkedin.com/in/davide-gozzi5/" target="_blank" rel="noreferrer">LinkedIn</a>
-              <a href="https://github.com/g4solio" target="_blank" rel="noreferrer">GitHub</a>
-            </p>
+            <div className="hero-grid">
+              <div>
+                <p className="hero-statement">
+                  I design and evolve software that has to keep working: distributed
+                  services, legacy platforms and systems connected to real machines.
+                </p>
+                <p className="hero-neighborhood">Your friendly neighborhood .NET developer.</p>
+                <p className="hero-links">
+                  <a href="mailto:david3gozz1@gmail.com">Email</a>
+                  <a href="https://www.linkedin.com/in/davide-gozzi5/" target="_blank" rel="noreferrer">LinkedIn</a>
+                  <a href="https://github.com/g4solio" target="_blank" rel="noreferrer">GitHub</a>
+                </p>
+              </div>
+              <dl className="hero-facts">
+                <div><dt>Role</dt><dd>Software engineer</dd></div>
+                <div><dt>Range</dt><dd>9+ years across distributed, legacy and industrial systems</dd></div>
+                <div><dt>Base</dt><dd>Modena, Italy</dd></div>
+              </dl>
+            </div>
           </section>
 
           <section id="work" className="work">
             <h2>Work</h2>
             <p className="section-intro">
               Nine years, five employers, one direction: systems with more constraints and
-              less room for error. The case studies open if you want the details.
+              less room for error. The engineering notes open if you want the details.
             </p>
             <Chapters />
           </section>
 
           <section className="ai reveal">
             <h2>AI-assisted development</h2>
-            <p>
-              My background is backend: architecture, distributed systems, integration with
-              physical machines. Interfaces were the part I used to hand to someone else.
-              AI-assisted development changed that — not by replacing judgment, but by making
-              me faster exactly where I had the least muscle memory.
+            <p className="section-intro">
+              My background is backend; interfaces were the part I used to hand to someone
+              else. AI-assisted development changed that — not by replacing judgment, but by
+              making me faster exactly where I had the least muscle memory. This site is a
+              concrete example: designed and built with an AI pair, every decision mine.
             </p>
-            <p>
-              This site is a concrete example: I designed and built it working with an AI
-              pair. The structure, the performance budget, the accessibility decisions and
-              everything that got cut — those stayed mine. The same split applies at work:
-              experience decides what gets built and what “done” means; AI extends how much
-              of it I can deliver alone.
-            </p>
+            <div className="ai-grid">
+              <div>
+                <h3>My core territory</h3>
+                <p>Backend, architecture, distributed systems, integration with machines.</p>
+              </div>
+              <div>
+                <h3>Extended with AI</h3>
+                <p>Interface implementation, interaction prototyping, visual iteration.</p>
+              </div>
+              <div>
+                <h3>Still my responsibility</h3>
+                <p>Architecture, verification, tests, security, trade-offs — and what “done” means.</p>
+              </div>
+            </div>
           </section>
 
           <section id="osus" className="osus reveal">
-            <h2>OSUS</h2>
-            <p className="section-intro">
-              A small independent lab where I build the products I keep thinking about.
-              Four projects so far — separate ideas, one ecosystem.
-            </p>
-            <ul className="osus-index">
-              {/* TODO: artifact slots — add real screenshots/sketches per project when available */}
-              {osusProjects.map((project) => (
-                <li className={`osus-row tone-${project.tone}`} key={project.name}>
-                  <h3>{project.name}</h3>
-                  <p>{project.summary}</p>
-                  <span className="osus-status"><i aria-hidden="true" />{project.status}</span>
-                </li>
-              ))}
-            </ul>
+            <div className="osus-inner">
+              <h2>OSUS</h2>
+              <p className="section-intro">
+                A small independent lab where I build the products I keep thinking about.
+                Four projects so far — separate ideas, one ecosystem.
+              </p>
+
+              <div className="osus-feature">
+                <div className={`osus-feature-copy tone-${osusFeature.tone}`}>
+                  <h3>{osusFeature.name}</h3>
+                  <p>{osusFeature.summary}</p>
+                  <span className="osus-status"><i aria-hidden="true" />{osusFeature.status}</span>
+                </div>
+                {/* Reserved area for a real screenshot when the first public build exists. */}
+                <figure className="osus-artifact" aria-label="Reserved area for a RosettAI screenshot">
+                  <figcaption>screenshot reserved — first public build</figcaption>
+                </figure>
+              </div>
+
+              <ul className="osus-index">
+                {osusProjects.map((project) => (
+                  <li className={`osus-item tone-${project.tone}`} key={project.name}>
+                    <h3>{project.name}</h3>
+                    <p>{project.summary}</p>
+                    <span className="osus-status"><i aria-hidden="true" />{project.status}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </section>
 
           <section className="credentials reveal">
