@@ -66,7 +66,8 @@ export function PortfolioPage() {
                 </p>
                 <p className="hero-neighborhood">Your friendly neighborhood .NET developer.</p>
                 <p className="hero-links">
-                  <a href="/Davide_Gozzi_CV.pdf" target="_blank" rel="noreferrer">CV</a>
+                  {/* relative: the site deploys under a basePath on GitHub Pages */}
+                  <a href="Davide_Gozzi_CV.pdf" target="_blank" rel="noreferrer">CV</a>
                   <a href="mailto:david3gozz1@gmail.com">Email</a>
                   <a href="https://www.linkedin.com/in/davide-gozzi5/" target="_blank" rel="noreferrer">LinkedIn</a>
                   <a href="https://github.com/g4solio" target="_blank" rel="noreferrer">GitHub</a>
@@ -170,7 +171,7 @@ export function PortfolioPage() {
               interesting problems.
             </p>
             <p className="contact-links">
-              <a href="/Davide_Gozzi_CV.pdf" target="_blank" rel="noreferrer">CV (PDF)</a>
+              <a href="Davide_Gozzi_CV.pdf" target="_blank" rel="noreferrer">CV (PDF)</a>
               <a href="mailto:david3gozz1@gmail.com">david3gozz1@gmail.com</a>
               <a href="https://www.linkedin.com/in/davide-gozzi5/" target="_blank" rel="noreferrer">LinkedIn</a>
               <a href="https://github.com/g4solio" target="_blank" rel="noreferrer">GitHub</a>

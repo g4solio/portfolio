@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     url: siteUrl,
     siteName: "Davide Gozzi",
     type: "website",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Davide Gozzi — Software engineer" }],
+    images: [{ url: ogImage, width: 1200, height: 630, alt: "Davide Gozzi — Software engineer" }],
   },
   twitter: {
     card: "summary_large_image",
