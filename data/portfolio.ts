@@ -43,7 +43,7 @@ export const chapters: Chapter[] = [
     role: "Junior programmer, later particle effects",
     layout: "side",
     lead: [
-      "I started working during my fourth year of high school, mostly because school had stopped being difficult and I wanted problems that didn’t come with a solutions page. StarworkGC was a small game startup in Modena building a 3D bullet-hell game in Unity, and I joined as a junior programmer — later doing particle effects as well.",
+      "I started working during my fourth year of high school, mostly because school had stopped being difficult and I wanted problems that didn’t come with a solutions page. StarworkGC was a small independent game startup building a games in Unity, and I joined as a junior programmer — later doing particle effects as well.",
       "It’s where object-oriented programming, design patterns and teamwork stopped being school topics. My code had teammates, a build and players waiting on it.",
     ],
     decision: {
@@ -123,7 +123,7 @@ export const chapters: Chapter[] = [
     ],
     decision: {
       number: "03",
-      title: "Shipping capabilities to installations you may never update again",
+      title: "Shipping capabilities to installations you cannot update predictably",
       schematic: "agents",
       caption: "fig. 03 — manager and agents, Quartz scheduling",
       problem:
@@ -136,7 +136,7 @@ export const chapters: Chapter[] = [
       openByDefault: true,
     },
     tail: [
-      "The second was less glamorous: a document flow between a third-party service, our central application and SAP, communicating through shared Windows folders. You don’t always get to choose your infrastructure. What you can do is make it observable — where each document is, where it got stuck, on whose side it failed. I led that work with a group of three or four people.",
+      "The second was less glamorous: a document flow between a third-party service, our central application and SAP, communicating through shared Windows folders. You don’t always get to choose your infrastructure. What you can do is make it observable — where each document is, where it got stuck, on whose side it failed. I coordinated the implementation across a group of four people.",
     ],
     aside:
       "MSC is also where I learned to delegate — and what it costs to accept too many parallel responsibilities instead of saying no early.",

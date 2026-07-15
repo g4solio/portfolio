@@ -82,8 +82,7 @@ export function PortfolioPage() {
           <section id="work" className="work">
             <h2>Work</h2>
             <p className="section-intro">
-              Nine years, five employers, one direction: systems with more constraints and
-              less room for error. The engineering notes open if you want the details.
+              Nine years of moving toward systems with more constraints and less room for error.
             </p>
             <Chapters />
           </section>
@@ -94,7 +93,8 @@ export function PortfolioPage() {
               My background is backend; interfaces were the part I used to hand to someone
               else. AI-assisted development changed that — not by replacing judgment, but by
               making me faster exactly where I had the least muscle memory. This site is a
-              concrete example: designed and built with an AI pair, every decision mine.
+              concrete example: built with an AI pair, with me setting the direction,
+              reviewing the implementation and owning the final result.
             </p>
             <div className="ai-grid">
               <div>

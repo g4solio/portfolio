@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { display, mono, sans } from "./fonts";
 import "./globals.css";
 
-// TODO: confirm final GitHub Pages URL (assumes user site g4solio.github.io).
-const siteUrl = "https://g4solio.github.io";
+const siteUrl = new URL("https://g4solio.github.io/portfolio/");
+const ogImage = new URL("og.png", siteUrl).toString();
 
 const description =
   "Software engineer in Modena, Italy. I design and evolve software that has to keep working: distributed services, legacy platforms and systems connected to real machines.";
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Davide Gozzi — Software engineer",
     description,
-    images: ["/og.png"],
+    images: [ogImage],
   },
 };
 

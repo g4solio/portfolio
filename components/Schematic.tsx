@@ -80,7 +80,7 @@ const diagrams: Record<SchematicId, ReactNode> = {
       <text className="s-label" x="30" y="166">v3</text>
       <text className="s-label" x="264" y="164">v1</text>
       <text className="s-label" x="102" y="140">dll capabilities · quartz</text>
-      <text className="s-label" x="92" y="192">every version stays supported</text>
+      <text className="s-label" x="92" y="192">compatibility across deployed versions</text>
     </g>
   ),
   tiles: (
