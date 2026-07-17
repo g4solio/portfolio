@@ -1,20 +1,36 @@
 :root {
-  --paper: #f7f5f1;
-  --paper-band: #efece3;
-  --ink: #1b1b18;
-  --ink-soft: #4c4b44;
-  --ink-faint: #8b897e;
-  --rule: #dad6cb;
-  --accent: #2b5bc7;
-  /* OSUS-only, muted print tones */
-  --tone-blue: #335fa8;
-  --tone-green: #47723f;
-  --tone-amber: #a87423;
-  --tone-red: #a8433b;
-  --canvas: 1080px;
-  --prose: 640px;
-  --display: var(--font-display), "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --sans: var(--font-sans), Inter, ui-sans-serif, system-ui, sans-serif;
+  color-scheme: dark;
+
+  /* ---- Bending Spoons-inspired dark canvas ---- */
+  --bg: #000000;
+  --bg-elevated: #121212; /* cards / surfaces on dark */
+  --ink: #ffffff; /* headings, high-emphasis, schematic strokes */
+  --ink-soft: #c9c9c2; /* body prose — ~11:1 on black */
+  --ink-faint: #9a9a90; /* labels / tertiary — ~7.5:1 on black */
+  --rule: rgba(255, 255, 255, 0.14);
+  --rule-strong: rgba(255, 255, 255, 0.26);
+  --accent: #c7ff9f; /* lime — used on dark backgrounds only (~18:1) */
+  --accent-hi: #d9ffbc;
+  --accent-ink: #0a0a0a; /* text on an accent fill */
+
+  /* ---- Inverted light band (OSUS) — echoes the BS dark→light flip ---- */
+  --band-bg: #f4f2ec;
+  --band-ink: #17170f;
+  --band-ink-soft: #45443c;
+  --band-ink-faint: #64635a;
+  --band-rule: #d8d4c9;
+  --band-accent: #2f6b1f; /* dark green — AA on the light band */
+
+  /* ---- OSUS status tones — tuned for the light band ---- */
+  --tone-blue: #2f5aa8;
+  --tone-green: #3f7a34;
+  --tone-amber: #9a6a12;
+  --tone-red: #a83c33;
+
+  --canvas: 1180px;
+  --prose: 660px;
+  --sans: var(--font-sans), "Instrument Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --serif: var(--font-serif), "Instrument Serif", Georgia, "Times New Roman", serif;
   --mono: var(--font-mono), "SFMono-Regular", Consolas, Menlo, monospace;
   interpolate-size: allow-keywords;
 }
@@ -25,29 +41,58 @@
 
 html {
   scroll-behavior: smooth;
-  background: var(--paper);
+  background: var(--bg);
 }
 
 body {
   margin: 0;
-  color: var(--ink);
-  background: var(--paper);
+  color: var(--ink-soft);
+  background: var(--bg);
   font-family: var(--sans);
   font-size: 17px;
   line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 ::selection {
-  color: var(--paper);
+  color: var(--accent-ink);
   background: var(--accent);
+}
+
+/* Serif italic accent — the signature Bending Spoons emphasis. Only on dark. */
+.ac {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+  /* the serif optically sits a touch small next to the sans; nudge it up */
+  font-size: 1.06em;
+  letter-spacing: 0;
 }
 
 a {
   color: var(--accent);
-  text-decoration: none;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 a:hover {
+  text-decoration-color: currentColor;
+}
+
+/* Standalone link rows read as controls, not prose — no persistent rule */
+.site-header nav a,
+.hero-links a,
+.contact-links a,
+.site-footer a {
+  text-decoration: none;
+}
+
+.site-header nav a:hover,
+.site-footer a:hover {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -61,14 +106,22 @@ button {
   font: inherit;
 }
 
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
 h1,
 h2,
 h3,
 h4 {
-  font-family: var(--display);
+  font-family: var(--sans);
   font-weight: 500;
-  line-height: 1.15;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
   margin: 0;
+  color: var(--ink);
 }
 
 .skip-link {
@@ -77,9 +130,12 @@ h4 {
   left: 12px;
   z-index: 2000;
   padding: 10px 16px;
-  color: var(--paper);
-  background: var(--ink);
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-radius: 999px;
   font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
   transform: translateY(-200%);
 }
 
@@ -101,7 +157,54 @@ html:not(.js) .boot {
   display: none;
 }
 
-/* ---- Boot -------------------------------------------------------------- */
+/* ---- Pills (CTA language) ------------------------------------------------ */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 20px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.pill--primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.pill--primary:hover {
+  background: var(--accent-hi);
+  text-decoration: none;
+}
+
+.pill--ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--rule-strong);
+}
+
+.pill--ghost:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--ink);
+  text-decoration: none;
+}
+
+.pill:active {
+  transform: translateY(1px);
+}
+
+/* ---- Boot ---------------------------------------------------------------- */
 
 .boot {
   position: fixed;
@@ -109,7 +212,7 @@ html:not(.js) .boot {
   z-index: 1000;
   display: grid;
   place-items: center;
-  background: var(--paper);
+  background: var(--bg);
 }
 
 .boot-stack {
@@ -119,16 +222,17 @@ html:not(.js) .boot {
 
 .boot-row {
   margin: 0;
-  color: var(--ink-soft);
+  color: var(--ink-faint);
   font-family: var(--mono);
   font-size: 13px;
 }
 
 .boot-name {
   color: var(--ink);
-  font-family: var(--display);
-  font-size: 28px;
+  font-family: var(--sans);
+  font-size: 30px;
   font-weight: 500;
+  letter-spacing: -0.02em;
   margin-bottom: 6px;
   will-change: transform;
 }
@@ -149,9 +253,8 @@ html:not(.js) .boot {
   color: var(--accent);
 }
 
-/* ---- Layout ------------------------------------------------------------ */
+/* ---- Layout ------------------------------------------------------------- */
 
-.site-header,
 main > section,
 .site-footer,
 .osus-inner {
@@ -159,95 +262,143 @@ main > section,
   margin-inline: auto;
 }
 
+/* Sticky bar spans the viewport; only its contents are inset to the canvas. */
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  padding: 26px 0 18px;
+  width: 100%;
+  padding: 18px max(24px, (100% - var(--canvas)) / 2);
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: saturate(140%) blur(12px);
   border-bottom: 1px solid var(--rule);
 }
 
 .wordmark {
   color: var(--ink);
-  font-family: var(--display);
+  font-family: var(--sans);
   font-size: 18px;
   font-weight: 500;
+  letter-spacing: -0.01em;
+  text-decoration: none;
 }
 
 .wordmark:hover {
   text-decoration: none;
+  color: var(--accent);
 }
 
 .site-header nav {
   display: flex;
-  gap: 24px;
+  gap: 26px;
   font-size: 15px;
 }
 
-main > section {
-  padding: 84px 0 0;
-}
-
-main > section:last-of-type {
-  padding-bottom: 84px;
-}
-
-h2 {
-  font-size: 28px;
-  margin-bottom: 20px;
-}
-
-.section-intro {
-  max-width: 58ch;
-  margin: 0 0 44px;
+.site-header nav a {
   color: var(--ink-soft);
 }
 
-/* ---- Hero -------------------------------------------------------------- */
+.site-header nav a:hover {
+  color: var(--ink);
+}
+
+main > section {
+  padding: 96px 0 0;
+  /* keep anchored headings clear of the sticky header */
+  scroll-margin-top: 88px;
+}
+
+main > section:last-of-type {
+  padding-bottom: 96px;
+}
+
+.section-eyebrow {
+  display: block;
+  margin: 0 0 14px;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 12.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+h2 {
+  font-size: clamp(32px, 5.5vw, 56px);
+  letter-spacing: -0.035em;
+  margin-bottom: 22px;
+}
+
+.section-intro {
+  max-width: 40ch;
+  margin: 0 0 48px;
+  color: var(--ink-soft);
+  font-size: clamp(19px, 2.2vw, 24px);
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+}
+
+/* ---- Hero ---------------------------------------------------------------- */
 
 .hero {
-  padding-top: 104px;
+  position: relative;
+  padding-top: 96px;
+}
+
+/* faint ambient glow — stays well behind text, never lowers text contrast */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -40px 0 auto -10%;
+  height: 380px;
+  background: radial-gradient(60% 100% at 20% 0%, rgba(199, 255, 159, 0.1), transparent 70%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 .hero h1 {
-  font-size: clamp(40px, 11vw, 88px);
-  font-weight: 600;
-  letter-spacing: -0.015em;
-  line-height: 1;
+  font-size: clamp(46px, 11.5vw, 116px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  text-transform: uppercase;
 }
 
 .hero-grid {
   display: grid;
   gap: 44px;
-  margin-top: 44px;
+  margin-top: 48px;
 }
 
 .hero-statement {
-  max-width: 24em;
+  max-width: 20em;
   margin: 0;
-  font-size: clamp(21px, 2.4vw, 27px);
-  line-height: 1.45;
-  letter-spacing: -0.01em;
+  font-size: clamp(23px, 3vw, 34px);
+  line-height: 1.32;
+  letter-spacing: -0.015em;
+  color: var(--ink);
 }
 
 .hero-neighborhood {
   margin: 26px 0 0;
-  color: var(--accent);
-  font-size: 16px;
+  color: var(--ink-soft);
+  font-size: clamp(17px, 1.8vw, 20px);
 }
 
 .hero-links {
   display: flex;
-  gap: 20px;
-  margin: 30px 0 0;
-  font-size: 15px;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 34px 0 0;
 }
 
 .hero-facts {
   display: grid;
-  gap: 16px;
+  gap: 20px;
   align-content: start;
-  max-width: 320px;
+  max-width: 340px;
   margin: 0;
   padding-left: 24px;
   border-left: 1px solid var(--rule);
@@ -258,12 +409,13 @@ h2 {
   font-family: var(--mono);
   font-size: 12px;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
 }
 
 .hero-facts dd {
-  margin: 3px 0 0;
-  font-size: 15.5px;
+  margin: 4px 0 0;
+  color: var(--ink);
+  font-size: 16px;
 }
 
 @media (min-width: 940px) {
@@ -277,12 +429,63 @@ h2 {
   }
 }
 
-/* ---- Work chapters ------------------------------------------------------ */
+/* ---- Stats band ---------------------------------------------------------- */
+
+.stats {
+  padding-top: 80px;
+}
+
+.stats-grid {
+  display: grid;
+  gap: 40px 32px;
+  margin: 0;
+  padding: 44px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.stat {
+  margin: 0;
+}
+
+.stat-num {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(34px, 5vw, 58px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.stat-figure {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+  margin-right: 0.08em;
+}
+
+.stat-note {
+  margin: 14px 0 0;
+  max-width: 30ch;
+  color: var(--ink-soft);
+  font-size: 15.5px;
+  line-height: 1.5;
+}
+
+@media (min-width: 740px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 48px;
+  }
+}
+
+/* ---- Work chapters ------------------------------------------------------- */
 
 .chapter {
   display: grid;
   gap: 0 48px;
-  padding: 52px 0;
+  padding: 60px 0;
   border-top: 1px solid var(--rule);
 }
 
@@ -295,9 +498,10 @@ h2 {
 
 .chapter-number {
   color: var(--ink-faint);
-  font-family: var(--display);
-  font-size: 34px;
-  font-weight: 500;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 40px;
+  font-weight: 400;
   line-height: 1;
 }
 
@@ -312,26 +516,28 @@ h2 {
 }
 
 .chapter-head h3 {
-  font-size: 26px;
+  font-size: clamp(24px, 3vw, 32px);
+  letter-spacing: -0.025em;
 }
 
 .chapter-role {
-  margin: 4px 0 0;
-  color: var(--ink-soft);
+  margin: 6px 0 0;
+  color: var(--ink-faint);
   font-size: 15px;
 }
 
 .chapter-body {
   max-width: 62ch;
   margin: 0 0 18px;
+  color: var(--ink-soft);
 }
 
 .chapter-aside {
   max-width: 56ch;
   margin: 26px 0 18px;
   padding-left: 18px;
-  border-left: 2px solid var(--rule);
-  color: var(--ink-soft);
+  border-left: 2px solid var(--rule-strong);
+  color: var(--ink-faint);
   font-size: 15.5px;
 }
 
@@ -351,15 +557,15 @@ h2 {
 
 /* Interludes: shorter, quieter, deliberately different */
 .chapter--interlude {
-  padding: 38px 0;
+  padding: 44px 0;
 }
 
 .chapter--interlude .chapter-head h3 {
-  font-size: 19px;
+  font-size: 20px;
 }
 
 .chapter--interlude .chapter-number {
-  font-size: 24px;
+  font-size: 28px;
 }
 
 .chapter--interlude .chapter-body {
@@ -383,7 +589,7 @@ h2 {
   }
 
   .chapter-number {
-    font-size: 44px;
+    font-size: 52px;
   }
 
   .chapter-main {
@@ -397,7 +603,6 @@ h2 {
   }
 
   .chapter-wide {
-    /* start at the prose column so the decision aligns with the text above it */
     grid-column: 2 / -1;
     grid-row: 2;
   }
@@ -437,10 +642,14 @@ h2 {
   }
 }
 
-/* ---- Decisions ------------------------------------------------------------ */
+/* ---- Decisions ----------------------------------------------------------- */
 
 .decision {
-  margin: 28px 0 24px;
+  margin: 30px 0 24px;
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  padding: 22px 24px;
+  background: var(--bg-elevated);
 }
 
 .decision summary {
@@ -454,26 +663,29 @@ h2 {
 
 .decision summary:focus-visible {
   outline: 2px solid var(--accent);
-  outline-offset: 3px;
+  outline-offset: 6px;
+  border-radius: 4px;
 }
 
 .decision-label {
   display: block;
-  color: var(--ink-faint);
+  color: var(--accent);
   font-family: var(--mono);
   font-size: 12px;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
 }
 
 .decision summary strong {
   display: block;
-  margin: 6px 0 8px;
-  font-family: var(--display);
-  font-size: 22px;
+  margin: 8px 0 10px;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: clamp(20px, 2.4vw, 26px);
   font-weight: 500;
+  letter-spacing: -0.02em;
   line-height: 1.2;
-  max-width: 24em;
+  max-width: 22em;
 }
 
 .decision-cta {
@@ -496,12 +708,12 @@ h2 {
 }
 
 .decision-body {
-  padding: 22px 0 6px;
+  padding: 24px 0 6px;
 }
 
 .decision dl {
   display: grid;
-  gap: 16px;
+  gap: 18px;
   max-width: 62ch;
   margin: 0;
 }
@@ -509,7 +721,7 @@ h2 {
 @media (min-width: 720px) {
   .decision dl {
     grid-template-columns: 1fr 1fr;
-    gap: 18px 32px;
+    gap: 20px 36px;
   }
 }
 
@@ -517,10 +729,13 @@ h2 {
   color: var(--ink-faint);
   font-family: var(--mono);
   font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .decision dd {
-  margin: 2px 0 0;
+  margin: 4px 0 0;
+  color: var(--ink-soft);
   font-size: 15.5px;
 }
 
@@ -537,7 +752,7 @@ h2 {
   }
 }
 
-/* ---- Figures ---------------------------------------------------------------- */
+/* ---- Figures ------------------------------------------------------------- */
 
 .fig {
   margin: 0;
@@ -548,18 +763,28 @@ h2 {
   width: 100%;
   height: auto;
   border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--bg-elevated);
 }
 
 .fig figcaption {
-  margin-top: 8px;
+  margin-top: 10px;
   color: var(--ink-faint);
   font-family: var(--mono);
   font-size: 12px;
 }
 
-.schematic .s-line { stroke: var(--ink); stroke-opacity: 0.72; }
-.schematic .s-faint { stroke: var(--ink); stroke-opacity: 0.3; }
-.schematic .s-accent { stroke: var(--accent); }
+.schematic .s-line {
+  stroke: var(--ink);
+  stroke-opacity: 0.78;
+}
+.schematic .s-faint {
+  stroke: var(--ink);
+  stroke-opacity: 0.32;
+}
+.schematic .s-accent {
+  stroke: var(--accent);
+}
 
 .schematic .s-label {
   fill: var(--ink-soft);
@@ -579,17 +804,18 @@ h2 {
 }
 
 .ai-grid h3 {
-  color: var(--ink-faint);
+  color: var(--accent);
   font-family: var(--mono);
   font-size: 12px;
   font-weight: 400;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
 }
 
 .ai-grid p {
-  margin: 8px 0 0;
-  font-size: 15.5px;
+  margin: 10px 0 0;
+  color: var(--ink-soft);
+  font-size: 16px;
 }
 
 @media (min-width: 740px) {
@@ -599,15 +825,52 @@ h2 {
   }
 }
 
-/* ---- OSUS: full-bleed band -------------------------------------------------- */
+/* ---- OSUS: full-bleed inverted light band -------------------------------- */
 
 main > section.osus {
   width: 100%;
   max-width: none;
-  margin-top: 84px;
-  padding: 84px 0;
-  background: var(--paper-band);
-  border-block: 1px solid var(--rule);
+  margin-top: 96px;
+  padding: 100px 0;
+  background: var(--band-bg);
+  color: var(--band-ink-soft);
+  border-block: 1px solid var(--band-rule);
+}
+
+/* re-key the palette inside the band so shared components adapt automatically */
+.osus {
+  --ink: var(--band-ink);
+  --ink-soft: var(--band-ink-soft);
+  --ink-faint: var(--band-ink-faint);
+  --rule: var(--band-rule);
+  --rule-strong: #c4c0b4;
+  --accent: var(--band-accent);
+}
+
+.osus h2,
+.osus h3 {
+  color: var(--band-ink);
+}
+
+.osus .section-intro {
+  color: var(--band-ink-soft);
+}
+
+.osus .section-eyebrow {
+  color: var(--band-accent);
+}
+
+.osus a {
+  color: var(--band-accent);
+}
+
+.osus ::selection {
+  color: var(--band-bg);
+  background: var(--band-accent);
+}
+
+.osus :focus-visible {
+  outline-color: var(--band-accent);
 }
 
 .osus-feature {
@@ -617,13 +880,14 @@ main > section.osus {
 }
 
 .osus-feature-copy h3 {
-  font-size: 34px;
+  font-size: clamp(30px, 4vw, 44px);
+  letter-spacing: -0.03em;
 }
 
 .osus-feature-copy p {
   max-width: 48ch;
-  margin: 14px 0 18px;
-  color: var(--ink-soft);
+  margin: 16px 0 20px;
+  color: var(--band-ink-soft);
 }
 
 .osus-artifact {
@@ -632,12 +896,14 @@ main > section.osus {
   aspect-ratio: 16 / 10;
   margin: 0;
   padding: 14px 16px;
-  border: 1px solid var(--rule);
-  background: var(--paper);
+  border: 1px solid var(--band-rule);
+  border-radius: 16px;
+  background: #fff;
+  overflow: hidden;
 }
 
 .osus-artifact figcaption {
-  color: var(--ink-faint);
+  color: var(--band-ink-faint);
   font-family: var(--mono);
   font-size: 12px;
 }
@@ -646,7 +912,6 @@ main > section.osus {
 .osus-artifact--live {
   position: relative;
   padding: 0;
-  overflow: hidden;
 }
 
 .osus-artifact--live iframe {
@@ -662,8 +927,8 @@ main > section.osus {
   position: absolute;
   inset: auto 0 0 0;
   padding: 10px 16px;
-  border-top: 1px solid var(--rule);
-  background: var(--paper);
+  border-top: 1px solid var(--band-rule);
+  background: #fff;
 }
 
 .osus-artifact--live figcaption a {
@@ -680,23 +945,24 @@ main > section.osus {
 .osus-index {
   display: grid;
   gap: 28px;
-  margin: 56px 0 0;
+  margin: 60px 0 0;
   padding: 0;
   list-style: none;
 }
 
 .osus-item {
-  padding-top: 16px;
-  border-top: 1px solid var(--rule);
+  padding-top: 18px;
+  border-top: 1px solid var(--band-rule);
 }
 
 .osus-item h3 {
-  font-size: 18px;
+  font-size: 19px;
+  letter-spacing: -0.01em;
 }
 
 .osus-item p {
   margin: 8px 0 12px;
-  color: var(--ink-soft);
+  color: var(--band-ink-soft);
   font-size: 15.5px;
 }
 
@@ -704,7 +970,7 @@ main > section.osus {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: var(--ink-faint);
+  color: var(--band-ink-faint);
   font-family: var(--mono);
   font-size: 12.5px;
   white-space: nowrap;
@@ -714,13 +980,21 @@ main > section.osus {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--tone, var(--ink-faint));
+  background: var(--tone, var(--band-ink-faint));
 }
 
-.tone-blue { --tone: var(--tone-blue); }
-.tone-green { --tone: var(--tone-green); }
-.tone-amber { --tone: var(--tone-amber); }
-.tone-red { --tone: var(--tone-red); }
+.tone-blue {
+  --tone: var(--tone-blue);
+}
+.tone-green {
+  --tone: var(--tone-green);
+}
+.tone-amber {
+  --tone: var(--tone-amber);
+}
+.tone-red {
+  --tone: var(--tone-red);
+}
 
 @media (min-width: 740px) {
   .osus-index {
@@ -728,7 +1002,6 @@ main > section.osus {
     gap: 44px;
   }
 
-  /* slight stagger keeps the index from reading as a uniform table */
   .osus-item:nth-child(2) {
     margin-top: 20px;
   }
@@ -738,33 +1011,41 @@ main > section.osus {
   }
 }
 
-/* ---- Credentials / contact --------------------------------------------------- */
+/* ---- Credentials / contact ----------------------------------------------- */
 
 .credentials p,
 .contact p {
   max-width: 62ch;
   margin: 0 0 18px;
+  color: var(--ink-soft);
 }
 
 .contact-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 22px;
+  gap: 12px;
+  margin-top: 26px;
 }
 
-/* ---- Footer ---------------------------------------------------------------- */
+/* ---- Footer -------------------------------------------------------------- */
 
 .site-footer {
   display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
   justify-content: space-between;
-  padding: 22px 0 30px;
-  margin-top: 28px;
+  padding: 26px 0 36px;
+  margin-top: 40px;
   border-top: 1px solid var(--rule);
   color: var(--ink-faint);
   font-size: 14px;
 }
 
-/* ---- Motion ---------------------------------------------------------------- */
+.site-footer a {
+  color: var(--ink-soft);
+}
+
+/* ---- Motion -------------------------------------------------------------- */
 
 .reveal {
   will-change: transform, opacity;
@@ -797,44 +1078,59 @@ main > section.osus {
 }
 
 @keyframes schematic-draw {
-  from { stroke-dashoffset: 1; }
-  to { stroke-dashoffset: 0; }
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 @keyframes schematic-fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-/* ---- Small screens ----------------------------------------------------------- */
+/* ---- Small screens ------------------------------------------------------- */
 
 @media (max-width: 720px) {
   body {
     font-size: 16px;
   }
 
-  .site-header,
   main > section,
   .site-footer,
   .osus-inner {
     width: min(var(--canvas), 100% - 32px);
   }
 
+  .site-header {
+    padding-inline: 16px;
+  }
+
   .hero {
-    padding-top: 64px;
+    padding-top: 56px;
   }
 
   main > section {
-    padding-top: 60px;
+    padding-top: 64px;
+  }
+
+  .stats {
+    padding-top: 56px;
   }
 
   main > section.osus {
-    margin-top: 60px;
-    padding: 60px 0;
+    margin-top: 64px;
+    padding: 64px 0;
   }
 
   .site-header nav {
-    gap: 14px;
+    gap: 16px;
     font-size: 14px;
   }
 

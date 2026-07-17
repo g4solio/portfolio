@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { display, mono, sans } from "./fonts";
+import { mono, sans, serif } from "./fonts";
 import "./globals.css";
 
 const siteUrl = new URL("https://g4solio.github.io/portfolio/");
@@ -29,13 +29,13 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f7f5f1",
-  colorScheme: "light",
+  themeColor: "#000000",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
+    <html lang="en" className={`${sans.variable} ${serif.variable} ${mono.variable}`}>
       <body>
         {/* Content stays visible without JS; this class opts into the boot overlay. */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />

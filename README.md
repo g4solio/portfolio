@@ -29,15 +29,20 @@ studies. OSUS closes the page as an independent product and engineering lab.
 
 ## Design direction
 
-The visual system is deliberately closer to an engineering casebook than a
-developer dashboard:
+The visual system pairs a Bending Spoons-inspired canvas with the engineering
+casebook underneath:
 
-- warm paper ground and ink typography;
-- one drawing-blue accent;
-- hairline rules instead of card-heavy UI;
-- chapter-specific editorial layouts;
+- black ground with high-contrast white typography;
+- oversized display type with tight, negative tracking;
+- one lime accent, reserved for dark backgrounds, plus serif-italic emphasis;
+- a single inverted light band (OSUS) that echoes the dark→light section flip;
+- pill-shaped calls to action;
 - diagrams used to explain decisions, not decorate the page;
 - restrained motion with no scroll hijacking.
+
+Accessibility is a hard constraint: every text/background pair clears WCAG AA
+(most clear AAA), focus states are always visible, and the lime accent is never
+placed on light surfaces where it would fail contrast.
 
 The opening boot sequence lasts roughly 1.3 seconds, runs once per browser
 session, is immediately skippable, and morphs into the page header.
@@ -49,7 +54,7 @@ session, is immediately skippable, and morphs into the page header.
 - Anime.js for progressive motion
 - Static export
 - GitHub Actions and GitHub Pages
-- Self-hosted Space Grotesk, Inter, and JetBrains Mono fonts
+- Self-hosted Instrument Sans, Instrument Serif, and JetBrains Mono fonts
 
 The project has no backend dependency and requires no runtime secrets.
 

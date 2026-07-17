@@ -61,18 +61,20 @@ export function PortfolioPage() {
             <div className="hero-grid">
               <div>
                 <p className="hero-statement">
-                  I design and evolve software that has to keep working: distributed
-                  services, legacy platforms and systems connected to real machines.
+                  I design and evolve software that has to <em className="ac">keep working</em>:
+                  distributed services, legacy platforms and systems connected to real machines.
                 </p>
-                <p className="hero-neighborhood">Your friendly neighborhood .NET developer.</p>
-                <p className="hero-links">
+                <p className="hero-neighborhood">
+                  Your <em className="ac">friendly neighborhood</em> .NET developer.
+                </p>
+                <div className="hero-links">
                   {/* relative: the site deploys under a basePath on GitHub Pages */}
-                  <a href="Davide_Gozzi_CV.pdf" target="_blank" rel="noreferrer">CV</a>
-                  <a href="mailto:david3gozz1@gmail.com">Email</a>
-                  <a href="https://www.linkedin.com/in/davide-gozzi5/" target="_blank" rel="noreferrer">LinkedIn</a>
-                  <a href="https://github.com/g4solio" target="_blank" rel="noreferrer">GitHub</a>
-                  <a href="https://steamcommunity.com/profiles/76561197986572794/" target="_blank" rel="noreferrer">Steam</a>
-                </p>
+                  <a className="pill pill--primary" href="Davide_Gozzi_CV.pdf" target="_blank" rel="noreferrer">CV ↗</a>
+                  <a className="pill pill--ghost" href="mailto:david3gozz1@gmail.com">Email</a>
+                  <a className="pill pill--ghost" href="https://www.linkedin.com/in/davide-gozzi5/" target="_blank" rel="noreferrer">LinkedIn</a>
+                  <a className="pill pill--ghost" href="https://github.com/g4solio" target="_blank" rel="noreferrer">GitHub</a>
+                  <a className="pill pill--ghost" href="https://steamcommunity.com/profiles/76561197986572794/" target="_blank" rel="noreferrer">Steam</a>
+                </div>
               </div>
               <dl className="hero-facts">
                 <div><dt>Role</dt><dd>Software engineer</dd></div>
@@ -82,15 +84,35 @@ export function PortfolioPage() {
             </div>
           </section>
 
+          <section className="stats reveal" aria-label="At a glance">
+            <ul className="stats-grid">
+              <li className="stat">
+                <p className="stat-num"><span className="stat-figure">9+</span> years</p>
+                <p className="stat-note">Across distributed, legacy and industrial systems.</p>
+              </li>
+              <li className="stat">
+                <p className="stat-num"><span className="stat-figure">6</span> roles</p>
+                <p className="stat-note">From a game startup to global shipping and industrial software.</p>
+              </li>
+              <li className="stat">
+                <p className="stat-num"><span className="stat-figure">4</span> OSUS projects</p>
+                <p className="stat-note">Built in an independent product lab of my own.</p>
+              </li>
+            </ul>
+          </section>
+
           <section id="work" className="work">
+            <span className="section-eyebrow">Experience</span>
             <h2>Work</h2>
             <p className="section-intro">
-              Nine years of moving toward systems with more constraints and less room for error.
+              Nine years of moving toward systems with more constraints and{" "}
+              <em className="ac">less room for error</em>.
             </p>
             <Chapters />
           </section>
 
           <section className="ai reveal">
+            <span className="section-eyebrow">How I work</span>
             <h2>AI-assisted development</h2>
             <p className="section-intro">
               My background is backend; interfaces were the part I used to hand to someone
@@ -117,10 +139,11 @@ export function PortfolioPage() {
 
           <section id="osus" className="osus reveal">
             <div className="osus-inner">
+              <span className="section-eyebrow">Independent lab</span>
               <h2>OSUS</h2>
               <p className="section-intro">
                 A small independent lab where I build the products I keep thinking about.
-                Four projects so far — separate ideas, one ecosystem.
+                Four projects so far — separate ideas, <em className="ac">one ecosystem</em>.
               </p>
 
               <div className="osus-feature">
@@ -153,6 +176,7 @@ export function PortfolioPage() {
           </section>
 
           <section className="credentials reveal">
+            <span className="section-eyebrow">Languages &amp; education</span>
             <h2>Credentials</h2>
             <p>
               English — C2 comprehension, EF SET 84/100 (reading 78, listening 90). The
@@ -165,18 +189,19 @@ export function PortfolioPage() {
           </section>
 
           <section id="contact" className="contact reveal">
+            <span className="section-eyebrow">Get in touch</span>
             <h2>Contact</h2>
             <p>
-              Email is the most reliable way to reach me. I read everything, including the
-              interesting problems.
+              Email is the most reliable way to reach me. I read everything, including the{" "}
+              <em className="ac">interesting problems</em>.
             </p>
-            <p className="contact-links">
-              <a href="Davide_Gozzi_CV.pdf" target="_blank" rel="noreferrer">CV (PDF)</a>
-              <a href="mailto:david3gozz1@gmail.com">david3gozz1@gmail.com</a>
-              <a href="https://www.linkedin.com/in/davide-gozzi5/" target="_blank" rel="noreferrer">LinkedIn</a>
-              <a href="https://github.com/g4solio" target="_blank" rel="noreferrer">GitHub</a>
-              <a href="https://steamcommunity.com/profiles/76561197986572794/" target="_blank" rel="noreferrer">Steam</a>
-            </p>
+            <div className="contact-links">
+              <a className="pill pill--primary" href="Davide_Gozzi_CV.pdf" target="_blank" rel="noreferrer">CV (PDF) ↗</a>
+              <a className="pill pill--ghost" href="mailto:david3gozz1@gmail.com">david3gozz1@gmail.com</a>
+              <a className="pill pill--ghost" href="https://www.linkedin.com/in/davide-gozzi5/" target="_blank" rel="noreferrer">LinkedIn</a>
+              <a className="pill pill--ghost" href="https://github.com/g4solio" target="_blank" rel="noreferrer">GitHub</a>
+              <a className="pill pill--ghost" href="https://steamcommunity.com/profiles/76561197986572794/" target="_blank" rel="noreferrer">Steam</a>
+            </div>
           </section>
         </main>
 
