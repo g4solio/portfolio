@@ -1,0 +1,36 @@
+/* next/font/local replacement for the sync bundle: the app injects these
+   @font-face rules and CSS variables at build time via app/fonts.ts. */
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("../app/fonts/space-grotesk-latin-wght-normal.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../app/fonts/inter-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("../app/fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Silkscreen";
+  src: url("../app/fonts/silkscreen-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Silkscreen";
+  src: url("../app/fonts/silkscreen-latin-700-normal.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}

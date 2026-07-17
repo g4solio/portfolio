@@ -1,0 +1,22 @@
+# design-sync notes
+
+- Next.js app, not a library: no dist, no build script for a package entry. Synth-entry mode is triggered by passing a **nonexistent** `--entry ./dist/index.js` — the PKG_DIR walk-up still lands on the repo root, and `resolveDistEntry` (soft) falls through to synthesizing from `cfg.srcDir` (`components/`). Without `--entry` the build crashes looking for `node_modules/davide-gozzi-portfolio`.
+- Build command: `node .ds-sync/package-build.mjs --config .design-sync/config.json --node-modules ./node_modules --entry ./dist/index.js --out ./ds-bundle` (the `[NO_DIST]` lines it prints are expected).
+- Render check: no playwright browser cache on this machine; system Chrome is used via `DS_CHROMIUM_PATH="/c/Program Files/Google/Chrome/Application/chrome.exe"` (playwright npm package installed in `.ds-sync/`, no chromium download).
+- Fonts are `next/font/local` (app/fonts.ts) — the app never ships @font-face. `.design-sync/fonts.css` (via `cfg.extraFonts`) provides @font-face for Space Grotesk / Inter / JetBrains Mono pointing at `app/fonts/*.woff2`. extractFonts strips everything but @font-face rules, so the `--font-*` variable mapping can NOT live there; instead `app/globals.css` uses fallback-safe `var(--font-display, "Space Grotesk")` stacks (behavior-identical inside Next, resolves to the @font-face families outside it).
+- `html.js` gate: globals.css hides `.boot` unless `<html>` has class `js` (the site's layout stamps it). The BootSequence preview adds the class at module level, scoped to its own card.
+- BootSequence (since the July 2026 CRT POST redesign) types 7 lines via CSS width animations (delays up to 5.1s) and auto-dismisses at 7.2s (also on keydown/click/wheel; 450ms fade). **CSS animations are compositor-driven — the capture's frozen page clock does NOT hold them**, so its preview (a) forces `.boot-line { width: var(--tw) !important }` + a solid `.boot-cursor` (no blink) to pin the typed end state, (b) drops `setTimeout`s >= 7000ms so the card never fades to blank in live view, (c) stops click propagation in the frame so a stray click can't dismiss, and (d) keeps the 480px `transform: translateZ(0)` frame because the card harness's `.ds-cell/.ds-single { transform: translateZ(0) }` makes it the containing block for the `position: fixed` overlay (zero-height otherwise). Exports Green/Amber/White phosphor variants; config pins `primaryStory: "Green"` (cardMode single).
+- PortfolioPage's preview pins `.h1-cursor` solid (`animation: none`) — the hero's blinking block cursor is also compositor-driven and would make captures nondeterministic (55% duty cycle).
+- Silkscreen (pixel numerals: hero `9+`, chapter numbers) ships as two static woff2s (400/700, fontsource naming) in `app/fonts/`; `.design-sync/fonts.css` carries their @font-face, and globals.css exposes `--pixel: var(--font-pixel, "Silkscreen"), var(--mono)` with the same outside-Next fallback pattern as the other families.
+- PortfolioPage's card renders without the boot overlay (no `html.js` in its card → boot display:none, site-shell visible immediately). The rosettai.osus.it iframe in the OSUS section loads from network at render time; offline it shows an empty artifact frame — benign.
+
+## Known render warns
+
+- (none — 4/4 render clean as of 2026-07-17)
+
+## Re-sync risks
+
+- The preview workarounds in `.design-sync/previews/BootSequence.tsx` (end-state `!important` styles on `.boot-line`/`.boot-cursor`, setTimeout>=7000 drop, click-capture stop, translateZ frame) are coupled to BootSequence's internals (7.2s auto-dismiss, `--tw` per-line width vars, `.boot-line`/`.boot-cursor` classes, fixed positioning). If the boot's classes, timings, or animation mechanism change, that preview breaks first — regrade it before trusting a wave. Same for the `.h1-cursor` freeze in the PortfolioPage preview.
+- `app/globals.css` font stacks carry `var(--font-display, "Space Grotesk")`-style fallbacks the bundle depends on; if the site ever renames fonts or moves to different families, update `.design-sync/fonts.css` to match or previews silently fall back to system fonts.
+- `data/portfolio.ts` content is baked into the bundle via Chapters/PortfolioPage; content edits change render output (expected re-verify), not config.
+- Build assumed node 25.x and the repo's own `node_modules` (npm). The intercepting-npm-gateway workaround (see memory) was NOT needed this run.

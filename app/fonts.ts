@@ -20,3 +20,12 @@ export const mono = localFont({
   variable: "--font-mono",
   display: "swap",
 });
+
+export const pixel = localFont({
+  src: [
+    { path: "./fonts/silkscreen-latin-400-normal.woff2", weight: "400" },
+    { path: "./fonts/silkscreen-latin-700-normal.woff2", weight: "700" },
+  ],
+  variable: "--font-pixel",
+  display: "swap",
+});

@@ -57,7 +57,7 @@ export function PortfolioPage() {
 
         <main id="main">
           <section id="top" className="hero">
-            <h1>DAVIDE GOZZI</h1>
+            <h1>DAVIDE GOZZI<span className="h1-cursor" aria-hidden="true" /></h1>
             <div className="hero-grid">
               <div>
                 <p className="hero-statement">
@@ -76,8 +76,9 @@ export function PortfolioPage() {
               </div>
               <dl className="hero-facts">
                 <div><dt>Role</dt><dd>Software engineer</dd></div>
-                <div><dt>Range</dt><dd>9+ years across distributed, legacy and industrial systems</dd></div>
+                <div><dt>Range</dt><dd><span className="pix">9+</span> years across distributed, legacy and industrial systems</dd></div>
                 <div><dt>Base</dt><dd>Modena, Italy</dd></div>
+                <div><dt>Status</dt><dd><span className="status-dot" aria-hidden="true" />currently online</dd></div>
               </dl>
             </div>
           </section>

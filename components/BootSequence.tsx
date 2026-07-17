@@ -1,20 +1,41 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { animate, stagger } from "animejs";
 
-export function BootSequence({ onComplete }: { onComplete: () => void }) {
+const TINTS = {
+  green: { text: "#c9dcc9", hi: "#7ee787" },
+  amber: { text: "#e3d3ae", hi: "#e8b34b" },
+  white: { text: "#d9d9d3", hi: "#f4f4ec" },
+} as const;
+
+// N in steps(N) = the line's character count; undercounting clips the line.
+const LINES: { text: string; hi?: string; ch: number; dur: number; delay: number }[] = [
+  { text: "DG-BIOS v9.6 — Davide Gozzi · est. 2016", ch: 41, dur: 620, delay: 200 },
+  { text: "memory ................. 9 yrs — ", hi: "no leaks detected", ch: 52, dur: 760, delay: 950 },
+  { text: "loading real-world experience ......... ", hi: "ok", ch: 44, dur: 660, delay: 1820 },
+  { text: "spider-sense for edge cases ........... ", hi: "active", ch: 47, dur: 700, delay: 2600 },
+  { text: "mounting /work ........................ ", hi: "6 chapters", ch: 50, dur: 720, delay: 3420 },
+  { text: "side quests (osus) .................... ", hi: "4 found", ch: 48, dur: 700, delay: 4260 },
+];
+
+const LAST = { text: "boot: portfolio — press any key, or scroll", ch: 43, dur: 640, delay: 5100 };
+
+export function BootSequence({
+  onComplete,
+  phosphor = "green",
+  scanlines = true,
+}: {
+  onComplete: () => void;
+  phosphor?: "green" | "amber" | "white";
+  scanlines?: boolean;
+}) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(true);
+  const dismissedRef = useRef(false);
 
   useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
-
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const hasBooted = window.sessionStorage.getItem("dg-booted") === "true";
-
-    if (reduceMotion || hasBooted) {
+    if (hasBooted) {
       // queueMicrotask (not rAF): must also run in hidden/background tabs
       queueMicrotask(() => {
         setVisible(false);
@@ -23,66 +44,59 @@ export function BootSequence({ onComplete }: { onComplete: () => void }) {
       return;
     }
 
-    animate(root.querySelectorAll(".boot-row"), {
-      opacity: { from: 0 },
-      translateY: { from: 6 },
-      delay: stagger(110),
-      duration: 240,
-      ease: "out(2)",
-    });
-
-    // ~1.3s total: the name line travels into the header wordmark while the
-    // page fades in underneath, so the boot ends as part of the page.
-    const exitTimer = window.setTimeout(() => {
+    const dismiss = () => {
+      if (dismissedRef.current) return;
+      dismissedRef.current = true;
       window.sessionStorage.setItem("dg-booted", "true");
+      // Page fades in beneath while the boot fades out (450ms, see .boot--out).
       onComplete();
+      rootRef.current?.classList.add("boot--out");
+      window.setTimeout(() => setVisible(false), 450);
+    };
 
-      const name = root.querySelector<HTMLElement>(".boot-name");
-      const target = document.querySelector<HTMLElement>(".wordmark");
-      if (name && target) {
-        const from = name.getBoundingClientRect();
-        const to = target.getBoundingClientRect();
-        name.style.transformOrigin = "top left";
-        animate(name, {
-          translateX: to.left - from.left,
-          translateY: to.top - from.top,
-          scale: to.height / from.height,
-          duration: 360,
-          ease: "inOut(3)",
-        });
-      }
-      animate(root.querySelectorAll(".boot-row:not(.boot-name)"), {
-        opacity: [1, 0],
-        duration: 200,
-        ease: "linear",
-      });
-      animate(root, {
-        opacity: [1, 0],
-        duration: 260,
-        delay: 220,
-        ease: "linear",
-        onComplete: () => setVisible(false),
-      });
-    }, 900);
+    const autoTimer = window.setTimeout(dismiss, 7200);
+    const onKey = () => dismiss();
+    const onWheel = () => dismiss();
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("wheel", onWheel, { passive: true });
+    rootRef.current?.addEventListener("click", dismiss);
 
-    return () => window.clearTimeout(exitTimer);
+    return () => {
+      window.clearTimeout(autoTimer);
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("wheel", onWheel);
+    };
   }, [onComplete]);
 
   if (!visible) return null;
 
-  const skip = () => {
-    window.sessionStorage.setItem("dg-booted", "true");
-    setVisible(false);
-    onComplete();
-  };
+  const tint = TINTS[phosphor] ?? TINTS.green;
+  const type = (l: { ch: number; dur: number; delay: number }) =>
+    ({
+      "--tw": `${l.ch}ch`,
+      animation: `boot-type ${l.dur}ms steps(${l.ch}) ${l.delay}ms both`,
+    }) as React.CSSProperties;
 
   return (
-    <div ref={rootRef} className="boot" role="status" aria-live="polite">
-      <button className="boot-skip" type="button" onClick={skip}>skip</button>
-      <div className="boot-stack">
-        <p className="boot-row boot-name">davide gozzi</p>
-        <p className="boot-row">loading real-world experience … ok</p>
-        <p className="boot-row">spider-sense for edge cases … active</p>
+    <div
+      ref={rootRef}
+      className="boot"
+      role="status"
+      aria-live="polite"
+      style={{ "--phos": tint.text, "--phos-hi": tint.hi } as React.CSSProperties}
+    >
+      {scanlines && <div className="boot-scan" aria-hidden="true" />}
+      <div className="boot-lines">
+        {LINES.map((l) => (
+          <p className="boot-line" style={type(l)} key={l.text}>
+            {l.text}
+            {l.hi && <span className="boot-hi">{l.hi}</span>}
+          </p>
+        ))}
+        <p className="boot-last">
+          <span className="boot-line" style={type(LAST)}>{LAST.text}</span>
+          <span className="boot-cursor" aria-hidden="true" />
+        </p>
       </div>
     </div>
   );

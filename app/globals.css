@@ -13,9 +13,14 @@
   --tone-red: #a8433b;
   --canvas: 1080px;
   --prose: 640px;
-  --display: var(--font-display), "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --sans: var(--font-sans), Inter, ui-sans-serif, system-ui, sans-serif;
-  --mono: var(--font-mono), "SFMono-Regular", Consolas, Menlo, monospace;
+  /* fallback family names: outside Next (no next/font vars) the same woff2s
+     load via plain @font-face under these names */
+  --display: var(--font-display, "Space Grotesk"), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --sans: var(--font-sans, "Inter"), Inter, ui-sans-serif, system-ui, sans-serif;
+  --mono: var(--font-mono, "JetBrains Mono"), "SFMono-Regular", Consolas, Menlo, monospace;
+  --pixel: var(--font-pixel, "Silkscreen"), var(--mono);
+  /* CRT boot */
+  --crt: #0b0d0b;
   interpolate-size: allow-keywords;
 }
 
@@ -101,52 +106,84 @@ html:not(.js) .boot {
   display: none;
 }
 
-/* ---- Boot -------------------------------------------------------------- */
+/* ---- Boot: CRT POST check ----------------------------------------------- */
+
+@keyframes boot-type {
+  to { width: var(--tw, 100%); }
+}
+
+@keyframes dg-blink {
+  0%, 55% { opacity: 1; }
+  56%, 100% { opacity: 0; }
+}
 
 .boot {
   position: fixed;
   inset: 0;
   z-index: 1000;
   display: grid;
-  place-items: center;
-  background: var(--paper);
-}
-
-.boot-stack {
-  display: grid;
-  gap: 10px;
-}
-
-.boot-row {
-  margin: 0;
-  color: var(--ink-soft);
-  font-family: var(--mono);
-  font-size: 13px;
-}
-
-.boot-name {
-  color: var(--ink);
-  font-family: var(--display);
-  font-size: 28px;
-  font-weight: 500;
-  margin-bottom: 6px;
-  will-change: transform;
-}
-
-.boot-skip {
-  position: absolute;
-  top: 20px;
-  right: 24px;
-  color: var(--ink-faint);
-  border: 0;
-  background: transparent;
-  font-family: var(--mono);
-  font-size: 13px;
+  align-content: center;
+  justify-content: center;
+  background: var(--crt);
+  color: var(--phos, #c9dcc9);
   cursor: pointer;
+  transition: opacity 450ms ease;
 }
 
-.boot-skip:hover {
-  color: var(--accent);
+.boot--out {
+  opacity: 0;
+}
+
+.boot-scan {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.045) 0 1px,
+    transparent 1px 3px
+  );
+}
+
+.boot-lines {
+  position: relative;
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 2.1;
+  min-width: 56ch;
+  padding: 0 24px;
+}
+
+.boot-line {
+  display: block;
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+}
+
+.boot-hi {
+  color: var(--phos-hi, #7ee787);
+}
+
+.boot-last {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  margin: 6px 0 0;
+}
+
+.boot-last .boot-line {
+  display: inline-block;
+}
+
+.boot-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 16px;
+  background: currentColor;
+  animation: dg-blink 1.1s steps(1) infinite;
+  transform: translateY(2px);
 }
 
 /* ---- Layout ------------------------------------------------------------ */
@@ -214,6 +251,71 @@ h2 {
   font-weight: 600;
   letter-spacing: -0.015em;
   line-height: 1;
+}
+
+.h1-cursor {
+  display: inline-block;
+  width: 0.42em;
+  height: 0.74em;
+  background: var(--ink);
+  margin-left: 16px;
+  animation: dg-blink 1.1s steps(1) infinite;
+}
+
+/* Bracket hovers: [ label ] fades in over nav + contact links */
+.site-header nav a,
+.hero-links a,
+.contact-links a {
+  white-space: nowrap;
+}
+
+.site-header nav a::before,
+.hero-links a::before,
+.contact-links a::before {
+  content: "[\200A";
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.site-header nav a::after,
+.hero-links a::after,
+.contact-links a::after {
+  content: "\200A]";
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.site-header nav a:hover,
+.hero-links a:hover,
+.contact-links a:hover {
+  text-decoration: none;
+}
+
+.site-header nav a:hover::before,
+.hero-links a:hover::before,
+.contact-links a:hover::before,
+.site-header nav a:hover::after,
+.hero-links a:hover::after,
+.contact-links a:hover::after {
+  opacity: 1;
+}
+
+/* Pixel numerals: tiny doses only (9+, chapter numbers, counts) */
+.pix {
+  font-family: var(--pixel);
+}
+
+.hero-facts .pix {
+  font-size: 13px;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--tone-green);
+  margin-right: 7px;
 }
 
 .hero-grid {
@@ -295,9 +397,9 @@ h2 {
 
 .chapter-number {
   color: var(--ink-faint);
-  font-family: var(--display);
+  font-family: var(--pixel);
   font-size: 34px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1;
 }
 
@@ -855,6 +957,7 @@ main > section.osus {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }

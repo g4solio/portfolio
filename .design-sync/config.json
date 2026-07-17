@@ -1,0 +1,24 @@
+{
+  "projectId": "2ca9eb25-e7d3-4503-a47d-7697723e18e1",
+  "shape": "package",
+  "pkg": "davide-gozzi-portfolio",
+  "globalName": "Portfolio",
+  "srcDir": "components",
+  "tsconfig": "tsconfig.json",
+  "cssEntry": "app/globals.css",
+  "extraFonts": [
+    ".design-sync/fonts.css"
+  ],
+  "overrides": {
+    "BootSequence": {
+      "cardMode": "single",
+      "primaryStory": "Green",
+      "viewport": "900x520"
+    },
+    "PortfolioPage": {
+      "cardMode": "single",
+      "viewport": "1200x900"
+    }
+  },
+  "readmeHeader": ".design-sync/conventions.md"
+}

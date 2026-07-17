@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { display, mono, sans } from "./fonts";
+import { display, mono, pixel, sans } from "./fonts";
 import "./globals.css";
 
 const siteUrl = new URL("https://g4solio.github.io/portfolio/");
@@ -35,7 +35,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
+    <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable} ${pixel.variable}`}>
       <body>
         {/* Content stays visible without JS; this class opts into the boot overlay. */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
