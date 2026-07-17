@@ -133,7 +133,6 @@ export const chapters: Chapter[] = [
       decision:
         "We treated backward compatibility as the primary design input: explicit dependency loading, Quartz-based scheduling, and health reporting so an agent’s state was never a guess.",
       lesson: "In globally distributed systems, compatibility is availability.",
-      openByDefault: true,
     },
     tail: [
       "The second was less glamorous: a document flow between a third-party service, our central application and SAP, communicating through shared Windows folders. You don’t always get to choose your infrastructure. What you can do is make it observable — where each document is, where it got stuck, on whose side it failed. I coordinated the implementation across a group of four people.",

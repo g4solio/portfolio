@@ -650,6 +650,9 @@ main > section.osus {
 }
 
 .osus-artifact--live iframe {
+  /* absolute so the 200% height resolves against the aspect-ratio box */
+  position: absolute;
+  inset: 0;
   width: 200%;
   height: 200%;
   border: 0;
