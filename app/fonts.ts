@@ -21,11 +21,10 @@ export const mono = localFont({
   display: "swap",
 });
 
+// ponytail: only the 400 weight is used (.pix, .chapter-number); re-add 700 if bold pixel text ever ships
 export const pixel = localFont({
-  src: [
-    { path: "./fonts/silkscreen-latin-400-normal.woff2", weight: "400" },
-    { path: "./fonts/silkscreen-latin-700-normal.woff2", weight: "700" },
-  ],
+  src: "./fonts/silkscreen-latin-400-normal.woff2",
+  weight: "400",
   variable: "--font-pixel",
   display: "swap",
 });

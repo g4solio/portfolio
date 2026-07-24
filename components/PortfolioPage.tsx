@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { animate } from "animejs";
 import { BootSequence } from "./BootSequence";
 import { Chapters } from "./Chapters";
 import { osusFeature, osusProjects } from "@/data/portfolio";
@@ -24,12 +23,15 @@ export function PortfolioPage() {
           const element = entry.target as HTMLElement;
           if (element.dataset.revealed === "true") return;
           element.dataset.revealed = "true";
-          animate(element, {
-            opacity: { from: 0 },
-            translateY: { from: 12 },
-            duration: 420,
-            ease: "out(2)",
-          });
+          // native WAAPI; fill "none" returns to natural styles, which match
+          // the final keyframe, so nothing is left inline after the reveal
+          element.animate(
+            [
+              { opacity: 0, transform: "translateY(12px)" },
+              { opacity: 1, transform: "none" },
+            ],
+            { duration: 420, easing: "cubic-bezier(0.25, 0.46, 0.45, 0.94)" },
+          );
           observer.unobserve(element);
         });
       },
@@ -134,7 +136,8 @@ export function PortfolioPage() {
                 </div>
                 <figure className="osus-artifact osus-artifact--live">
                   {/* ponytail: live iframe preview, swap for a static screenshot if the embed ever breaks */}
-                  <iframe src={osusFeature.url} title="RosettAI — live preview" loading="lazy" tabIndex={-1} />
+                  {/* aria-hidden: the embed is a non-interactive visual; the figcaption link is the accessible path */}
+                  <iframe src={osusFeature.url} title="RosettAI — live preview" loading="lazy" tabIndex={-1} aria-hidden="true" />
                   <figcaption>
                     <a href={osusFeature.url} target="_blank" rel="noreferrer">rosettai.osus.it — live ↗</a>
                   </figcaption>

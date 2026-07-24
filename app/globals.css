@@ -3,7 +3,8 @@
   --paper-band: #efece3;
   --ink: #1b1b18;
   --ink-soft: #4c4b44;
-  --ink-faint: #8b897e;
+  /* faint still means faint, but 4.5:1+ on both paper and the OSUS band */
+  --ink-faint: #68665e;
   --rule: #dad6cb;
   --accent: #2b5bc7;
   /* OSUS-only, muted print tones */
@@ -148,10 +149,12 @@ html:not(.js) .boot {
 .boot-lines {
   position: relative;
   font-family: var(--mono);
-  font-size: 14px;
+  /* longest BIOS line is 52ch; (100vw - padding) / (52 × 0.6em) keeps every
+     line on-screen down to 320px instead of clipping both edges */
+  font-size: clamp(8px, calc((100vw - 32px) / 31.2), 14px);
   line-height: 2.1;
-  min-width: 56ch;
-  padding: 0 24px;
+  min-width: 52ch;
+  padding: 0 16px;
 }
 
 .boot-line {
@@ -179,11 +182,11 @@ html:not(.js) .boot {
 
 .boot-cursor {
   display: inline-block;
-  width: 8px;
-  height: 16px;
+  width: 0.6em;
+  height: 1.15em;
   background: currentColor;
   animation: dg-blink 1.1s steps(1) infinite;
-  transform: translateY(2px);
+  transform: translateY(0.15em);
 }
 
 /* ---- Layout ------------------------------------------------------------ */
@@ -871,10 +874,6 @@ main > section.osus {
 
 /* ---- Motion ---------------------------------------------------------------- */
 
-.reveal {
-  will-change: transform, opacity;
-}
-
 @media (prefers-reduced-motion: no-preference) {
   .decision::details-content {
     opacity: 0;
@@ -911,6 +910,23 @@ main > section.osus {
   to { opacity: 1; }
 }
 
+/* ---- Touch ------------------------------------------------------------------ */
+
+/* Standalone link rows get ~44px hit areas on touch devices. Vertical padding
+   on inline boxes paints outside the line box, so the layout doesn't move;
+   horizontal padding is cancelled with negative margins. */
+@media (pointer: coarse) {
+  .wordmark,
+  .site-header nav a,
+  .hero-links a,
+  .contact-links a,
+  .site-footer a {
+    padding-block: 11px;
+    padding-inline: 6px;
+    margin-inline: -6px;
+  }
+}
+
 /* ---- Small screens ----------------------------------------------------------- */
 
 @media (max-width: 720px) {
@@ -945,6 +961,18 @@ main > section.osus {
 
   .hero-facts {
     max-width: none;
+  }
+}
+
+/* Printing mid-boot would otherwise emit blank pages: the shell is held at
+   opacity 0 behind the overlay until the boot dismisses. */
+@media print {
+  .boot {
+    display: none;
+  }
+
+  html.js .site-shell {
+    opacity: 1;
   }
 }
 

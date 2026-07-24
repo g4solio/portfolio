@@ -34,7 +34,15 @@ export function BootSequence({
   const dismissedRef = useRef(false);
 
   useEffect(() => {
-    const hasBooted = window.sessionStorage.getItem("dg-booted") === "true";
+    // sessionStorage access itself throws when site data is blocked; a throw
+    // here would land before the auto-dismiss timer exists and strand the
+    // visitor on the boot screen. Degrade to replaying the boot instead.
+    let hasBooted = false;
+    try {
+      hasBooted = window.sessionStorage.getItem("dg-booted") === "true";
+    } catch {
+      /* storage unavailable — treat as first visit */
+    }
     if (hasBooted) {
       // queueMicrotask (not rAF): must also run in hidden/background tabs
       queueMicrotask(() => {
@@ -47,7 +55,11 @@ export function BootSequence({
     const dismiss = () => {
       if (dismissedRef.current) return;
       dismissedRef.current = true;
-      window.sessionStorage.setItem("dg-booted", "true");
+      try {
+        window.sessionStorage.setItem("dg-booted", "true");
+      } catch {
+        /* storage unavailable — the boot will simply replay next visit */
+      }
       // Page fades in beneath while the boot fades out (450ms, see .boot--out).
       onComplete();
       rootRef.current?.classList.add("boot--out");
@@ -57,14 +69,19 @@ export function BootSequence({
     const autoTimer = window.setTimeout(dismiss, 7200);
     const onKey = () => dismiss();
     const onWheel = () => dismiss();
+    // touchmove covers swipes on phones, where wheel never fires and the
+    // promised "scroll" gesture would otherwise pan the invisible page behind
+    const onTouchMove = () => dismiss();
     window.addEventListener("keydown", onKey);
     window.addEventListener("wheel", onWheel, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
     rootRef.current?.addEventListener("click", dismiss);
 
     return () => {
       window.clearTimeout(autoTimer);
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchmove", onTouchMove);
     };
   }, [onComplete]);
 

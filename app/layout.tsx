@@ -35,7 +35,13 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable} ${pixel.variable}`}>
+    // suppressHydrationWarning: the inline script below adds the `js` class
+    // before React hydrates, an intentional html-attribute mismatch
+    <html
+      lang="en"
+      className={`${display.variable} ${sans.variable} ${mono.variable} ${pixel.variable}`}
+      suppressHydrationWarning
+    >
       <body>
         {/* Content stays visible without JS; this class opts into the boot overlay. */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
