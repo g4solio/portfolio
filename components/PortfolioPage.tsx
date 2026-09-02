@@ -73,14 +73,14 @@ export function PortfolioPage() {
                   <a href="mailto:david3gozz1@gmail.com">Email</a>
                   <a href="https://www.linkedin.com/in/davide-gozzi5/" target="_blank" rel="noreferrer">LinkedIn</a>
                   <a href="https://github.com/g4solio" target="_blank" rel="noreferrer">GitHub</a>
-                  <a href="https://steamcommunity.com/profiles/76561197986572794/" target="_blank" rel="noreferrer">Steam</a>
+                  <a href="https://store.steampowered.com/app/513960/Galactic_Fighters/" target="_blank" rel="noreferrer">Galactic Fighters</a>
                 </p>
               </div>
               <dl className="hero-facts">
                 <div><dt>Role</dt><dd>Software engineer</dd></div>
-                <div><dt>Range</dt><dd><span className="pix">9+</span> years across distributed, legacy and industrial systems</dd></div>
+                <div><dt>Range</dt><dd><span className="pix">7</span> years professional · shipping code since 2016</dd></div>
                 <div><dt>Base</dt><dd>Modena, Italy</dd></div>
-                <div><dt>Status</dt><dd><span className="status-dot" aria-hidden="true" />currently online</dd></div>
+                <div><dt>Status</dt><dd><span className="status-dot" aria-hidden="true" />open to remote · CET</dd></div>
               </dl>
             </div>
           </section>
@@ -88,7 +88,8 @@ export function PortfolioPage() {
           <section id="work" className="work">
             <h2>Work</h2>
             <p className="section-intro">
-              Nine years of moving toward systems with more constraints and less room for error.
+              Seven professional years, and two before them, moving toward systems with more
+              constraints and less room for error.
             </p>
             <Chapters />
           </section>
@@ -123,7 +124,8 @@ export function PortfolioPage() {
               <h2>OSUS</h2>
               <p className="section-intro">
                 A small independent lab where I build the products I keep thinking about.
-                Four projects so far — separate ideas, one ecosystem.
+                Four projects — separate ideas, one ecosystem. Two of them are live, and
+                you can use one without an account.
               </p>
 
               <div className="osus-feature">
@@ -147,7 +149,13 @@ export function PortfolioPage() {
               <ul className="osus-index">
                 {osusProjects.map((project) => (
                   <li className={`osus-item tone-${project.tone}`} key={project.name}>
-                    <h3>{project.name}</h3>
+                    <h3>
+                      {project.url ? (
+                        <a href={project.url} target="_blank" rel="noreferrer">{project.name}</a>
+                      ) : (
+                        project.name
+                      )}
+                    </h3>
                     <p>{project.summary}</p>
                     <span className="osus-status"><i aria-hidden="true" />{project.status}</span>
                   </li>
@@ -179,7 +187,7 @@ export function PortfolioPage() {
               <a href="mailto:david3gozz1@gmail.com">david3gozz1@gmail.com</a>
               <a href="https://www.linkedin.com/in/davide-gozzi5/" target="_blank" rel="noreferrer">LinkedIn</a>
               <a href="https://github.com/g4solio" target="_blank" rel="noreferrer">GitHub</a>
-              <a href="https://steamcommunity.com/profiles/76561197986572794/" target="_blank" rel="noreferrer">Steam</a>
+              <a href="https://store.steampowered.com/app/513960/Galactic_Fighters/" target="_blank" rel="noreferrer">Galactic Fighters</a>
             </p>
           </section>
         </main>

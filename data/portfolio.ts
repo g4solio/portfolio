@@ -108,7 +108,7 @@ export const chapters: Chapter[] = [
     role: "Full-stack developer",
     layout: "interlude",
     lead: [
-      "Nine months of full-stack work on established products. No big story — the skill I took away was how to enter an existing codebase, map its hidden dependencies, and make changes conservative enough not to break what already worked.",
+      "Eight months on the platform behind a set of online betting sites — customer-specific features like custom reward systems, and slot-game integrations with third-party providers. Money moved through it in real time, so the interesting constraint was never the feature: it was entering an established codebase, mapping the dependencies nobody had written down, and making changes conservative enough that nothing already working broke.",
     ],
   },
   {
@@ -176,6 +176,8 @@ export type OsusProject = {
   name: string;
   summary: string;
   status: string;
+  /** Present when the project is reachable in production. */
+  url?: string;
   /** Muted print-like tone used only inside the OSUS band. */
   tone: "blue" | "green" | "amber" | "red";
 };
@@ -183,29 +185,32 @@ export type OsusProject = {
 export const osusFeature = {
   name: "RosettAI",
   summary:
-    "An asynchronous translation platform for documents where everything except the language must survive: layout, structure, embedded data. Built around observable processing, validation, retries and fidelity checks.",
-  status: "active build",
+    "Asynchronous subtitle and document translation, built so everything that isn’t language survives the round trip. Timestamps and sequence numbers are stripped before the model ever sees the text and restored deterministically afterwards — the AI translates, it never touches structure. Chunked processing with validation and retries, three quality tiers, and a single trace following each job from HTTP ingress through the queue to the database write.",
+  status: "live — no sign-up needed",
   url: "https://rosettai.osus.it/",
   tone: "blue" as const,
 };
 
 export const osusProjects: OsusProject[] = [
   {
+    name: "Bubbles",
+    summary:
+      "One daily prompt, one song. Your answer is global, but the reveal is per-group: one action produces a different moment in every bubble you belong to, and nobody sees anything before their bubble pops. A scheduler closes the day on its own and decides who gets pulled back in.",
+    status: "live",
+    url: "https://bubbles.osus.it/",
+    tone: "red",
+  },
+  {
+    name: "OSUS Ecosystem",
+    summary:
+      "The identity, billing and wallet layer the other products call instead of touching balances themselves. Spending is reservation-based — try, then commit or cancel — so a failed job never costs anything. Stripe webhooks are idempotent, and every wallet mutation runs under optimistic concurrency, which makes lost updates impossible rather than unlikely.",
+    status: "backend MVP · 299 tests green",
+    tone: "green",
+  },
+  {
     name: "FCHForge",
     summary: "Makes industrial feed-collector configuration visible and manageable.",
     status: "pre-alpha",
     tone: "amber",
-  },
-  {
-    name: "OSUS Ecosystem",
-    summary: "Shared identity, trust and integration layer for the other projects.",
-    status: "pre-alpha",
-    tone: "green",
-  },
-  {
-    name: "Sounds",
-    summary: "Music, played together.",
-    status: "pre-alpha",
-    tone: "red",
   },
 ];

@@ -11,11 +11,11 @@ const TINTS = {
 // N in steps(N) = the line's character count; undercounting clips the line.
 const LINES: { text: string; hi?: string; ch: number; dur: number; delay: number }[] = [
   { text: "DG-BIOS v9.6 — Davide Gozzi · est. 2016", ch: 41, dur: 620, delay: 200 },
-  { text: "memory ................. 9 yrs — ", hi: "no leaks detected", ch: 52, dur: 760, delay: 950 },
+  { text: "memory ................. since 2016 — ", hi: "no leaks detected", ch: 57, dur: 760, delay: 950 },
   { text: "loading real-world experience ......... ", hi: "ok", ch: 44, dur: 660, delay: 1820 },
   { text: "spider-sense for edge cases ........... ", hi: "active", ch: 47, dur: 700, delay: 2600 },
   { text: "mounting /work ........................ ", hi: "6 chapters", ch: 50, dur: 720, delay: 3420 },
-  { text: "side quests (osus) .................... ", hi: "4 found", ch: 48, dur: 700, delay: 4260 },
+  { text: "side quests (osus) .................... ", hi: "4 found — 2 live", ch: 58, dur: 700, delay: 4260 },
 ];
 
 const LAST = { text: "boot: portfolio — press any key, or scroll", ch: 43, dur: 640, delay: 5100 };
