@@ -343,7 +343,9 @@ h2 {
 
 .hero-links {
   display: flex;
-  gap: 20px;
+  /* wrap: five nowrap links exceed a phone's width and would otherwise widen the hero column past the viewport */
+  flex-wrap: wrap;
+  gap: 10px 20px;
   margin: 30px 0 0;
   font-size: 15px;
 }
