@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint .",
     "og": "node scripts/og.mjs",
-    "cv": "python3 -m weasyprint scripts/cv/Davide_Gozzi_CV.html public/Davide_Gozzi_CV.pdf"
+    "cv": "python3 -m weasyprint scripts/cv/Davide_Gozzi_CV.html public/Davide_Gozzi_CV.pdf",
+    "wordmark": "node scripts/wordmark.mjs"
   },
   "dependencies": {
     "next": "16.2.10",
@@ -22,6 +23,7 @@
     "@types/react-dom": "^19.2.0",
     "eslint": "^9.0.0",
     "eslint-config-next": "16.2.10",
+    "opentype.js": "^1.3.4",
     "typescript": "^5.9.0",
     "wawoff2": "^2.0.1"
   },

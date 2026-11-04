@@ -4,12 +4,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { BootSequence } from "./BootSequence";
 import { Chapters } from "./Chapters";
 import { osusFeature, osusProjects } from "@/data/portfolio";
+import { wordmark } from "./wordmark.generated";
 
 const prefersReducedMotion = () =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const TYPE_CHARS_PER_SECOND = 45;
-const TYPE_START_DELAY_MS = 350;
+const TYPE_START_DELAY_MS = 1100;
 
 /** Counts a two-digit chapter number up from 00 in four frames, in the pixel face. */
 function countUp(el: HTMLElement) {
@@ -93,12 +94,18 @@ export function PortfolioPage() {
   useEffect(() => {
     if (!bootComplete || prefersReducedMotion()) return;
 
-    const elements = Array.from(document.querySelectorAll<HTMLElement>(".reveal"));
+    const elements = Array.from(document.querySelectorAll<HTMLElement>(".reveal, .pencil"));
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           const element = entry.target as HTMLElement;
+          // Titles are pencilled until they enter, then inked (see .pencil in globals.css).
+          if (element.classList.contains("pencil")) {
+            element.classList.add("is-inked");
+            observer.unobserve(element);
+            return;
+          }
           if (element.dataset.revealed === "true") return;
           element.dataset.revealed = "true";
           const number = element.querySelector<HTMLElement>(".chapter-number");
@@ -148,7 +155,21 @@ export function PortfolioPage() {
 
         <main id="main">
           <section id="top" className={`hero ${bootComplete ? "is-drafting" : ""}`} ref={heroRef}>
-            <h1>DAVIDE GOZZI<span className="h1-cursor" aria-hidden="true" /></h1>
+            {/* The wordmark is traced letter by letter from the font's outlines, then inked. */}
+            <h1 className="h1" aria-label="Davide Gozzi">
+              <svg
+                className="h1-draw"
+                viewBox={wordmark.viewBox}
+                style={{ height: `${wordmark.heightEm}em` }}
+                aria-hidden="true"
+                focusable="false"
+              >
+                {wordmark.paths.map((d, i) => (
+                  <path key={d.slice(0, 24) + i} d={d} pathLength={1} style={{ "--i": i } as React.CSSProperties} />
+                ))}
+              </svg>
+              <span className="h1-cursor" aria-hidden="true" />
+            </h1>
             <div className="hero-grid">
               <div>
                 <p className="hero-statement" ref={statementRef}>
@@ -176,7 +197,7 @@ export function PortfolioPage() {
           </section>
 
           <section id="work" className="work">
-            <h2>Work</h2>
+            <h2 className="pencil">Work</h2>
             <p className="section-intro">
               Seven professional years, and two before them, moving toward systems with more
               constraints and less room for error.
@@ -185,7 +206,7 @@ export function PortfolioPage() {
           </section>
 
           <section id="ai" className="ai reveal">
-            <h2>AI-assisted development</h2>
+            <h2 className="pencil">AI-assisted development</h2>
             <p className="section-intro">
               My background is backend; interfaces were the part I used to hand to someone
               else. AI changed that first, then it changed how I build everything. Agents now
@@ -220,7 +241,7 @@ export function PortfolioPage() {
 
           <section id="osus" className="osus reveal">
             <div className="osus-inner">
-              <h2>OSUS</h2>
+              <h2 className="pencil">OSUS</h2>
               <p className="section-intro">
                 A small independent lab where I build the products I keep thinking about.
                 Four projects — separate ideas, one ecosystem. Two of them are live, and
@@ -264,7 +285,7 @@ export function PortfolioPage() {
           </section>
 
           <section className="credentials reveal">
-            <h2>Credentials</h2>
+            <h2 className="pencil">Credentials</h2>
             <p>
               English — C2 comprehension, EF SET 84/100 (reading 78, listening 90). The
               certificate covers reading and listening comprehension.{" "}
@@ -276,7 +297,7 @@ export function PortfolioPage() {
           </section>
 
           <section id="contact" className="contact reveal">
-            <h2>Contact</h2>
+            <h2 className="pencil">Contact</h2>
             <p>
               Email is the most reliable way to reach me. I read everything, including the
               interesting problems.
