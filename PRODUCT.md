@@ -72,8 +72,8 @@ named on the site with its real figures.
   - EF SET credential is described precisely as C2 English **comprehension**
     (EF SET 84/100 — reading 78, listening 90); the certificate covers reading
     and listening only.
-  - Education is IIS F. Corni, Modena (perito informatico) only. University of
-    Bologna is deliberately omitted and must not be added.
+  - Education is IIS F. Corni, Modena (perito informatico) only; add nothing
+    else.
 - OSUS standing rule (user-confirmed 2026-07-24): RosettAI is linked and embedded
   live (rosettai.osus.it); the other projects (FCHForge, OSUS Ecosystem, Sounds)
   remain unlinked names. Do not add links for them without a new decision.

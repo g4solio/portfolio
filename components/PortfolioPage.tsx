@@ -133,7 +133,6 @@ export function PortfolioPage() {
   return (
     <>
       <a className="skip-link" href="#main">Skip to content</a>
-      <BootSequence onComplete={handleBootComplete} />
 
       <div className={`site-shell ${bootComplete ? "is-ready" : ""}`}>
         <header className="site-header">
@@ -314,6 +313,10 @@ export function PortfolioPage() {
           <a href="#top">Back to top ↑</a>
         </footer>
       </div>
+
+      {/* Last in the DOM on purpose: it is fixed-positioned, so order changes nothing on screen,
+          and crawlers and text-only readers meet the content before the boot lines. */}
+      <BootSequence onComplete={handleBootComplete} />
     </>
   );
 }
