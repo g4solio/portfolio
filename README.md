@@ -22,8 +22,9 @@ studies. OSUS closes the page as an independent product and engineering lab.
 - Four engineering notes covering real-time collision prediction,
   configuration-driven document schemas, backward-compatible distributed
   execution, and industrial quality data.
-- A short account of how I use AI-assisted development to extend my range
-  without outsourcing technical judgment.
+- An account of how I ship with AI agents doing most of the typing while the
+  spec, architecture, review and CI enforcement stay mine, with CollectionVault
+  as the worked example.
 - OSUS projects, led by a live preview of RosettAI.
 - A downloadable one-page CV and a verifiable EF SET English certificate.
 

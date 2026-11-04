@@ -77,8 +77,9 @@ export function PortfolioPage() {
                 </p>
               </div>
               <dl className="hero-facts">
-                <div><dt>Role</dt><dd>Software engineer</dd></div>
+                <div><dt>Role</dt><dd>Senior software engineer</dd></div>
                 <div><dt>Range</dt><dd><span className="pix">7</span> years professional · shipping code since 2016</dd></div>
+                <div><dt>Workflow</dt><dd>AI agents do most of the typing; architecture, review and verification stay mine</dd></div>
                 <div><dt>Base</dt><dd>Modena, Italy</dd></div>
                 <div><dt>Status</dt><dd><span className="status-dot" aria-hidden="true" />open to remote · CET</dd></div>
               </dl>
@@ -94,29 +95,36 @@ export function PortfolioPage() {
             <Chapters />
           </section>
 
-          <section className="ai reveal">
+          <section id="ai" className="ai reveal">
             <h2>AI-assisted development</h2>
             <p className="section-intro">
               My background is backend; interfaces were the part I used to hand to someone
-              else. AI-assisted development changed that — not by replacing judgment, but by
-              making me faster exactly where I had the least muscle memory. This site is a
-              concrete example: built with an AI pair, with me setting the direction,
-              reviewing the implementation and owning the final result.
+              else. AI changed that first, then it changed how I build everything. Agents now
+              do most of the typing. What stays mine is the part that makes that safe: the
+              product spec, the domain glossary, the architecture decisions, the coding
+              standards, the review, and the CI that enforces whatever a script can check.
             </p>
             <div className="ai-grid">
               <div>
-                <h3>My core territory</h3>
-                <p>Backend, architecture, distributed systems, integration with machines.</p>
+                <h3>What the agents do</h3>
+                <p>Implementation, the first draft of tests and docs, refactors, visual iteration.</p>
               </div>
               <div>
-                <h3>Extended with AI</h3>
-                <p>Interface implementation, interaction prototyping, visual iteration.</p>
+                <h3>What stays mine</h3>
+                <p>Product spec, glossary, architecture decisions, coding standards, review — and what “done” means.</p>
               </div>
               <div>
-                <h3>Still my responsibility</h3>
-                <p>Architecture, verification, tests, security, trade-offs — and what “done” means.</p>
+                <h3>What enforces it</h3>
+                <p>The test suite on every pull request, warnings as errors. Rules a script can check live in CI, not in review notes. Decisions are ADRs that cite the issue that made them.</p>
               </div>
             </div>
+            <p className="ai-case">
+              This site was the first example. <strong>CollectionVault</strong>, a personal catalog
+              for books and comics, is the latest: scope agreed on 16 October 2026, in daily use
+              since the 29th, <span className="pix">357</span> commits and{" "}
+              <span className="pix">77</span> pull requests in 19 days, and a CI step that fails
+              the build if the catalog core ever reads a clock, a file or the network.
+            </p>
           </section>
 
           <section id="osus" className="osus reveal">

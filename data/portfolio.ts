@@ -63,12 +63,12 @@ export const chapters: Chapter[] = [
   },
   {
     number: "02",
-    years: "2017",
+    years: "2017–2018",
     employer: "Melazeta",
-    role: "Development intern",
+    role: "Unity developer intern",
     layout: "interlude",
     lead: [
-      "A couple of months as a school-work intern on Unity mobile projects: a Winx dress-up app that shipped on the Play Store, plus Unity UI, in-app purchases and some early augmented-reality work. My first contact with constraints that had nothing to do with code — artists with their own deadlines, assets arriving late, a release date that didn’t move. We shipped anyway.",
+      "A few months, over two school-work placements, as an intern on Unity mobile projects: a Winx dress-up app that shipped on the Play Store, plus Unity UI, in-app purchases and some early augmented-reality work. My first contact with constraints that had nothing to do with code — artists with their own deadlines, assets arriving late, a release date that didn’t move. We shipped anyway.",
     ],
     note: "shipped: Winx dress-up app — Google Play",
     stack: "Unity UI, mobile, in-app purchases, AR.",
