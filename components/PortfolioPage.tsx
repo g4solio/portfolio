@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { BootSequence } from "./BootSequence";
 import { Chapters } from "./Chapters";
 import { osusFeature, osusProjects } from "@/data/portfolio";
+import { Mark } from "./Mark";
 import { wordmark } from "./wordmark.generated";
 
 const prefersReducedMotion = () =>
@@ -138,12 +139,7 @@ export function PortfolioPage() {
         <header className="site-header">
           <a className="wordmark" href="#top">
             {/* The mark, drawn as a casebook figure: construction first, then the letter, then its measure. */}
-            <svg className={`mark ${markBuilt ? "mark--built" : ""}`} viewBox="0 0 64 64" width="22" height="22" aria-hidden="true" focusable="false">
-              <circle className="m-circle" cx="26" cy="32" r="18" pathLength={1} />
-              <path className="m-lines" d="M10 14H54M10 50H54" pathLength={1} />
-              <path className="m-letter" fillRule="evenodd" d="M16 14h10a18 18 0 0 1 0 36H16Zm10 8v20a10 10 0 0 0 0-20Z" />
-              <path className="m-ticks" d="M16 56H44M16 54v4M44 54v4" pathLength={1} />
-            </svg>
+            <Mark className={markBuilt ? "mark--built" : ""} />
             Davide Gozzi
           </a>
           <nav aria-label="Primary navigation">

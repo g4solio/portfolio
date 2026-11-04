@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { display, mono, pixel, sans } from "./fonts";
+import "./tokens.css";
 import "./globals.css";
 
 const siteUrl = new URL("https://g4solio.github.io/portfolio/");
