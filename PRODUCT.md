@@ -110,7 +110,8 @@ named on the site with its real figures.
   confirmed 2026-10-16, in everyday use since 2026-10-29, 357 commits and 77 pull
   requests on main between 2026-10-16 and 2026-11-03, and a CI step that fails
   the build if the catalog core reads a clock, a file or the network. Re-verify
-  before changing any of these numbers.
+  before changing any of these numbers. The operating model behind it is public at
+  github.com/g4solio/CollectionVault_Peek (2026-11-04); the product repo stays private.
 - Absences that must not be fabricated: no testimonials, no client quotes, no
   usage metrics, no press.
 

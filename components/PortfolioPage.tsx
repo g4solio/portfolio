@@ -123,7 +123,9 @@ export function PortfolioPage() {
               for books and comics, is the latest: scope agreed on 16 October 2026, in daily use
               since the 29th, <span className="pix">357</span> commits and{" "}
               <span className="pix">77</span> pull requests in 19 days, and a CI step that fails
-              the build if the catalog core ever reads a clock, a file or the network.
+              the build if the catalog core ever reads a clock, a file or the network. The
+              operating model behind it is public:{" "}
+              <a href="https://github.com/g4solio/CollectionVault_Peek" target="_blank" rel="noreferrer">CollectionVault_Peek</a>.
             </p>
           </section>
 
