@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { BootSequence } from "./BootSequence";
 import { Chapters } from "./Chapters";
 import { osusFeature, osusProjects } from "@/data/portfolio";
@@ -8,9 +8,87 @@ import { osusFeature, osusProjects } from "@/data/portfolio";
 const prefersReducedMotion = () =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+const TYPE_CHARS_PER_SECOND = 45;
+const TYPE_START_DELAY_MS = 350;
+
+/** Counts a two-digit chapter number up from 00 in four frames, in the pixel face. */
+function countUp(el: HTMLElement) {
+  const target = el.textContent ?? "";
+  const n = Number.parseInt(target, 10);
+  if (!Number.isFinite(n) || n <= 0) return;
+  let frame = 0;
+  const steps = Math.min(n, 3);
+  const tick = () => {
+    frame += 1;
+    const value = Math.round((n * frame) / steps);
+    el.textContent = String(Math.min(value, n)).padStart(target.length, "0");
+    if (frame < steps) window.setTimeout(tick, 110);
+  };
+  el.textContent = "0".padStart(target.length, "0");
+  window.setTimeout(tick, 110);
+}
+
 export function PortfolioPage() {
   const [bootComplete, setBootComplete] = useState(false);
+  const [markBuilt, setMarkBuilt] = useState(false);
   const handleBootComplete = useCallback(() => setBootComplete(true), []);
+  const heroRef = useRef<HTMLElement>(null);
+  const statementRef = useRef<HTMLParagraphElement>(null);
+
+  // The mark constructs itself once after the boot; afterwards hover redraws the ticks.
+  useEffect(() => {
+    if (!bootComplete) return;
+    const t = window.setTimeout(() => setMarkBuilt(true), 1200);
+    return () => window.clearTimeout(t);
+  }, [bootComplete]);
+
+  // The hero statement is typed at reading speed with the block cursor, which
+  // then keeps blinking at its end. The full text stays in the DOM for assistive
+  // technology; the typed copy is decorative. Without JS or with reduced motion
+  // the statement simply renders.
+  useEffect(() => {
+    if (!bootComplete || prefersReducedMotion()) return;
+    const p = statementRef.current;
+    const hero = heroRef.current;
+    if (!p || !hero) return;
+    const text = p.textContent ?? "";
+    const sr = document.createElement("span");
+    sr.className = "sr-only";
+    sr.textContent = text;
+    const typed = document.createElement("span");
+    typed.className = "typed";
+    typed.setAttribute("aria-hidden", "true");
+    const chars = Array.from(text).map((ch) => {
+      const s = document.createElement("span");
+      s.className = "ch";
+      s.textContent = ch;
+      typed.appendChild(s);
+      return s;
+    });
+    const cursor = document.createElement("span");
+    cursor.className = "type-cursor";
+    cursor.setAttribute("aria-hidden", "true");
+    typed.prepend(cursor);
+    p.replaceChildren(sr, typed);
+
+    const start = performance.now() + TYPE_START_DELAY_MS;
+    const perChar = 1000 / TYPE_CHARS_PER_SECOND;
+    let shown = 0;
+    let raf = 0;
+    const tick = (now: number) => {
+      if (now >= start) hero.classList.add("is-typing");
+      const due = Math.max(0, Math.min(chars.length, Math.floor((now - start) / perChar)));
+      while (shown < due) {
+        chars[shown].classList.add("is-on");
+        chars[shown].after(cursor);
+        shown += 1;
+      }
+      if (shown < chars.length) raf = requestAnimationFrame(tick);
+      else cursor.classList.add("is-done");
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [bootComplete]);
 
   useEffect(() => {
     if (!bootComplete || prefersReducedMotion()) return;
@@ -23,6 +101,8 @@ export function PortfolioPage() {
           const element = entry.target as HTMLElement;
           if (element.dataset.revealed === "true") return;
           element.dataset.revealed = "true";
+          const number = element.querySelector<HTMLElement>(".chapter-number");
+          if (number) countUp(number);
           // native WAAPI; fill "none" returns to natural styles, which match
           // the final keyframe, so nothing is left inline after the reveal
           element.animate(
@@ -49,7 +129,16 @@ export function PortfolioPage() {
 
       <div className={`site-shell ${bootComplete ? "is-ready" : ""}`}>
         <header className="site-header">
-          <a className="wordmark" href="#top">Davide Gozzi</a>
+          <a className="wordmark" href="#top">
+            {/* The mark, drawn as a casebook figure: construction first, then the letter, then its measure. */}
+            <svg className={`mark ${markBuilt ? "mark--built" : ""}`} viewBox="0 0 64 64" width="22" height="22" aria-hidden="true" focusable="false">
+              <circle className="m-circle" cx="26" cy="32" r="18" pathLength={1} />
+              <path className="m-lines" d="M10 14H54M10 50H54" pathLength={1} />
+              <path className="m-letter" fillRule="evenodd" d="M16 14h10a18 18 0 0 1 0 36H16Zm10 8v20a10 10 0 0 0 0-20Z" />
+              <path className="m-ticks" d="M16 56H44M16 54v4M44 54v4" pathLength={1} />
+            </svg>
+            Davide Gozzi
+          </a>
           <nav aria-label="Primary navigation">
             <a href="#work">Work</a>
             <a href="#osus">OSUS</a>
@@ -58,11 +147,11 @@ export function PortfolioPage() {
         </header>
 
         <main id="main">
-          <section id="top" className="hero">
+          <section id="top" className={`hero ${bootComplete ? "is-drafting" : ""}`} ref={heroRef}>
             <h1>DAVIDE GOZZI<span className="h1-cursor" aria-hidden="true" /></h1>
             <div className="hero-grid">
               <div>
-                <p className="hero-statement">
+                <p className="hero-statement" ref={statementRef}>
                   I design and evolve software that has to keep working: distributed
                   services, legacy platforms and systems connected to real machines.
                 </p>

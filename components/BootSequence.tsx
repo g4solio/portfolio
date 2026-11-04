@@ -3,30 +3,30 @@
 import { useEffect, useRef, useState } from "react";
 
 const TINTS = {
+  // casebook: paper-toned text, the drawing blue as highlight
+  paper: { text: "#d9d9d3", hi: "#7ea2ea" },
   green: { text: "#c9dcc9", hi: "#7ee787" },
   amber: { text: "#e3d3ae", hi: "#e8b34b" },
   white: { text: "#d9d9d3", hi: "#f4f4ec" },
 } as const;
 
 // N in steps(N) = the line's character count; undercounting clips the line.
+// Three lines, under 2.5 seconds: the boot is a signature, not a wait.
 const LINES: { text: string; hi?: string; ch: number; dur: number; delay: number }[] = [
-  { text: "DG-BIOS v9.6 — Davide Gozzi · est. 2016", ch: 41, dur: 620, delay: 200 },
-  { text: "memory ................. since 2016 — ", hi: "no leaks detected", ch: 57, dur: 760, delay: 950 },
-  { text: "loading real-world experience ......... ", hi: "ok", ch: 44, dur: 660, delay: 1820 },
-  { text: "spider-sense for edge cases ........... ", hi: "active", ch: 47, dur: 700, delay: 2600 },
-  { text: "mounting /work ........................ ", hi: "6 chapters", ch: 50, dur: 720, delay: 3420 },
-  { text: "side quests (osus) .................... ", hi: "4 found — 2 live", ch: 58, dur: 700, delay: 4260 },
+  { text: "DG-BIOS v9.6 — Davide Gozzi · est. 2016", ch: 41, dur: 520, delay: 150 },
+  { text: "spider-sense for edge cases ........... ", hi: "active", ch: 47, dur: 600, delay: 800 },
 ];
 
-const LAST = { text: "boot: portfolio — press any key, or scroll", ch: 43, dur: 640, delay: 5100 };
+const LAST = { text: "boot: portfolio — press any key, or scroll", ch: 43, dur: 520, delay: 1520 };
+const AUTO_DISMISS_MS = 2500;
 
 export function BootSequence({
   onComplete,
-  phosphor = "green",
+  phosphor = "paper",
   scanlines = true,
 }: {
   onComplete: () => void;
-  phosphor?: "green" | "amber" | "white";
+  phosphor?: "paper" | "green" | "amber" | "white";
   scanlines?: boolean;
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -60,13 +60,20 @@ export function BootSequence({
       } catch {
         /* storage unavailable — the boot will simply replay next visit */
       }
-      // Page fades in beneath while the boot fades out (450ms, see .boot--out).
+      // The page fades in beneath while the screen collapses onto the header's
+      // hairline and fades there (see .boot--out): the CRT becomes the rule.
       onComplete();
-      rootRef.current?.classList.add("boot--out");
-      window.setTimeout(() => setVisible(false), 450);
+      const root = rootRef.current;
+      if (root) {
+        const header = document.querySelector<HTMLElement>(".site-header");
+        const ruleY = header ? Math.round(header.getBoundingClientRect().bottom) : 72;
+        root.style.setProperty("--rule-y", `${ruleY}px`);
+        root.classList.add("boot--out");
+      }
+      window.setTimeout(() => setVisible(false), 700);
     };
 
-    const autoTimer = window.setTimeout(dismiss, 7200);
+    const autoTimer = window.setTimeout(dismiss, AUTO_DISMISS_MS);
     const onKey = () => dismiss();
     const onWheel = () => dismiss();
     // touchmove covers swipes on phones, where wheel never fires and the
@@ -87,7 +94,7 @@ export function BootSequence({
 
   if (!visible) return null;
 
-  const tint = TINTS[phosphor] ?? TINTS.green;
+  const tint = TINTS[phosphor] ?? TINTS.paper;
   const type = (l: { ch: number; dur: number; delay: number }) =>
     ({
       "--tw": `${l.ch}ch`,

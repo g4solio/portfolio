@@ -1,4 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Casebook mark: the D drawn as a figure. Paper ground, hairline construction, one blue fill. -->
   <rect width="64" height="64" rx="12" fill="#f7f5f1"/>
-  <path d="M14 14h20c10 0 17 7 17 18S44 50 34 50H14V14zm12 10v16h7c4 0 7-3 7-8s-3-8-7-8h-7z" fill="#2b5bc7"/>
+  <!-- construction: the bowl's full circle, cap line and baseline -->
+  <circle cx="26" cy="32" r="18" fill="none" stroke="#1b1b18" stroke-opacity="0.22" stroke-width="0.9"/>
+  <path d="M10 14H54M10 50H54" stroke="#1b1b18" stroke-opacity="0.22" stroke-width="0.9"/>
+  <!-- the letter: stem plus half-disc bowl, counter cut out -->
+  <path fill="#2b5bc7" fill-rule="evenodd" d="M16 14h10a18 18 0 0 1 0 36H16Zm10 8v20a10 10 0 0 0 0-20Z"/>
+  <!-- dimension: the letter's width, ticked at both ends -->
+  <path d="M16 56H44M16 54v4M44 54v4" stroke="#68665e" stroke-width="0.9"/>
 </svg>
