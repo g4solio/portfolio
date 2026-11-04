@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "eslint .",
     "brand": "node scripts/brand.mjs",
-    "cv": "python3 -m weasyprint scripts/cv/Davide_Gozzi_CV.html public/Davide_Gozzi_CV.pdf",
+    "cv": "python3 -m weasyprint scripts/cv/Davide_Gozzi_CV.html public/Davide_Gozzi_CV.pdf && python3 -m weasyprint scripts/cv/Davide_Gozzi_CV_ATS.html public/Davide_Gozzi_CV_ATS.pdf",
     "wordmark": "node scripts/wordmark.mjs",
     "tokens": "node scripts/tokens.mjs"
   },

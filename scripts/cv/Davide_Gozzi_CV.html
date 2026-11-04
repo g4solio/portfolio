@@ -23,7 +23,8 @@
   /* Header */
   .head { display: grid; grid-template-columns: 1fr auto; align-items: end; padding-bottom: 6pt; border-bottom: 0.75pt solid var(--rule); }
   .name { font-family: "Space Grotesk", "Inter", sans-serif; font-weight: 600; font-size: 25pt; line-height: 1.05; letter-spacing: -0.015em; color: var(--ink); margin: 0; }
-  .title { font-weight: 600; font-size: 10pt; color: var(--accent); margin-top: 3pt; }
+  /* 7pt, not 3pt: closer and some extractors glue the title to the name ("Davide GozziSenior…"). */
+  .title { font-weight: 600; font-size: 10pt; color: var(--accent); margin-top: 7pt; }
   .tagline { font-size: 8pt; color: var(--soft); margin-top: 3pt; }
   .contact { text-align: right; font-size: 7.5pt; line-height: 1.75; color: var(--soft); }
   .contact b { color: var(--ink); font-weight: 600; }
@@ -36,9 +37,12 @@
 
   /* Experience */
   .job { margin-bottom: 6pt; }
-  .job-head { overflow: hidden; }
+  /* Table cells, not floats: text extractors then keep company, dates and title together (ATS parsers read that order). */
+  .job-head { display: table; width: 100%; border-collapse: collapse; }
+  .job-head h3, .job-head .dates { display: table-cell; vertical-align: baseline; }
+  .job-head .dates { text-align: right; width: 1%; }
   .job-head h3 { font-size: 9.5pt; font-weight: 700; color: var(--ink); margin: 0; letter-spacing: -0.005em; }
-  .dates { float: right; margin-left: 8pt; padding-top: 1.5pt; font-size: 7.5pt; color: var(--muted); white-space: nowrap; }
+  .dates { font-size: 7.5pt; color: var(--muted); white-space: nowrap; padding-left: 8pt; }
   .role { font-size: 8pt; font-weight: 600; color: var(--accent); margin-top: 1pt; }
   .job ul { margin-top: 3pt; }
   .job li { position: relative; padding-left: 8pt; margin-top: 1pt; }
@@ -87,7 +91,7 @@
       <h2>Experience</h2>
 
       <div class="job">
-        <div class="job-head"><span class="dates">Jan 2024 – Present</span><h3>Giammar</h3></div>
+        <div class="job-head"><h3>Giammar</h3><span class="dates">Jan 2024 – Present</span></div>
         <p class="role">Software Engineering Consultant · client: System Ceramics</p>
         <ul>
           <li>Build distributed .NET services for industrial manufacturing R&amp;D — PLC integration, OPC UA, RabbitMQ, Redis and real-time machine data. Deployed across dozens of manufacturing customers, from single-line plants to sites running 20+ production lines.</li>
@@ -96,7 +100,7 @@
       </div>
 
       <div class="job">
-        <div class="job-head"><span class="dates">Nov 2021 – Dec 2023</span><h3>MSC Mediterranean Shipping Company</h3></div>
+        <div class="job-head"><h3>MSC Mediterranean Shipping Company</h3><span class="dates">Nov 2021 – Dec 2023</span></div>
         <p class="role">Senior .NET Developer</p>
         <ul>
           <li>Helped redesign a manager-agent platform distributing DLL capabilities across several hundred installations in ports worldwide, preserving backward compatibility with older deployments.</li>
@@ -107,7 +111,7 @@
       </div>
 
       <div class="job">
-        <div class="job-head"><span class="dates">Mar 2021 – Nov 2021</span><h3>iSolutions Software Engineering</h3></div>
+        <div class="job-head"><h3>iSolutions Software Engineering</h3><span class="dates">Mar 2021 – Nov 2021</span></div>
         <p class="role">Full-stack Developer</p>
         <ul>
           <li>Worked on a platform powering online betting sites for multiple operators — customer-specific features such as custom reward systems, plus slot-game integrations with third-party providers.</li>
@@ -116,7 +120,7 @@
       </div>
 
       <div class="job">
-        <div class="job-head"><span class="dates">Sep 2019 – Mar 2021</span><h3>Amaris</h3></div>
+        <div class="job-head"><h3>Amaris</h3><span class="dates">Sep 2019 – Mar 2021</span></div>
         <p class="role">.NET Backend Developer / IT Consultant · client: Credemtel</p>
         <ul>
           <li>Developed document-management services with .NET, REST APIs, RabbitMQ, Elasticsearch, ETL pipelines and structured logging.</li>
@@ -125,7 +129,7 @@
       </div>
 
       <div class="job">
-        <div class="job-head"><span class="dates">2017 – 2018</span><h3>Melazeta</h3></div>
+        <div class="job-head"><h3>Melazeta</h3><span class="dates">2017 – 2018</span></div>
         <p class="role">Unity Developer Intern</p>
         <ul>
           <li>Built Unity mobile and augmented-reality applications, including a Winx dress-up app released on Google Play.</li>
@@ -133,7 +137,7 @@
       </div>
 
       <div class="job">
-        <div class="job-head"><span class="dates">2016 – 2017</span><h3>STARWORKGC</h3></div>
+        <div class="job-head"><h3>STARWORKGC</h3><span class="dates">2016 – 2017</span></div>
         <p class="role">Junior Programmer &amp; Particle Effect Artist</p>
         <ul>
           <li>Joined the startup during high school. Rewrote the Unity/C# collision predictor for <em>Galactic Fighters</em> (<a href="https://store.steampowered.com/app/513960/Galactic_Fighters/">released on Steam</a>), using projected movement and ray checks to produce configurable warnings that also ran on lower-power hardware.</li>

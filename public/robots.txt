@@ -1,0 +1,1 @@
+User-agent: *\nAllow: /\nSitemap: https://g4solio.github.io/portfolio/sitemap.xml\n
