@@ -95,6 +95,19 @@ named on the site with its real figures.
 - Direction the user has made binding: industrial-editorial "engineering
   casebook", built by subtraction. The control-room/terminal-dashboard look was
   explicitly rejected (July 2026) as AI-generated-feeling; do not reintroduce it.
+- Casebook v2 (user-confirmed 2026-11-04): the direction is evolved, not
+  replaced. One identity across the site, the CV, GitHub and LinkedIn, recorded
+  in the "Casebook" design system and in `brand/tokens.json`. The mark is the D
+  drawn as a casebook figure. A dark (Ink) variant exists for GitHub assets
+  only; the site and the CV stay paper.
+- Motion direction (user-confirmed 2026-11-04): "drafting". Nothing fades in;
+  things are drawn, pencilled then inked. The boot runs under 2.5 seconds in
+  casebook tint and collapses onto the header rule; the wordmark is traced from
+  the font's outlines; the statement is typed; hairlines, chapter numbers and
+  schematics draw as they enter; titles wait in pencil and are inked on entry.
+  Still binding: no scroll hijacking, nothing gated behind animation, reduced
+  motion makes everything instant, the page reads in full without JavaScript.
+  Decision titles and OSUS product names stay plain ink to keep the dose small.
 - Visual specifics (palette, type, layout) belong to the design record, not here.
 
 ## Evidence on Hand
@@ -104,7 +117,9 @@ named on the site with its real figures.
   the site are edited from the same facts.
 - EF SET certificate: https://cert.efset.org/fRRHgz (verifiable).
 - Live product: https://rosettai.osus.it/ (RosettAI, active build).
-- `public/og.png` — generated social preview (`npm run og`).
+- `public/og.png` and `public/brand/` — generated from `brand/tokens.json` by
+  `npm run brand`: the social preview, the LinkedIn banner, the X header, the
+  GitHub banners in Paper and Ink, the repository previews and the avatars.
 - Real employer history and shipped work (e.g. Winx dress-up app on Google Play).
 - CollectionVault figures, from the private repo g4solio/CollectionVault: scope
   confirmed 2026-10-16, in everyday use since 2026-10-29, 357 commits and 77 pull

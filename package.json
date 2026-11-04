@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "og": "node scripts/og.mjs",
+    "brand": "node scripts/brand.mjs",
     "cv": "python3 -m weasyprint scripts/cv/Davide_Gozzi_CV.html public/Davide_Gozzi_CV.pdf",
     "wordmark": "node scripts/wordmark.mjs",
     "tokens": "node scripts/tokens.mjs"
