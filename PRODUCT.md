@@ -17,9 +17,9 @@ not optimized for them.
 
 ## Product Purpose
 
-A personal engineering portfolio for Davide Gozzi, software engineer in Modena,
-Italy. It presents nine years of experience (2016–today) as six first-person
-chapters with four engineering decisions expanded into concise case studies, an
+A personal engineering portfolio for Davide Gozzi, senior software engineer in
+Modena, Italy. It presents seven professional years (2019–today), and the two
+before them (2016–2018), as six first-person chapters with four engineering decisions expanded into concise case studies, an
 account of his AI-assisted development practice, and OSUS, his independent product
 lab.
 
@@ -35,9 +35,13 @@ is judgment shown as evidence — real decisions with problem, constraint, decis
 and lesson — rather than a feature or technology list. A neighboring portfolio
 could not truthfully copy the specific employers, decisions, and diagrams.
 
-Secondary position: an honest AI-assisted development stance — backend depth is
-core; AI extends him into interface work while architecture, verification, and
-trade-offs remain his responsibility. This site is itself the demonstration.
+Secondary position (restated 2026-11-04): an honest AI-assisted development
+stance — backend depth is core; AI agents now do most of the typing, on
+interfaces first and then on everything else, while the product spec, the domain
+glossary, the architecture decisions, the coding standards, the review and the
+CI that enforces them remain his responsibility. This site was the first
+demonstration; CollectionVault, a private personal catalog, is the latest and is
+named on the site with its real figures.
 
 ## Operating Context
 
@@ -53,7 +57,8 @@ trade-offs remain his responsibility. This site is itself the demonstration.
 
 - Six chapters: StarworkGC (2016–2017), Melazeta (2017), Amaris · Credemtel
   (2019–2021), iSolutions (2021), MSC (2021–2023), GIAMMAR · System Ceramics
-  (2024–today). Data lives in `data/portfolio.ts`.
+  (2024–today). Melazeta is dated 2017–2018, matching the CV and LinkedIn (two
+  placements: May–June 2017 and February 2018). Data lives in `data/portfolio.ts`.
 - Four engineering notes with reconstructed SVG schematics: collision prediction,
   configuration-driven document schemas, distributed agent compatibility,
   tile-defect quality data.
@@ -79,6 +84,11 @@ trade-offs remain his responsibility. This site is itself the demonstration.
 
 - Name and wordmark: "Davide Gozzi". Persona line: "Your friendly neighborhood
   .NET developer."
+- Role fact and page title: "Senior software engineer" (user-confirmed
+  2026-11-04). The seniority rests on the Senior .NET Developer title held at
+  MSC, 2021–2023. The hero also carries a "Workflow" fact stating the AI stance
+  in one line; it is a fact, not a slogan, and the coined-word route ("prompteer")
+  was considered and rejected on 2026-11-04.
 - Voice: first-person, factual, understated; lessons stated plainly. No slogans.
 - Pop-culture references are rationed: at most three across the site (currently
   the spider-sense boot line, the neighborhood line, and the 404 quote).
@@ -89,11 +99,18 @@ trade-offs remain his responsibility. This site is itself the demonstration.
 
 ## Evidence on Hand
 
-- `public/Davide_Gozzi_CV.pdf` — one-page CV, the conversion artifact.
+- `public/Davide_Gozzi_CV.pdf` — one-page CV, the conversion artifact. Rendered from
+  `scripts/cv/Davide_Gozzi_CV.html` with WeasyPrint (`npm run cv`), so the PDF and
+  the site are edited from the same facts.
 - EF SET certificate: https://cert.efset.org/fRRHgz (verifiable).
 - Live product: https://rosettai.osus.it/ (RosettAI, active build).
 - `public/og.png` — generated social preview (`npm run og`).
 - Real employer history and shipped work (e.g. Winx dress-up app on Google Play).
+- CollectionVault figures, from the private repo g4solio/CollectionVault: scope
+  confirmed 2026-10-16, in everyday use since 2026-10-29, 357 commits and 77 pull
+  requests on main between 2026-10-16 and 2026-11-03, and a CI step that fails
+  the build if the catalog core reads a clock, a file or the network. Re-verify
+  before changing any of these numbers.
 - Absences that must not be fabricated: no testimonials, no client quotes, no
   usage metrics, no press.
 

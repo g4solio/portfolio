@@ -343,7 +343,9 @@ h2 {
 
 .hero-links {
   display: flex;
-  gap: 20px;
+  /* wrap: five nowrap links exceed a phone's width and would otherwise widen the hero column past the viewport */
+  flex-wrap: wrap;
+  gap: 10px 20px;
   margin: 30px 0 0;
   font-size: 15px;
 }
@@ -702,6 +704,19 @@ h2 {
     grid-template-columns: repeat(3, 1fr);
     gap: 44px;
   }
+}
+
+/* The worked example sits under a hairline, in the intro's measure. */
+.ai-case {
+  max-width: 58ch;
+  margin: 44px 0 0;
+  padding-top: 28px;
+  border-top: 1px solid var(--rule);
+  color: var(--ink-soft);
+}
+
+.ai-case strong {
+  font-weight: 600;
 }
 
 /* ---- OSUS: full-bleed band -------------------------------------------------- */

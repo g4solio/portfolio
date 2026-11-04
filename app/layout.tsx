@@ -6,23 +6,23 @@ const siteUrl = new URL("https://g4solio.github.io/portfolio/");
 const ogImage = new URL("og.png", siteUrl).toString();
 
 const description =
-  "Software engineer in Modena, Italy. I design and evolve software that has to keep working: distributed services, legacy platforms and systems connected to real machines.";
+  "Senior software engineer in Modena, Italy. I design and evolve software that has to keep working: distributed services, legacy platforms and systems connected to real machines. AI agents do most of the typing; architecture, review and verification stay mine.";
 
 export const metadata: Metadata = {
-  title: "Davide Gozzi — Software engineer",
+  title: "Davide Gozzi — Senior software engineer",
   description,
   metadataBase: new URL(siteUrl),
   openGraph: {
-    title: "Davide Gozzi — Software engineer",
+    title: "Davide Gozzi — Senior software engineer",
     description,
     url: siteUrl,
     siteName: "Davide Gozzi",
     type: "website",
-    images: [{ url: ogImage, width: 1200, height: 630, alt: "Davide Gozzi — Software engineer" }],
+    images: [{ url: ogImage, width: 1200, height: 630, alt: "Davide Gozzi — Senior software engineer" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Davide Gozzi — Software engineer",
+    title: "Davide Gozzi — Senior software engineer",
     description,
     images: [ogImage],
   },
