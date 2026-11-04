@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Davide Gozzi — Senior Software Engineer (C#/.NET)</title>
+<meta name="author" content="Davide Gozzi">
+<style>
+  /* ATS version: one column, standard headings, no sidebar, no icons, no tables. Same facts as the designed CV. */
+  @page { size: A4; margin: 16mm 18mm 16mm 18mm; }
+  body { font-family: "Inter", Arial, sans-serif; color: #1b1b18; font-size: 9.6pt; line-height: 1.42; margin: 0; }
+  h1 { font-size: 20pt; margin: 0 0 2pt; font-weight: 700; }
+  .headline { font-size: 11pt; font-weight: 600; margin: 0 0 4pt; }
+  .contact { margin: 0 0 10pt; color: #4c4b44; }
+  h2 { font-size: 10pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin: 12pt 0 4pt; padding-bottom: 2pt; border-bottom: 0.75pt solid #dad6cb; }
+  h3 { font-size: 10pt; font-weight: 700; margin: 8pt 0 0; }
+  .meta { margin: 0 0 2pt; color: #4c4b44; }
+  ul { margin: 2pt 0 0; padding-left: 14pt; }
+  li { margin: 0 0 1.5pt; }
+  p { margin: 0 0 4pt; }
+  .tech { margin: 2pt 0 0; color: #4c4b44; }
+  a { color: #1b1b18; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<h1>Davide Gozzi</h1>
+<p class="headline">Senior Software Engineer — C#/.NET, backend and distributed systems</p>
+<p class="contact">Modena, Italy (remote, CET) · +39 389 126 0948 · david3gozz1@gmail.com · linkedin.com/in/davide-gozzi5 · github.com/g4solio · g4solio.github.io/portfolio</p>
+
+<h2>Summary</h2>
+<p>Senior software engineer with 7 years of professional experience, writing and shipping production code since 2016. I build backend and distributed systems in C#/.NET for banking, global shipping and industrial manufacturing: REST APIs, microservices, messaging with RabbitMQ, Redis, SQL and PostgreSQL, real-time integration with machines (OPC UA, PLCs, binary protocols), and safe change in large legacy codebases. Two years working daily with US-based teams across a 6–9 hour time difference. Two products of my own running in production. I use AI coding agents in daily work under written specifications, coding standards and CI checks, and keep architecture, review and verification my own responsibility.</p>
+
+<h2>Experience</h2>
+
+<h3>Software Engineering Consultant — GIAMMAR Next Srl, for client System Ceramics</h3>
+<p class="meta">January 2024 – Present · Modena, Italy</p>
+<ul>
+  <li>Build distributed .NET services for industrial manufacturing R&amp;D: PLC integration, OPC UA, RabbitMQ, Redis and real-time machine data, deployed across dozens of manufacturing customers, from single-line plants to sites running 20+ production lines.</li>
+  <li>Design binary-protocol connectors and the quality-data pipeline that turns tile-defect detections into real-time production decisions, with defect reprocessing and long-term traceability.</li>
+</ul>
+<p class="tech">Technologies: C#, .NET, RabbitMQ, Redis, OPC UA, PLC and binary protocols, real-time data pipelines.</p>
+
+<h3>Senior .NET Developer — MSC Mediterranean Shipping Company</h3>
+<p class="meta">November 2021 – December 2023 · Turin, Italy, with US-based teams</p>
+<ul>
+  <li>Helped redesign a manager-agent platform that distributes DLL-based capabilities to several hundred installations in ports worldwide, scheduled with Quartz, preserving backward compatibility with older deployments.</li>
+  <li>Improved global shipping systems built on C#, C++, SQL and stored procedures, working extensively within legacy code while keeping production running.</li>
+  <li>Coordinated a four-person team building a document flow between third-party services, the central platform and SAP.</li>
+  <li>Worked daily with teams in the United States across a 6–9 hour time difference, including a six-week onsite assignment.</li>
+</ul>
+<p class="tech">Technologies: C#, C++, SQL, stored procedures, Quartz, SAP integration.</p>
+
+<h3>Full-stack Developer — iSolutions Software Engineering</h3>
+<p class="meta">March 2021 – November 2021 · Modena, Italy</p>
+<ul>
+  <li>Developed customer-specific features such as custom reward systems and integrated third-party slot games into a platform serving multiple online betting operators.</li>
+  <li>Traced hidden dependencies in an established codebase to deliver changes without regressions in a live-money environment.</li>
+</ul>
+<p class="tech">Technologies: C#, .NET, SQL, third-party game provider integrations.</p>
+
+<h3>.NET Backend Developer / IT Consultant — Amaris, for client Credemtel</h3>
+<p class="meta">September 2019 – March 2021 · Reggio Emilia, Italy</p>
+<ul>
+  <li>Developed document-management services for a banking environment with .NET, REST APIs, RabbitMQ, Elasticsearch, ETL pipelines and structured logging.</li>
+  <li>Designed a reusable package for reading, writing and transforming nested JSON documents whose structures were defined by external configuration, shared across about 20 APIs, microservices and frontends.</li>
+</ul>
+<p class="tech">Technologies: C#, .NET, REST APIs, microservices, RabbitMQ, Elasticsearch, ETL.</p>
+
+<h3>Unity Developer Intern — Melazeta</h3>
+<p class="meta">2017 – 2018 (two school-work placements) · Bagnolo in Piano, Italy</p>
+<ul>
+  <li>Built Unity mobile and augmented-reality applications, including a Winx dress-up app released on Google Play; worked on UI and in-app purchases with artists and release deadlines.</li>
+</ul>
+
+<h3>Junior Programmer and Particle Effect Artist — StarworkGC</h3>
+<p class="meta">2016 – 2017 · Bagnolo in Piano, Italy</p>
+<ul>
+  <li>Joined an independent game startup during high school; rewrote the Unity/C# collision predictor for Galactic Fighters (released on Steam) using projected movement and ray checks, producing configurable warnings that also ran on lower-power hardware.</li>
+</ul>
+
+<h2>Independent Projects (OSUS)</h2>
+<ul>
+  <li><strong>RosettAI</strong> (rosettai.osus.it, live): AI subtitle and document translation. ASP.NET Core 10, Python workers over RabbitMQ, PostgreSQL, OpenTelemetry tracing, Grafana dashboards. Timestamps and sequence numbers are stripped before the model and restored deterministically after.</li>
+  <li><strong>Bubbles</strong> (bubbles.osus.it, live): daily social music app. Next.js, Prisma, Clerk, Expo native client.</li>
+  <li><strong>OSUS Ecosystem</strong> (backend MVP): identity, billing and wallet services shared by the products. Clean Architecture on .NET 10 with a published SDK; 299 tests across unit, integration and architecture suites; reservation-based spending; idempotent Stripe webhooks.</li>
+  <li><strong>CollectionVault</strong> (private, in daily use): personal catalog application taken from specification to production in two weeks with AI coding agents under written standards and CI checks: 357 commits and 77 pull requests in 19 days.</li>
+</ul>
+
+<h2>Skills</h2>
+<ul>
+  <li><strong>Languages:</strong> C#, SQL, C++, TypeScript/JavaScript, Python</li>
+  <li><strong>Frameworks and platforms:</strong> .NET, ASP.NET Core, Entity Framework Core, Next.js, Unity</li>
+  <li><strong>Data and messaging:</strong> PostgreSQL, SQL, Redis, RabbitMQ, Elasticsearch</li>
+  <li><strong>Industrial integration:</strong> OPC UA, PLC integration, binary protocols, real-time machine data</li>
+  <li><strong>Delivery and operations:</strong> Docker, Docker Compose, GitHub Actions, CI/CD, OpenTelemetry, Grafana, Prometheus</li>
+  <li><strong>Testing:</strong> xUnit, Testcontainers, unit, integration and architecture testing</li>
+  <li><strong>Practices:</strong> REST API design, microservices, Clean Architecture, backward compatibility, legacy modernization, AI-assisted development with specifications, coding standards and CI guards (Claude Code)</li>
+</ul>
+
+<h2>Education</h2>
+<p><strong>IIS F. Corni, Modena</strong> — Technical high-school diploma in Computer Science (Perito Informatico), 2018</p>
+
+<h2>Languages</h2>
+<p>Italian (native) · English (C2 comprehension, EF SET 84/100, verified certificate; daily working language with US teams)</p>
+
+</body>
+</html>

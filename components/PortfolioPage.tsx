@@ -152,7 +152,8 @@ export function PortfolioPage() {
         <main id="main">
           <section id="top" className={`hero ${bootComplete ? "is-drafting" : ""}`} ref={heroRef}>
             {/* The wordmark is traced letter by letter from the font's outlines, then inked. */}
-            <h1 className="h1" aria-label="Davide Gozzi">
+            <h1 className="h1">
+              <span className="sr-only">Davide Gozzi</span>
               <svg
                 className="h1-draw"
                 viewBox={wordmark.viewBox}

@@ -29,6 +29,24 @@ export const metadata: Metadata = {
   },
 };
 
+const person = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Davide Gozzi",
+  alternateName: "g4solio",
+  jobTitle: "Senior software engineer",
+  description,
+  url: siteUrl.toString(),
+  image: ogImage,
+  address: { "@type": "PostalAddress", addressLocality: "Modena", addressCountry: "IT" },
+  knowsAbout: ["C#", ".NET", "distributed systems", "industrial software", "OPC UA", "RabbitMQ", "legacy systems", "AI-assisted development"],
+  sameAs: [
+    "https://www.linkedin.com/in/davide-gozzi5/",
+    "https://github.com/g4solio",
+    "https://x.com/g4solio",
+  ],
+};
+
 export const viewport: Viewport = {
   themeColor: "#f7f5f1",
   colorScheme: "light",
@@ -46,6 +64,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         {/* Content stays visible without JS; this class opts into the boot overlay. */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(person) }} />
         {children}
       </body>
     </html>
