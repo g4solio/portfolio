@@ -1,28 +1,116 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { BootSequence } from "./BootSequence";
 import { Chapters } from "./Chapters";
 import { osusFeature, osusProjects } from "@/data/portfolio";
+import { Mark } from "./Mark";
+import { wordmark } from "./wordmark.generated";
 
 const prefersReducedMotion = () =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+const TYPE_CHARS_PER_SECOND = 45;
+const TYPE_START_DELAY_MS = 1100;
+
+/** Counts a two-digit chapter number up from 00 in four frames, in the pixel face. */
+function countUp(el: HTMLElement) {
+  const target = el.textContent ?? "";
+  const n = Number.parseInt(target, 10);
+  if (!Number.isFinite(n) || n <= 0) return;
+  let frame = 0;
+  const steps = Math.min(n, 3);
+  const tick = () => {
+    frame += 1;
+    const value = Math.round((n * frame) / steps);
+    el.textContent = String(Math.min(value, n)).padStart(target.length, "0");
+    if (frame < steps) window.setTimeout(tick, 110);
+  };
+  el.textContent = "0".padStart(target.length, "0");
+  window.setTimeout(tick, 110);
+}
+
 export function PortfolioPage() {
   const [bootComplete, setBootComplete] = useState(false);
+  const [markBuilt, setMarkBuilt] = useState(false);
   const handleBootComplete = useCallback(() => setBootComplete(true), []);
+  const heroRef = useRef<HTMLElement>(null);
+  const statementRef = useRef<HTMLParagraphElement>(null);
+
+  // The mark constructs itself once after the boot; afterwards hover redraws the ticks.
+  useEffect(() => {
+    if (!bootComplete) return;
+    const t = window.setTimeout(() => setMarkBuilt(true), 1200);
+    return () => window.clearTimeout(t);
+  }, [bootComplete]);
+
+  // The hero statement is typed at reading speed with the block cursor, which
+  // then keeps blinking at its end. The full text stays in the DOM for assistive
+  // technology; the typed copy is decorative. Without JS or with reduced motion
+  // the statement simply renders.
+  useEffect(() => {
+    if (!bootComplete || prefersReducedMotion()) return;
+    const p = statementRef.current;
+    const hero = heroRef.current;
+    if (!p || !hero) return;
+    const text = p.textContent ?? "";
+    const sr = document.createElement("span");
+    sr.className = "sr-only";
+    sr.textContent = text;
+    const typed = document.createElement("span");
+    typed.className = "typed";
+    typed.setAttribute("aria-hidden", "true");
+    const chars = Array.from(text).map((ch) => {
+      const s = document.createElement("span");
+      s.className = "ch";
+      s.textContent = ch;
+      typed.appendChild(s);
+      return s;
+    });
+    const cursor = document.createElement("span");
+    cursor.className = "type-cursor";
+    cursor.setAttribute("aria-hidden", "true");
+    typed.prepend(cursor);
+    p.replaceChildren(sr, typed);
+
+    const start = performance.now() + TYPE_START_DELAY_MS;
+    const perChar = 1000 / TYPE_CHARS_PER_SECOND;
+    let shown = 0;
+    let raf = 0;
+    const tick = (now: number) => {
+      if (now >= start) hero.classList.add("is-typing");
+      const due = Math.max(0, Math.min(chars.length, Math.floor((now - start) / perChar)));
+      while (shown < due) {
+        chars[shown].classList.add("is-on");
+        chars[shown].after(cursor);
+        shown += 1;
+      }
+      if (shown < chars.length) raf = requestAnimationFrame(tick);
+      else cursor.classList.add("is-done");
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [bootComplete]);
 
   useEffect(() => {
     if (!bootComplete || prefersReducedMotion()) return;
 
-    const elements = Array.from(document.querySelectorAll<HTMLElement>(".reveal"));
+    const elements = Array.from(document.querySelectorAll<HTMLElement>(".reveal, .pencil"));
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           const element = entry.target as HTMLElement;
+          // Titles are pencilled until they enter, then inked (see .pencil in globals.css).
+          if (element.classList.contains("pencil")) {
+            element.classList.add("is-inked");
+            observer.unobserve(element);
+            return;
+          }
           if (element.dataset.revealed === "true") return;
           element.dataset.revealed = "true";
+          const number = element.querySelector<HTMLElement>(".chapter-number");
+          if (number) countUp(number);
           // native WAAPI; fill "none" returns to natural styles, which match
           // the final keyframe, so nothing is left inline after the reveal
           element.animate(
@@ -49,7 +137,11 @@ export function PortfolioPage() {
 
       <div className={`site-shell ${bootComplete ? "is-ready" : ""}`}>
         <header className="site-header">
-          <a className="wordmark" href="#top">Davide Gozzi</a>
+          <a className="wordmark" href="#top">
+            {/* The mark, drawn as a casebook figure: construction first, then the letter, then its measure. */}
+            <Mark className={markBuilt ? "mark--built" : ""} />
+            Davide Gozzi
+          </a>
           <nav aria-label="Primary navigation">
             <a href="#work">Work</a>
             <a href="#osus">OSUS</a>
@@ -58,11 +150,25 @@ export function PortfolioPage() {
         </header>
 
         <main id="main">
-          <section id="top" className="hero">
-            <h1>DAVIDE GOZZI<span className="h1-cursor" aria-hidden="true" /></h1>
+          <section id="top" className={`hero ${bootComplete ? "is-drafting" : ""}`} ref={heroRef}>
+            {/* The wordmark is traced letter by letter from the font's outlines, then inked. */}
+            <h1 className="h1" aria-label="Davide Gozzi">
+              <svg
+                className="h1-draw"
+                viewBox={wordmark.viewBox}
+                style={{ height: `${wordmark.heightEm}em` }}
+                aria-hidden="true"
+                focusable="false"
+              >
+                {wordmark.paths.map((d, i) => (
+                  <path key={d.slice(0, 24) + i} d={d} pathLength={1} style={{ "--i": i } as React.CSSProperties} />
+                ))}
+              </svg>
+              <span className="h1-cursor" aria-hidden="true" />
+            </h1>
             <div className="hero-grid">
               <div>
-                <p className="hero-statement">
+                <p className="hero-statement" ref={statementRef}>
                   I design and evolve software that has to keep working: distributed
                   services, legacy platforms and systems connected to real machines.
                 </p>
@@ -87,7 +193,7 @@ export function PortfolioPage() {
           </section>
 
           <section id="work" className="work">
-            <h2>Work</h2>
+            <h2 className="pencil">Work</h2>
             <p className="section-intro">
               Seven professional years, and two before them, moving toward systems with more
               constraints and less room for error.
@@ -96,7 +202,7 @@ export function PortfolioPage() {
           </section>
 
           <section id="ai" className="ai reveal">
-            <h2>AI-assisted development</h2>
+            <h2 className="pencil">AI-assisted development</h2>
             <p className="section-intro">
               My background is backend; interfaces were the part I used to hand to someone
               else. AI changed that first, then it changed how I build everything. Agents now
@@ -131,7 +237,7 @@ export function PortfolioPage() {
 
           <section id="osus" className="osus reveal">
             <div className="osus-inner">
-              <h2>OSUS</h2>
+              <h2 className="pencil">OSUS</h2>
               <p className="section-intro">
                 A small independent lab where I build the products I keep thinking about.
                 Four projects — separate ideas, one ecosystem. Two of them are live, and
@@ -175,7 +281,7 @@ export function PortfolioPage() {
           </section>
 
           <section className="credentials reveal">
-            <h2>Credentials</h2>
+            <h2 className="pencil">Credentials</h2>
             <p>
               English — C2 comprehension, EF SET 84/100 (reading 78, listening 90). The
               certificate covers reading and listening comprehension.{" "}
@@ -187,7 +293,7 @@ export function PortfolioPage() {
           </section>
 
           <section id="contact" className="contact reveal">
-            <h2>Contact</h2>
+            <h2 className="pencil">Contact</h2>
             <p>
               Email is the most reliable way to reach me. I read everything, including the
               interesting problems.

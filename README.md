@@ -38,10 +38,19 @@ developer dashboard:
 - hairline rules instead of card-heavy UI;
 - chapter-specific editorial layouts;
 - diagrams used to explain decisions, not decorate the page;
-- restrained motion with no scroll hijacking.
+- motion that drafts rather than fades: a casebook is pencilled, then inked,
+  with no scroll hijacking and nothing gated behind animation.
 
-The opening boot sequence lasts roughly 1.3 seconds, runs once per browser
-session, is immediately skippable, and morphs into the page header.
+The opening boot sequence lasts about 2.5 seconds, runs once per browser
+session, is immediately skippable, and collapses onto the header's hairline.
+After it the mark constructs itself, the wordmark is traced from the font's
+outlines and inked, the statement is typed, and hairlines, chapter numbers and
+schematics draw themselves as they enter. Reduced motion makes all of it
+instant.
+
+The identity is recorded as a design system ("Casebook") and as
+`brand/tokens.json`, the single source for the site's colors and every brand
+asset.
 
 ## Technology
 
@@ -72,11 +81,17 @@ npm run build
 
 The production build is exported to `out/`.
 
-Regenerate the Open Graph image with:
+Regenerate the brand assets (the Open Graph image, the LinkedIn banner, the X
+header, the GitHub banners in Paper and Ink, the repository social previews,
+the avatars) from `brand/tokens.json` with:
 
 ```bash
-npm run og
+npm run brand
 ```
+
+Colors change in `brand/tokens.json`; `npm run tokens` rewrites `app/tokens.css`
+and runs before every build. If the name or the display face changes,
+`npm run wordmark` regenerates the traced wordmark.
 
 Regenerate the CV (needs [WeasyPrint](https://weasyprint.org/) and the Inter
 font family installed) with:
@@ -104,25 +119,35 @@ a repository site.
 ```text
 app/
   fonts/                  self-hosted variable fonts
-  globals.css             visual system and responsive layout
+  globals.css             visual system, motion and responsive layout
+  tokens.css              generated from brand/tokens.json
   layout.tsx              metadata and social preview configuration
+
+brand/
+  tokens.json             the casebook's colors, Paper and Ink
 
 components/
   BootSequence.tsx        session boot and wordmark hand-off
   Chapters.tsx            professional chapter layouts
-  PortfolioPage.tsx       page structure and main copy
+  Mark.tsx                the mark, drawn as a casebook figure
+  PortfolioPage.tsx       page structure, main copy and the drafting motion
   Schematic.tsx           inline engineering diagrams
+  wordmark.generated.ts   the wordmark's letter outlines (npm run wordmark)
 
 data/
   portfolio.ts            experience, decisions, and OSUS project data
 
 public/
   Davide_Gozzi_CV.pdf     downloadable one-page CV
+  brand/                  rendered banners, previews and avatars, served with the site
   og.png                  social preview image
 
 scripts/
+  brand.mjs               brand asset generator
   cv/Davide_Gozzi_CV.html CV source, rendered to public/Davide_Gozzi_CV.pdf
-  og.mjs                  Open Graph image generator
+  fonts/                  the static 600 weight of Space Grotesk, for the wordmark and the CV
+  tokens.mjs              writes app/tokens.css from brand/tokens.json
+  wordmark.mjs            traces the wordmark from the font's outlines
 ```
 
 ## Accessibility and resilience

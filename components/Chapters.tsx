@@ -53,7 +53,7 @@ export function Chapters() {
 
             <div className="chapter-main">
               <header className="chapter-head">
-                <h3>{chapter.employer}</h3>
+                <h3 className="pencil">{chapter.employer}</h3>
                 <p className="chapter-role">{chapter.role}</p>
               </header>
               {chapter.lead.map((paragraph) => (
