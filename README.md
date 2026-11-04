@@ -78,6 +78,16 @@ Regenerate the Open Graph image with:
 npm run og
 ```
 
+Regenerate the CV (needs [WeasyPrint](https://weasyprint.org/) and the Inter
+font family installed) with:
+
+```bash
+npm run cv
+```
+
+The source is `scripts/cv/Davide_Gozzi_CV.html`. The PDF must stay one page;
+check it after every edit.
+
 ## Deployment
 
 The workflow in `.github/workflows/deploy-pages.yml` builds and publishes the
@@ -111,6 +121,7 @@ public/
   og.png                  social preview image
 
 scripts/
+  cv/Davide_Gozzi_CV.html CV source, rendered to public/Davide_Gozzi_CV.pdf
   og.mjs                  Open Graph image generator
 ```
 

@@ -99,7 +99,9 @@ named on the site with its real figures.
 
 ## Evidence on Hand
 
-- `public/Davide_Gozzi_CV.pdf` — one-page CV, the conversion artifact.
+- `public/Davide_Gozzi_CV.pdf` — one-page CV, the conversion artifact. Rendered from
+  `scripts/cv/Davide_Gozzi_CV.html` with WeasyPrint (`npm run cv`), so the PDF and
+  the site are edited from the same facts.
 - EF SET certificate: https://cert.efset.org/fRRHgz (verifiable).
 - Live product: https://rosettai.osus.it/ (RosettAI, active build).
 - `public/og.png` — generated social preview (`npm run og`).

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Davide Gozzi — Senior Software Engineer</title>
+<meta name="author" content="Davide Gozzi">
+<style>
+  @page { size: A4; margin: 9.5mm 12mm 9mm 12mm; }
+  :root {
+    --accent: #0e7c86; --ink: #0e2a33; --body: #39434a; --soft: #4b565e;
+    --muted: #7b878e; --rule: #a9bcc2; --rule-light: #d5dde0; --card: #f4f8f8;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: "Inter", system-ui, sans-serif; color: var(--body); font-size: 8.3pt; line-height: 1.34; }
+  a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 0.5pt; text-underline-offset: 1.5pt; }
+  p { margin: 0; }
+  ul { margin: 0; padding: 0; list-style: none; }
+
+  /* Header */
+  .head { display: grid; grid-template-columns: 1fr auto; align-items: end; padding-bottom: 6pt; border-bottom: 1pt solid var(--rule); }
+  .name { font-family: "Inter Display", "Inter", sans-serif; font-weight: 700; font-size: 25pt; line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin: 0; }
+  .title { font-weight: 600; font-size: 10pt; color: var(--accent); margin-top: 3pt; }
+  .tagline { font-size: 8pt; color: var(--soft); margin-top: 3pt; }
+  .contact { text-align: right; font-size: 7.5pt; line-height: 1.75; color: var(--soft); }
+  .contact b { color: var(--ink); font-weight: 600; }
+  .contact .sep { color: var(--muted); padding: 0 2pt; }
+
+  /* Columns */
+  .cols { display: grid; grid-template-columns: 317pt 186pt; column-gap: 23pt; margin-top: 9pt; }
+  h2 { font-size: 7.5pt; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0 0 5pt; padding-bottom: 3pt; border-bottom: 1pt solid var(--rule-light); }
+  section + section { margin-top: 9pt; }
+
+  /* Experience */
+  .job { margin-bottom: 6pt; }
+  .job-head { overflow: hidden; }
+  .job-head h3 { font-size: 9.5pt; font-weight: 700; color: var(--ink); margin: 0; letter-spacing: -0.005em; }
+  .dates { float: right; margin-left: 8pt; padding-top: 1.5pt; font-size: 7.5pt; color: var(--muted); white-space: nowrap; }
+  .role { font-size: 8pt; font-weight: 600; color: var(--accent); margin-top: 1pt; }
+  .job ul { margin-top: 3pt; }
+  .job li { position: relative; padding-left: 8pt; margin-top: 1pt; }
+  .job li::before { content: ""; position: absolute; left: 1pt; top: 5pt; width: 2.2pt; height: 2.2pt; border-radius: 50%; background: var(--rule); }
+  .profile { font-size: 8.3pt; }
+
+  /* Right column */
+  .card { background: var(--card); border-left: 2pt solid var(--accent); padding: 6pt 8pt 7pt; margin-bottom: 5pt; font-size: 7.8pt; color: var(--soft); }
+  .card h3 { font-size: 9pt; font-weight: 700; color: var(--ink); margin: 0; display: flex; align-items: center; gap: 5pt; }
+  .live { font-size: 5.8pt; font-weight: 700; letter-spacing: 0.08em; color: #fff; background: var(--accent); border-radius: 2pt; padding: 1.2pt 3pt 1pt; line-height: 1.2; }
+  .card .link { font-size: 8pt; font-weight: 600; margin: 2pt 0 4pt; }
+  .card .link a { text-decoration: none; }
+  .card .link .dim { color: var(--accent); font-weight: 600; }
+  .small { font-size: 7.8pt; color: var(--soft); }
+  .skills h4 { font-size: 7pt; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); margin: 5pt 0 1pt; }
+  .skills h4:first-child { margin-top: 0; }
+  .skills p { font-size: 7.8pt; color: var(--soft); }
+  .kv p { font-size: 7.8pt; color: var(--soft); }
+  .kv b { color: var(--ink); font-weight: 600; }
+  em { font-style: italic; }
+</style>
+</head>
+<body>
+
+<header class="head">
+  <div>
+    <h1 class="name">Davide Gozzi</h1>
+    <p class="title">Senior Software Engineer</p>
+    <p class="tagline">Distributed systems · Industrial software · Legacy systems</p>
+  </div>
+  <div class="contact">
+    <div><b>Modena, Italy</b><span class="sep">·</span>CET<span class="sep">·</span>open to remote</div>
+    <div><a href="tel:+393891260948">+39 389 126 0948</a><span class="sep">·</span><a href="mailto:david3gozz1@gmail.com">david3gozz1@gmail.com</a></div>
+    <div><a href="https://g4solio.github.io/portfolio">g4solio.github.io/portfolio</a><span class="sep">·</span><a href="https://www.linkedin.com/in/davide-gozzi5/">LinkedIn</a><span class="sep">·</span><a href="https://github.com/g4solio">GitHub</a></div>
+  </div>
+</header>
+
+<div class="cols">
+  <main>
+    <section>
+      <h2>Profile</h2>
+      <p class="profile">Senior software engineer with seven years of professional experience, writing and shipping production code since 2016. I work on distributed systems, legacy platforms, and industrial software, with C#/.NET, real-time integration, and safe changes to operational software at the core. Two years working daily with US-based teams, and two products of my own running live in production. I now ship with AI agents doing most of the typing; architecture, verification and trade-offs stay mine.</p>
+    </section>
+
+    <section>
+      <h2>Experience</h2>
+
+      <div class="job">
+        <div class="job-head"><span class="dates">Jan 2024 – Present</span><h3>Giammar</h3></div>
+        <p class="role">Software Engineering Consultant · client: System Ceramics</p>
+        <ul>
+          <li>Build distributed .NET services for industrial manufacturing R&amp;D — PLC integration, OPC UA, RabbitMQ, Redis and real-time machine data. Deployed across dozens of manufacturing customers, from single-line plants to sites running 20+ production lines.</li>
+          <li>Design binary-protocol connectors and the quality-data pipeline behind real-time decisions, defect reprocessing and long-term traceability.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-head"><span class="dates">Nov 2021 – Dec 2023</span><h3>MSC Mediterranean Shipping Company</h3></div>
+        <p class="role">Senior .NET Developer</p>
+        <ul>
+          <li>Helped redesign a manager-agent platform distributing DLL capabilities across several hundred installations in ports worldwide, preserving backward compatibility with older deployments.</li>
+          <li>Improved global shipping systems built on C#, C++, SQL and stored procedures, working extensively with legacy code.</li>
+          <li>Coordinated a four-person team building a document flow between third-party services, the central platform and SAP.</li>
+          <li>Worked daily with teams in the United States across a 6–9 hour time difference, including a six-week onsite assignment.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-head"><span class="dates">Mar 2021 – Nov 2021</span><h3>iSolutions Software Engineering</h3></div>
+        <p class="role">Full-stack Developer</p>
+        <ul>
+          <li>Worked on a platform powering online betting sites for multiple operators — customer-specific features such as custom reward systems, plus slot-game integrations with third-party providers.</li>
+          <li>Identified hidden dependencies in existing code and delivered changes without regressions in a live-money environment.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-head"><span class="dates">Sep 2019 – Mar 2021</span><h3>Amaris</h3></div>
+        <p class="role">.NET Backend Developer / IT Consultant · client: Credemtel</p>
+        <ul>
+          <li>Developed document-management services with .NET, REST APIs, RabbitMQ, Elasticsearch, ETL pipelines and structured logging.</li>
+          <li>Designed a package for nested JSON documents, with each structure defined entirely by external configuration and shared across ~20 APIs, microservices and frontends.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-head"><span class="dates">2017 – 2018</span><h3>Melazeta</h3></div>
+        <p class="role">Unity Developer Intern</p>
+        <ul>
+          <li>Built Unity mobile and augmented-reality applications, including a Winx dress-up app released on Google Play.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-head"><span class="dates">2016 – 2017</span><h3>STARWORKGC</h3></div>
+        <p class="role">Junior Programmer &amp; Particle Effect Artist</p>
+        <ul>
+          <li>Joined the startup during high school. Rewrote the Unity/C# collision predictor for <em>Galactic Fighters</em> (<a href="https://store.steampowered.com/app/513960/Galactic_Fighters/">released on Steam</a>), using projected movement and ray checks to produce configurable warnings that also ran on lower-power hardware.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <aside>
+    <section>
+      <h2>OSUS · Independent lab</h2>
+      <div class="card">
+        <h3>RosettAI <span class="live">LIVE</span></h3>
+        <p class="link"><a href="https://rosettai.osus.it">rosettai.osus.it</a> <span class="dim">— no sign-up needed</span></p>
+        <p>AI subtitle &amp; document translation. ASP.NET Core 10 + Python workers over RabbitMQ, PostgreSQL, OpenTelemetry tracing and Grafana dashboards.</p>
+      </div>
+      <div class="card">
+        <h3>Bubbles <span class="live">LIVE</span></h3>
+        <p class="link"><a href="https://bubbles.osus.it">bubbles.osus.it</a></p>
+        <p>Daily social music app — one prompt, one song, group reveals. Next.js, Prisma, Clerk, Expo native client.</p>
+      </div>
+      <div class="card">
+        <h3>OSUS Ecosystem</h3>
+        <p class="link"><span class="dim">identity · billing · wallet gateway</span></p>
+        <p>Shared services for the OSUS apps. Clean Architecture .NET 10 with a published SDK; 299 tests green across unit, integration and architecture suites.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>AI-assisted development</h2>
+      <p class="small">AI agents do most of the typing across the OSUS line and my personal tools. I own the spec, the glossary, the architecture, the coding standards, the review and the CI that enforces whatever a script can check. Latest: CollectionVault, a personal catalog, from spec to daily use in two weeks — 357 commits and 77 pull requests in 19 days, with its core rules enforced in CI.</p>
+    </section>
+
+    <section class="skills">
+      <h2>Skills</h2>
+      <h4>Core</h4>
+      <p>C# / .NET · distributed systems · software architecture · industrial integration · legacy systems</p>
+      <h4>Technologies</h4>
+      <p>RabbitMQ · Redis · Elasticsearch · PostgreSQL · SQL · REST · OPC UA · PLCs · EF Core · Next.js</p>
+      <h4>Platform &amp; delivery</h4>
+      <p>Docker · Docker Compose · GitHub Actions · CI/CD · OpenTelemetry · Grafana · Prometheus · Claude Code</p>
+      <h4>Testing</h4>
+      <p>Unit / integration / architecture testing · Testcontainers · xUnit</p>
+    </section>
+
+    <section class="kv">
+      <h2>Languages</h2>
+      <p><b>Italian</b> — native</p>
+      <p><b>English</b> — C2 comprehension · EF SET 84/100 (Reading 78 · Listening 90) · <a href="https://cert.efset.org/fRRHgz">verified certificate</a></p>
+    </section>
+
+    <section class="kv">
+      <h2>Education</h2>
+      <p><b>IIS F. Corni</b>, Modena</p>
+      <p>Diploma in Computer Science · 2018</p>
+    </section>
+  </aside>
+</div>
+</body>
+</html>
