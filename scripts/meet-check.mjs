@@ -93,6 +93,11 @@ assert.ok(facts.find((t) => t.cmd === "work").lines[0].includes("Galactic Fighte
 assert.match(facts.find((t) => t.cmd === "games").lines[0], /top three: (.+), (.+), (.+)\.$/, "the games top three keeps its chart shape");
 assert.match(facts.find((t) => t.cmd === "music").lines[0], /^(.+), (.+) and (.+) have been my top three on Spotify for years\.$/, "the music top three keeps its chart shape");
 assert.match(gameOverLine("Marta"), /thirteen, Marta/);
+// The ask turn: the rule once, after the first answer; a last call after the thirteenth; short nudges between.
+const { askLine } = await import("../data/meet.ts");
+assert.match(askLine("Marta", 1), /^Nice to meet you, Marta\..*twenty-second game\.$/);
+assert.match(askLine("", moves.length), /^One last question before the brief\?$/);
+for (let i = 2; i < moves.length; i++) assert.ok(askLine("Marta", i).length <= 30 && !askLine("Marta", i).startsWith("Nice"), `ask ${i}: a short nudge`);
 
 // The laid-out screens: a layout holds its slots in data order and the rest sit aside; what it prints fits.
 const { layoutSlots, typedLayouts, menuLayouts } = await import("../data/meet.ts");

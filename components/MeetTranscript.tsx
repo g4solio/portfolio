@@ -86,7 +86,7 @@ export function MeetTranscript() {
     const nm = current.key === "name" ? value : name;
     if (remaining.length > 0) {
       setPhase("ask");
-      return say(echo, askLine(nm));
+      return say(echo, askLine(nm, step + 1));
     }
     const next = moves[step + 1];
     say(echo, next ? next.line : closingLine(nm));
@@ -177,10 +177,10 @@ export function MeetTranscript() {
   return (
     <section className="meet">
       <header className="meet-title">
-        <p>Davide Gozzi · a text adventure</p>
+        <p>Davide Gozzi · text mode</p>
         <h1>{meetTitle}</h1>
         <p>
-          <b className="pix">{moves.length}</b> moves about the role · <b className="pix">{factCount}</b> facts about me,
+          <b className="pix">{moves.length}</b> questions about the role · <b className="pix">{factCount}</b> facts about me,
           your pick · a brief at the end
         </p>
       </header>
@@ -249,7 +249,7 @@ export function MeetTranscript() {
       {/* Without JavaScript the moves and the facts are a readable document and the answer is an email. */}
       <div className="meet-doc">
         <p>
-          With JavaScript this page is a short text adventure: thirteen moves about the role, a fact
+          With JavaScript this page is a small arcade game: thirteen questions about the role, a fact
           about me of your choice after each one, and a brief to mail me at the end. Without it, here
           is what I’m looking for, the questions, and the facts; answer the questions in an email to{" "}
           <a href={`mailto:${meetEmail}`}>{meetEmail}</a> with the subject “Role brief for Davide

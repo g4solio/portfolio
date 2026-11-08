@@ -19,7 +19,7 @@ import {
 } from "@/data/meet";
 import views from "@/data/meet-cabinet.json";
 import { Countdown, FactBody, MenuArt, MoveLayout, TopicBoard, TypedField } from "./meet/layouts";
-import { ROUND_TITLES, Round } from "./meet/rounds";
+import { ROUND_BRIEFS, ROUND_TITLES, Round } from "./meet/rounds";
 import { type Cue, createSound } from "./meet/sound";
 import { Typed, linkify } from "./meet/Typed";
 
@@ -218,20 +218,21 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
           ),
       },
       // relative: the site deploys under a basePath on GitHub Pages
-      { id: "manual", label: "MANUAL · my one-page CV", run: () => window.open("../Davide_Gozzi_CV.pdf", "_blank", "noopener") },
+      { id: "cv", label: "CV · my one-page CV, as a PDF", run: () => window.open("../Davide_Gozzi_CV.pdf", "_blank", "noopener") },
       { id: "again", label: "PLAY AGAIN", run: reset },
     ];
   } else if (turn.kind === "ask") {
     title = "BONUS STAGE";
-    line = askLine(name);
+    line = askLine(name, Object.keys(answers).length);
     hint = "ARROWS MOVE · A SELECT";
     items = [...remaining.map((t) => ({ id: t.cmd, label: t.label, run: () => ask(t.cmd) })), { id: "skip", label: "skip · next question", run: proceed }];
   } else if (turn.kind === "fact") {
-    title = `BONUS · ${topicLabel(turn.topic)}`;
+    title = topicLabel(turn.topic).toUpperCase(); // the question they asked
     hint = "A · CONTINUE";
     items = [{ id: "ok", label: "PRESS A", run: proceed }];
   } else if (turn.kind === "round") {
     title = `ROUND · ${ROUND_TITLES[rounds[turn.topic]]}`;
+    line = ROUND_BRIEFS[rounds[turn.topic]];
   } else if (current) {
     title = current.screen;
     line = current.line;
@@ -366,10 +367,12 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
           {stage === "attract" ? (
             <button type="button" className="crt-attract" onClick={insertCoin}>
               <span className="crt-kicker">DAVIDE GOZZI PRESENTS</span>
-              <span className="crt-big">LET’S GET TO KNOW EACH OTHER</span>
+              <span className="crt-big">PLAYER 2 WANTED</span>
               <span className="crt-blink">INSERT COIN</span>
               <span className="crt-dim">
-                {moves.length} moves · {factCount} facts · 1 brief
+                {moves.length} questions about your role
+                <br />
+                {factCount} facts about me · 1 brief at the end
               </span>
             </button>
           ) : (
@@ -384,19 +387,19 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
               </div>
               {layout === "countdown" ? <Countdown title={title} /> : <h2 className="crt-title">{title}</h2>}
 
+              {(turn.kind !== "fact" || stage === "over") && line && (
+                <p className="crt-line" aria-live="polite">
+                  <Typed key={`${stage}-${turn.kind}-${step}`} text={line} />
+                </p>
+              )}
+
               {turn.kind === "round" && stage === "play" && <Round key={turn.topic} topic={turn.topic} pressRef={pressRef} onDone={roundDone} />}
 
               {turn.kind === "fact" && stage === "play" && (
                 <>
-                  {turn.result && <p className="crt-result">ROUND CLEAR · {turn.result}</p>}
+                  {turn.result && <p className="crt-result">{turn.result}</p>}
                   <FactBody topic={turn.topic} index={turn.index} line={turn.line} />
                 </>
-              )}
-
-              {(turn.kind === "move" || turn.kind === "ask" || stage === "over") && line && (
-                <p className="crt-line" aria-live="polite">
-                  <Typed key={`${stage}-${turn.kind}-${step}`} text={line} />
-                </p>
               )}
 
               {stage === "over" && (

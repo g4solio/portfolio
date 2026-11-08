@@ -17,6 +17,12 @@ type Kind = (typeof rounds)[string];
 
 export const ROUND_TITLES: Record<Kind, string> = { runner: "ENUMERATED TWICE", shooter: "GALACTIC FIGHTERS", pounce: "ALWAYS CATS" };
 const HINTS: Record<Kind, string> = { runner: "A · JUMP", shooter: "A · FIRE", pounce: "A · POUNCE" };
+/** What the round asks of you, above the canvas; the fact waits at the end whatever the score. */
+export const ROUND_BRIEFS: Record<Kind, string> = {
+  runner: "Every obstacle comes twice, so every jump has to clear the pair. Twenty seconds; my answer comes after, whatever the score.",
+  shooter: "The space shooter I worked on in high school, cut to one button: the ship steers itself, you fire. My answer comes after, whatever the score.",
+  pounce: "Chase the dot: A pounces where it is now, and it rarely waits. My answer comes after, whatever the score.",
+};
 
 type Game = {
   unit: string;
@@ -301,7 +307,7 @@ export function Round({ topic, pressRef, onDone }: { topic: string; pressRef: Re
       }
       if (t >= SECONDS) {
         finished = true;
-        const r = `${game.score()} ${game.unit}`;
+        const r = `ROUND CLEAR · ${game.score()} ${game.unit}`;
         setResult(r);
         window.setTimeout(() => doneRef.current(r), 1300);
         return;
@@ -337,14 +343,14 @@ export function Round({ topic, pressRef, onDone }: { topic: string; pressRef: Re
       <canvas ref={canvasRef} className="crt-canvas" width={W} height={H} aria-label={`${ROUND_TITLES[kind]}: a twenty-second round, one button`} />
       {result ? (
         <p className="crt-result" aria-live="polite">
-          ROUND CLEAR · {result}
+          {result}
         </p>
       ) : (
         <div className="crt-soft">
           <button type="button" onClick={() => pressRef.current?.()}>
             A
           </button>
-          <button type="button" onClick={() => onDone("SKIPPED")}>
+          <button type="button" onClick={() => onDone("ROUND SKIPPED")}>
             SKIP
           </button>
         </div>
