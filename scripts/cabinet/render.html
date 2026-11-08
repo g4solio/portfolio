@@ -225,9 +225,9 @@ const screenCanvas = canvas(600, 800, (g, w, h) => {
     g.textAlign = "center"; g.textBaseline = "middle";
     g.fillStyle = CRT_HI; g.font = pixel(26); g.fillText("DAVIDE GOZZI", w / 2, 150);
     g.fillStyle = CRT_TEXT; g.font = pixel(18); g.fillText("PRESENTS", w / 2, 196);
-    g.font = pixel(44); ["LET’S GET", "TO KNOW", "EACH OTHER"].forEach((l, i) => g.fillText(l, w / 2, 310 + i * 64));
+    g.font = pixel(52); ["PLAYER 2", "WANTED"].forEach((l, i) => g.fillText(l, w / 2, 340 + i * 74));
     g.fillStyle = CRT_HI; g.font = pixel(34); g.fillText("INSERT COIN", w / 2, 580);
-    g.fillStyle = "#6f726e"; g.font = '400 20px "JetBrains Mono"'; g.fillText("13 moves · 17 facts · 1 brief", w / 2, 680);
+    g.fillStyle = "#6f726e"; g.font = '400 20px "JetBrains Mono"'; ["13 questions about your role", "17 facts about me · 1 brief at the end"].forEach((l, i) => g.fillText(l, w / 2, 670 + i * 30));
   }
   // scanlines and a soft vignette: the tube, not the UI
   g.fillStyle = "rgba(0,0,0,0.22)";

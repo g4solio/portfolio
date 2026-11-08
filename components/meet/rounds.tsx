@@ -1,7 +1,7 @@
 "use client";
 
 import { type RefObject, useEffect, useRef, useState } from "react";
-import { rounds } from "@/data/meet";
+import { rounds, type Said } from "@/data/meet";
 
 // Three one-button rounds, each twenty seconds, each ending with the fact whatever the score.
 // The pixel art is code grids in the tube's colours; the loop is requestAnimationFrame with delta time.
@@ -17,6 +17,12 @@ type Kind = (typeof rounds)[string];
 
 export const ROUND_TITLES: Record<Kind, string> = { runner: "ENUMERATED TWICE", shooter: "GALACTIC FIGHTERS", pounce: "ALWAYS CATS" };
 const HINTS: Record<Kind, string> = { runner: "A · JUMP", shooter: "A · FIRE", pounce: "A · POUNCE" };
+/** What the round asks of you, above the canvas; the fact waits at the end whatever the score. */
+export const ROUND_BRIEFS: Record<Kind, Said> = {
+  runner: { ask: "Jump each pair.", line: "Every obstacle shows up twice. Twenty seconds, and you get my answer whatever your score." },
+  shooter: { ask: "Just fire.", line: "It’s the space shooter I worked on in high school, down to one button. The ship steers itself." },
+  pounce: { ask: "Catch the dot.", line: "It never sits still. Twenty seconds, and you get my answer either way." },
+};
 
 type Game = {
   unit: string;
@@ -301,7 +307,7 @@ export function Round({ topic, pressRef, onDone }: { topic: string; pressRef: Re
       }
       if (t >= SECONDS) {
         finished = true;
-        const r = `${game.score()} ${game.unit}`;
+        const r = `ROUND CLEAR · ${game.score()} ${game.unit}`;
         setResult(r);
         window.setTimeout(() => doneRef.current(r), 1300);
         return;
@@ -337,14 +343,14 @@ export function Round({ topic, pressRef, onDone }: { topic: string; pressRef: Re
       <canvas ref={canvasRef} className="crt-canvas" width={W} height={H} aria-label={`${ROUND_TITLES[kind]}: a twenty-second round, one button`} />
       {result ? (
         <p className="crt-result" aria-live="polite">
-          ROUND CLEAR · {result}
+          {result}
         </p>
       ) : (
         <div className="crt-soft">
           <button type="button" onClick={() => pressRef.current?.()}>
             A
           </button>
-          <button type="button" onClick={() => onDone("SKIPPED")}>
+          <button type="button" onClick={() => onDone("ROUND SKIPPED")}>
             SKIP
           </button>
         </div>

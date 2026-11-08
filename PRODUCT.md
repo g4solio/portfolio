@@ -91,7 +91,14 @@ named on the site with its real figures.
   projected corners. A key or a tap inserts the coin; phones stand at the cabinet from
   the start. Thirteen moves as cabinet screens (NAME ENTRY, INSERT COIN, PLAYER 1,
   STAGE SELECT, DIFFICULTY, LOADOUT, CREDITS, SELECT MODE, BOSS SELECT, ROUNDS, FREE
-  PLAY, RATE THIS GAME, CONTINUE?), in his voice, the last three optional. Each screen
+  PLAY, RATE THIS GAME, CONTINUE?), in his voice, the last three optional. Every screen
+  reads in three sizes: the arcade name small, the question big, and his side of it
+  small underneath, said the way he would say it across the cabinet (short sentences,
+  his position in plain numbers). Rounds put the one thing to do big, GAME OVER the
+  thanks. The screen name carries the arcade joke; the words never explain it (a
+  question-last paragraph was rejected 2026-11-08 as robotic). Text mode prints the
+  question on its own line, then the rest. The attract
+  screen, live and in the hero still, reads PLAYER 2 WANTED. Each screen
   reads as what it is named (picked from rendered candidates 2026-11-08, issue #6):
   NAME ENTRY seats the recruiter as 2P beside Davide as 1P; INSERT COIN has the
   cabinet's coin door, CREDIT turning 1 once a name is typed; PLAYER 1 writes the role
@@ -106,16 +113,17 @@ named on the site with its real figures.
   plain field: decorative stars were rejected as a button that isn't one. The layouts,
   the choices they hold, the short labels and the art live in `data/meet.ts`, where
   data order is screen order. After every answer it is the recruiter's BONUS STAGE: a
-  board of the cabinet's stickers, one per topic from the pool of seventeen facts, or
-  skip. A fact whose line has a shape gets a format (the games and music top threes as
+  board of the cabinet's stickers, one per topic from the pool of seventeen facts, each
+  labelled with the question the recruiter is asking and printed big above the fact, or
+  skip. The first ask states the rule once; later ones are short nudges. A fact whose line has a shape gets a format (the games and music top threes as
   charts, the tools at the text mode's prompt, comics in a speech bubble); every other
   fact sits under its topic's sticker. The first fact of three topics is a twenty-second one-button round whose
-  fact arrives whatever the score: the runner where every obstacle is enumerated twice
+  fact arrives whatever the score, as a line above the canvas says: the runner where every obstacle is enumerated twice
   (code), the sweep-and-fire shooter for Galactic Fighters (work), the pounce (cats).
   The HUD shows KNOWN and MOVE only; the fit against the scope and the brief appear at
   GAME OVER: one dot-leader row per criterion and a plain sum, never a score count-up,
   the brief printed as a torn ticket, then SUBMIT (`mailto:` from the recruiter's own
-  client), COPY, MANUAL (the CV) and PLAY AGAIN. Arrows move (by rows on the two-column
+  client), COPY, CV and PLAY AGAIN. Arrows move (by rows on the two-column
   screens), Enter is A, digits pick, Backspace undoes a move;
   the button on the still is a hotspot. Sound is opt-in, off by default. Text mode
   (`#text`) is the earlier transcript game, kept whole; without JavaScript the scope,

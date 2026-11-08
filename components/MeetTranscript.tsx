@@ -5,6 +5,7 @@ import { Typed, linkify, prefersReducedMotion } from "@/components/meet/Typed";
 import {
   type Answers,
   askLine,
+  spoken,
   briefText,
   closingLine,
   exhaustedLine,
@@ -47,7 +48,7 @@ function Numeral({ value, width = 1 }: { value: number; width?: number }) {
 
 export function MeetTranscript() {
   const [answers, setAnswers] = useState<Answers>({});
-  const [log, setLog] = useState<Entry[]>([{ text: moves[0].line }]);
+  const [log, setLog] = useState<Entry[]>([{ text: spoken(moves[0]) }]);
   const [input, setInput] = useState("");
   // After every answer it is the recruiter's turn to ask: the "ask" phase.
   const [phase, setPhase] = useState<"answer" | "ask">("answer");
@@ -86,15 +87,15 @@ export function MeetTranscript() {
     const nm = current.key === "name" ? value : name;
     if (remaining.length > 0) {
       setPhase("ask");
-      return say(echo, askLine(nm));
+      return say(echo, spoken(askLine(nm, step + 1)));
     }
     const next = moves[step + 1];
-    say(echo, next ? next.line : closingLine(nm));
+    say(echo, next ? spoken(next) : closingLine(nm));
   };
 
   /** The ask is done (a fact, or skipped); the next question follows. */
   const proceed = (echo: string, fact?: string) => {
-    const question = current ? current.line : closingLine(name);
+    const question = current ? spoken(current) : closingLine(name);
     setPhase("answer");
     setLog((l) => (fact ? [...l, { cmd: echo, text: fact }, { text: question }] : [...l, { cmd: echo, text: question }]));
   };
@@ -122,11 +123,11 @@ export function MeetTranscript() {
         delete rest[last.key];
         setAnswers(rest);
         setPhase("answer");
-        return say(text, last.line);
+        return say(text, spoken(last));
       }
       case "send":
         window.location.assign(mailtoHref(answers));
-        return say(text, "Opening your mail client with the brief. If nothing happens, copy works too.");
+        return say(text, "Opening your email app. If nothing happens, type copy instead.");
       case "copy":
         navigator.clipboard.writeText(briefText(answers)).then(
           () => say(text, "Copied. Paste it wherever you reached me."),
@@ -148,7 +149,7 @@ export function MeetTranscript() {
       const topic = remaining.find((t) => t.cmd === cmd || t.label === cmd) ?? (Number.isInteger(n) ? remaining[n - 1] : undefined);
       return topic ? proceed(topic.cmd, tell(topic.cmd)) : say(text, unknownLine);
     }
-    if (!current) return say(text, "The moves are done. Commands: score, inventory, send, copy, cv.");
+    if (!current) return say(text, "That’s everything. You can still type score, inventory, send, copy or cv.");
     if (current.choices) {
       const n = Number.parseInt(cmd, 10);
       const choice =
@@ -157,7 +158,7 @@ export function MeetTranscript() {
       return choice ? answer(choice.cmd, choice.cmd) : say(text, unknownLine);
     }
     if (current.typed) {
-      if (cmd === "skip") return current.typed.optional ? answer(text, "") : say(text, "I need an answer here.");
+      if (cmd === "skip") return current.typed.optional ? answer(text, "") : say(text, "This one needs an answer.");
       return answer(text, text.slice(0, current.typed.max));
     }
   };
@@ -177,10 +178,10 @@ export function MeetTranscript() {
   return (
     <section className="meet">
       <header className="meet-title">
-        <p>Davide Gozzi · a text adventure</p>
+        <p>Davide Gozzi · text mode</p>
         <h1>{meetTitle}</h1>
         <p>
-          <b className="pix">{moves.length}</b> moves about the role · <b className="pix">{factCount}</b> facts about me,
+          <b className="pix">{moves.length}</b> questions about the role · <b className="pix">{factCount}</b> facts about me,
           your pick · a brief at the end
         </p>
       </header>
@@ -249,7 +250,7 @@ export function MeetTranscript() {
       {/* Without JavaScript the moves and the facts are a readable document and the answer is an email. */}
       <div className="meet-doc">
         <p>
-          With JavaScript this page is a short text adventure: thirteen moves about the role, a fact
+          With JavaScript this page is a small arcade game: thirteen questions about the role, a fact
           about me of your choice after each one, and a brief to mail me at the end. Without it, here
           is what I’m looking for, the questions, and the facts; answer the questions in an email to{" "}
           <a href={`mailto:${meetEmail}`}>{meetEmail}</a> with the subject “Role brief for Davide
@@ -265,7 +266,9 @@ export function MeetTranscript() {
         <ol>
           {moves.map((m) => (
             <li key={m.key}>
-              <p>{m.line}</p>
+              <p>
+                <b>{m.ask}</b> {m.line}
+              </p>
               {m.choices && (
                 <ul>
                   {m.choices.map((c) => (

@@ -176,7 +176,7 @@ const WARN = ["....o....", "...ooo...", "...oko...", "..ookoo..", "..ookoo..", "
 /** The ship from the Galactic Fighters round (components/meet/rounds.tsx), for the casebook. */
 const SHIP = [".....#.....", "....###....", "....###....", "#...###...#", "##.#####.##", "###########", "#.#######.#"];
 
-/** One sticker per fact topic: the cabinet's, the MO plate and the >_ prompt as type, a dash for the honest answer. */
+/** One sticker per fact topic: the cabinet's, the MO plate and the >_ prompt as type, a dash for sport. */
 export function TopicSticker({ topic, cell }: { topic: string; cell: number }) {
   const grid: Record<string, string[]> = { games: PAD, tabletop: HAT, comics: BUBBLE, music: PHONES, cats: CAT, code: WARN, work: SHIP };
   if (grid[topic]) return <Pixels rows={grid[topic]} cell={cell} />;
@@ -242,8 +242,8 @@ export function FactBody({ topic, index, line }: { topic: string; index: number;
   if (games) {
     return (
       <>
+        <p className="crt-line">{line.slice(0, games.index)}top three:</p>
         {chart(games[1].split(", "))}
-        <p className="crt-line">{line.slice(0, games.index).trim()}</p>
       </>
     );
   }
@@ -303,7 +303,7 @@ const SCENES: Record<string, ReactNode> = {
 export function Countdown({ title }: { title: string }) {
   return (
     <div className="crt-count">
-      <h2 className="crt-title">{title}</h2>
+      <p className="crt-title">{title}</p>
       <span className="crt-count-art" aria-hidden="true">
         <span className="crt-count-n">1</span>
         <span className="crt-count-cat">
