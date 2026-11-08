@@ -27,6 +27,9 @@ studies. OSUS closes the page as an independent product and engineering lab.
   as the worked example.
 - OSUS projects, led by a live preview of RosettAI.
 - A downloadable one-page CV and a verifiable EF SET English certificate.
+- Meet, at `/meet/`: an arcade cabinet for recruiters, thirteen moves as its
+  screens, three short games among the facts about me, and a role brief they mail
+  me. The earlier transcript game stays as its text mode.
 
 ## Design direction
 
@@ -77,9 +80,12 @@ Open `http://localhost:3000`.
 ```bash
 npm run lint
 npm run build
+node scripts/meet-check.mjs
 ```
 
-The production build is exported to `out/`.
+The production build is exported to `out/`. The cabinet stills and their screen
+corners are regenerated with `node scripts/cabinet.mjs` after a change to
+`scripts/cabinet/render.html`.
 
 Regenerate the brand assets (the Open Graph image, the LinkedIn banner, the X
 header, the GitHub banners in Paper and Ink, the repository social previews,
@@ -122,6 +128,7 @@ app/
   globals.css             visual system, motion and responsive layout
   tokens.css              generated from brand/tokens.json
   layout.tsx              metadata and social preview configuration
+  meet/page.tsx           the recruiters' arcade cabinet, /meet/
 
 brand/
   tokens.json             the casebook's colors, Paper and Ink
@@ -130,21 +137,33 @@ components/
   BootSequence.tsx        session boot and wordmark hand-off
   Chapters.tsx            professional chapter layouts
   Mark.tsx                the mark, drawn as a casebook figure
+  MeetArcade.tsx          /meet/ with JavaScript: the cabinet, or text mode
+  MeetCabinet.tsx         the cabinet: the stills, the live screen on the tube, the screens
+  MeetTranscript.tsx      the transcript game, now text mode: status line, log, commands, prompt
+  meet/rounds.tsx         the three one-button rounds: runner, shooter, pounce
+  meet/sound.ts           the cabinet's opt-in blips
+  meet/Typed.tsx          the typed reveal the cabinet and the transcript share
   PortfolioPage.tsx       page structure, main copy and the drafting motion
   Schematic.tsx           inline engineering diagrams
   wordmark.generated.ts   the wordmark's letter outlines (npm run wordmark)
 
 data/
   portfolio.ts            experience, decisions, and OSUS project data
+  meet.ts                 the scope, the thirteen moves and their screens, the facts, the brief
+  meet-cabinet.json       the stills' screen corners and hotspots, written by scripts/cabinet.mjs
 
 public/
   Davide_Gozzi_CV.pdf     downloadable one-page CV
+  meet-cabinet-*.webp     the cabinet rendered once: the hero and the play view
   brand/                  rendered banners, previews and avatars, served with the site
   og.png                  social preview image
 
 scripts/
   brand.mjs               brand asset generator
+  cabinet.mjs             renders the cabinet stills and their metadata with headless Chrome
+  cabinet/render.html     the cabinet scene: three.js, the garage world, the stickers
   cv/Davide_Gozzi_CV.html CV source, rendered to public/Davide_Gozzi_CV.pdf
+  meet-check.mjs          the one check for /meet/: scoring and the brief
   fonts/                  the static 600 weight of Space Grotesk, for the wordmark and the CV
   tokens.mjs              writes app/tokens.css from brand/tokens.json
   wordmark.mjs            traces the wordmark from the font's outlines

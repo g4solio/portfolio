@@ -1354,3 +1354,745 @@ main > section.osus {
     transform: none !important;
   }
 }
+
+/* ---- Meet: the transcript game (/meet/) --------------------------------- */
+
+.meet {
+  max-width: var(--prose);
+}
+
+/* The game needs JavaScript; without it the moves are printed as a document. */
+.meet-game {
+  display: none;
+}
+
+html.js .meet-game {
+  display: block;
+}
+
+html.js .meet-doc {
+  display: none;
+}
+
+.meet-game,
+.meet-doc {
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.meet-status {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 16px;
+  padding: 10px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-faint);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.meet-status span:last-child {
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.meet-status .pix {
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.meet-log {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+}
+
+.meet-log li {
+  margin: 0 0 16px;
+}
+
+.meet-log li.is-past {
+  color: var(--ink-faint);
+}
+
+.meet-echo {
+  display: block;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.meet-log li.is-past .meet-echo {
+  color: var(--ink-faint);
+}
+
+.meet-log p {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.meet-cur {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.05em;
+  margin-left: 1px;
+  background: var(--ink);
+  vertical-align: -0.15em;
+  animation: dg-blink 1.1s steps(1) infinite;
+}
+
+.meet-cmds {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+}
+
+.meet-cmds button {
+  display: grid;
+  grid-template-columns: 9.5em 1fr;
+  gap: 12px;
+  width: 100%;
+  padding: 5px 0;
+  border: 0;
+  background: none;
+  color: var(--ink-soft);
+  text-align: left;
+  cursor: pointer;
+}
+
+.meet-cmds b {
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.meet-cmds button:hover b,
+.meet-cmds button:focus-visible b {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.meet-cmds button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.meet-prompt label {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  padding: 8px 0;
+}
+
+.meet-prompt input {
+  flex: 1;
+  min-width: 0;
+  padding: 2px 0;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  caret-color: var(--ink);
+}
+
+.meet-prompt input:focus {
+  outline: none;
+  border-bottom-color: var(--ink);
+}
+
+.meet-prompt input::placeholder {
+  color: var(--ink-faint);
+  opacity: 1;
+}
+
+.meet-doc ol {
+  padding-left: 1.4em;
+}
+
+.meet-doc li {
+  margin-bottom: 14px;
+}
+
+.meet-doc ul {
+  margin: 6px 0 0;
+  padding-left: 1.2em;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 720px) {
+  .meet-cmds button {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}
+
+@media (pointer: coarse) {
+  .meet-cmds button {
+    padding-block: 9px;
+  }
+}
+
+/* The status line stays pinned while the log scrolls. */
+.meet-hud {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding-bottom: 8px;
+  background: var(--paper);
+}
+
+
+/* The title card, the hairline each exchange draws as it enters, the block caret. */
+.meet-title {
+  margin-bottom: 28px;
+}
+
+.meet-title p {
+  margin: 0;
+  color: var(--ink-faint);
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.meet-title p .pix {
+  color: var(--ink);
+  font-size: 12px;
+}
+
+.meet-title h1 {
+  margin: 6px 0 8px;
+  font-size: clamp(26px, 5vw, 32px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.meet-log li.has-cmd {
+  position: relative;
+  padding-top: 12px;
+}
+
+.meet-log li.has-cmd::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--rule);
+}
+
+@keyframes meet-draw {
+  from {
+    width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .meet-log li.has-cmd.is-new::before {
+    animation: meet-draw 0.45s ease-out;
+  }
+}
+
+.meet-prompt input {
+  caret-shape: block;
+}
+
+/* ---- Meet: the cabinet (/meet/) ------------------------------------------ */
+/* The garage world: a plywood cabinet rendered once (scripts/cabinet.mjs) and the live screen
+   mapped onto its tube with a matrix3d. The page is the wall it stands against. */
+
+:root {
+  --wall: #e7dccb;
+  --wall-light: #f0e8db;
+}
+
+/* The cabinet by default, the transcript as text mode; without JavaScript only the document. */
+html:not(.js) .room,
+html:not(.js) .meet-modebar {
+  display: none;
+}
+
+html.js .meet-arcade[data-mode="cabinet"] .meet {
+  display: none;
+}
+
+html.js .meet-arcade[data-mode="text"] .room {
+  display: none;
+}
+
+html.js body:has(.meet-arcade[data-mode="cabinet"]) {
+  background: radial-gradient(120% 70% at 85% 0%, var(--wall-light) 0%, var(--wall) 60%) fixed;
+}
+
+.meet-modebar {
+  margin: 0 0 18px;
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.meet-modebar button,
+.room-caption button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.room {
+  position: relative;
+  padding-top: 24px;
+}
+
+/* The arrival: the whole cabinet. */
+.cab-hero {
+  display: flex;
+  justify-content: center;
+}
+
+.cab-hero-btn {
+  height: min(86vh, 960px);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.cab-hero-btn img {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.cab-hero-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 8px;
+  border-radius: 6px;
+}
+
+.room[data-stage="attract"] .cab-view {
+  display: none;
+}
+
+.room:not([data-stage="attract"]) .cab-hero {
+  display: none;
+}
+
+/* Standing at the cabinet. */
+.cab-view {
+  position: relative;
+  height: min(88vh, 960px);
+  overflow: hidden;
+}
+
+.cab-still {
+  position: absolute;
+  display: block;
+  max-width: none;
+  pointer-events: none;
+}
+
+.cab-hot {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.cab-hot:focus-visible {
+  outline: 2px solid var(--crt-hi);
+  outline-offset: 3px;
+}
+
+/* The tube: the one dark surface, in the CRT tokens of the boot sequence. */
+.crt {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+  padding: 16px 18px 14px;
+  background: var(--crt);
+  color: var(--crt-text);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.5;
+  transform-origin: 0 0;
+  overflow: hidden;
+  box-shadow:
+    inset 0 0 0 1px #1a1c1a,
+    inset 0 0 36px rgba(0, 0, 0, 0.6);
+}
+
+.crt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(transparent 0 2px, rgba(0, 0, 0, 0.16) 2px 3px);
+  pointer-events: none;
+}
+
+.crt.is-tap {
+  cursor: pointer;
+}
+
+.crt-hud,
+.crt-round-hud {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--pixel);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--crt-hi);
+}
+
+.crt-title {
+  margin: 0;
+  font-family: var(--pixel);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--crt-hi);
+}
+
+.crt-line {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  opacity: 0.92;
+}
+
+.crt-line a,
+.crt-brief a {
+  color: var(--crt-hi);
+}
+
+.crt .meet-cur {
+  background: var(--crt-hi);
+}
+
+.crt-menu {
+  list-style: none;
+  margin: 2px 0 0;
+  padding: 0;
+  overflow: auto;
+  font-family: var(--pixel);
+  font-size: 11.5px;
+  line-height: 1.3;
+}
+
+.crt-menu button {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 6px 0 6px 20px;
+  border: 0;
+  background: none;
+  color: var(--crt-text);
+  font: inherit;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  opacity: 0.72;
+  cursor: pointer;
+}
+
+.crt-menu li.is-on button {
+  color: var(--crt-hi);
+  opacity: 1;
+}
+
+.crt-menu li.is-on button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  width: 7px;
+  height: 10px;
+  margin-top: -5px;
+  background: var(--crt-hi);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+.crt-menu button:focus-visible,
+.crt-soft button:focus-visible,
+.crt-back:focus-visible,
+.crt-attract:focus-visible {
+  outline: 1px dashed var(--crt-hi);
+  outline-offset: -1px;
+}
+
+.crt-form {
+  margin-top: 6px;
+}
+
+.crt-field {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-family: var(--pixel);
+  font-size: 16px;
+  color: var(--crt-hi);
+}
+
+.crt-field input {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 0;
+  border: 0;
+  border-bottom: 1px solid #2c2f2c;
+  background: none;
+  color: var(--crt-text);
+  font: 16px/1.3 var(--pixel);
+  text-transform: uppercase;
+  caret-color: var(--crt-hi);
+  caret-shape: block;
+}
+
+.crt-field input:focus {
+  outline: none;
+  border-bottom-color: var(--crt-hi);
+}
+
+.crt-field input::placeholder {
+  color: #6f726e;
+  font: 13px/1.3 var(--mono);
+  text-transform: none;
+  opacity: 1;
+}
+
+.crt-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  font-family: var(--pixel);
+  font-size: 10px;
+  color: var(--crt-text);
+}
+
+.crt-soft {
+  display: flex;
+  gap: 8px;
+}
+
+.crt-soft button,
+.crt-back {
+  padding: 8px 12px;
+  border: 1px solid #3a3d3a;
+  border-radius: 4px;
+  background: none;
+  color: var(--crt-text);
+  font: 11px/1 var(--pixel);
+  cursor: pointer;
+}
+
+.crt-soft button:first-child {
+  border-color: var(--crt-hi);
+  color: var(--crt-hi);
+}
+
+.crt-soft button:hover,
+.crt-back:hover {
+  border-color: var(--crt-hi);
+}
+
+.crt-blink {
+  animation: dg-blink 1.2s steps(1) infinite;
+}
+
+.crt-attract {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 22px;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--crt-text);
+  text-align: center;
+  cursor: pointer;
+}
+
+.crt-kicker {
+  font: 13px/1.6 var(--pixel);
+  color: var(--crt-hi);
+}
+
+.crt-big {
+  max-width: 11ch;
+  font: 26px/1.3 var(--pixel);
+}
+
+.crt-attract .crt-blink {
+  font: 18px/1 var(--pixel);
+  color: var(--crt-hi);
+}
+
+.crt-dim {
+  color: #6f726e;
+  font-size: 13px;
+}
+
+.crt-scores {
+  border-collapse: collapse;
+  margin: 2px 0 8px;
+  font-family: var(--pixel);
+  font-size: 13px;
+}
+
+.crt-scores td {
+  padding: 5px 18px 5px 0;
+}
+
+.crt-scores td:first-child {
+  color: var(--crt-hi);
+}
+
+.crt-result {
+  margin: 0;
+  font: 11px/1.5 var(--pixel);
+  color: var(--crt-hi);
+}
+
+.crt-note {
+  margin: 0;
+  font-size: 12px;
+  color: #a9aba6;
+}
+
+.crt-fit {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 14px;
+  margin: 0;
+  font-family: var(--pixel);
+  font-size: 10px;
+}
+
+.crt-fit > div {
+  display: contents;
+}
+
+.crt-fit dt {
+  color: var(--crt-hi);
+}
+
+.crt-fit dd {
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.crt-brief {
+  max-height: 150px;
+  margin: 0;
+  padding: 8px 0;
+  border-top: 1px solid #2c2f2c;
+  border-bottom: 1px solid #2c2f2c;
+  overflow: auto;
+  color: #c9cbc5;
+  font: 11px/1.5 var(--mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.crt-round {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.crt-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid #1f221f;
+  image-rendering: pixelated;
+}
+
+.room-caption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 22px;
+  margin: 14px 0 0;
+  color: var(--ink-faint);
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+@media (max-width: 720px) {
+  /* A phone stands at the cabinet from the start; the tube fills the width, so the type inside grows to compensate the scale. */
+  .room[data-stage="attract"] .cab-hero {
+    display: none;
+  }
+
+  .room[data-stage="attract"] .cab-view {
+    display: block;
+  }
+
+  .cab-view {
+    height: min(78vh, 680px);
+  }
+
+  .crt {
+    font-size: 16px;
+  }
+
+  .crt-menu {
+    font-size: 13.5px;
+  }
+
+  .crt-menu button {
+    padding-block: 8px;
+  }
+
+  .crt-title {
+    font-size: 17px;
+  }
+
+  .crt-foot,
+  .crt-hud,
+  .crt-round-hud {
+    font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crt-blink {
+    animation: none;
+  }
+}
+
+@media (max-width: 340px) {
+  /* Below a small phone the text-mode status line wraps instead of scrolling the page sideways. */
+  .meet-status span:last-child {
+    white-space: normal;
+  }
+}
