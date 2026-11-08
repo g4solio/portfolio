@@ -91,4 +91,26 @@ assert.ok(facts.find((t) => t.cmd === "code").lines[0].includes("enumerated more
 assert.ok(facts.find((t) => t.cmd === "work").lines[0].includes("Galactic Fighters"), "the shooter's fact leads work");
 assert.match(gameOverLine("Marta"), /thirteen, Marta/);
 
+// The laid-out screens: a layout holds its slots in data order and the rest sit aside; what it prints fits.
+const { layoutSlots } = await import("../data/meet.ts");
+const { chapters } = await import("../data/portfolio.ts");
+const schematics = new Set(chapters.flatMap((c) => (c.decision ? [c.decision.schematic] : [])));
+for (const m of moves.filter((x) => x.layout)) {
+  if (m.layout === "countdown") {
+    assert.ok(m.typed, `${m.key}: the countdown takes a typed answer`);
+    continue;
+  }
+  const slots = layoutSlots[m.layout];
+  assert.ok(m.choices && m.choices.length > slots, `${m.key}: the ${m.layout} holds ${slots} choices and sets at least one aside`);
+  for (const c of m.choices) assert.ok(!c.short || c.short.length <= 24, `${m.key}/${c.cmd}: short too long for the tube`);
+  const held = m.choices.slice(0, slots);
+  if (m.layout === "stages" || m.layout === "counter") for (const c of held) assert.ok(c.short, `${m.key}/${c.cmd}: the ${m.layout} prints a short`);
+  if (m.layout === "stages") for (const c of held) assert.ok(["REMOTE", "HYBRID", "ON SITE"].includes(c.short.split(" · ")[0]), `${m.key}/${c.cmd}: a stage names its mode first`);
+  if (m.layout === "bosses") for (const c of held) assert.ok(schematics.has(c.cmd), `${m.key}/${c.cmd}: a boss is an engineering note's schematic`);
+}
+// Up is up: the ladder's top rung and the counter's top band come first.
+const order = (key) => moves.find((m) => m.key === key).choices.slice(0, 5).map((c) => c.cmd);
+assert.deepEqual(order("seniority"), ["principal", "lead", "senior", "mid", "junior"]);
+assert.deepEqual(order("pay"), ["75-plus", "65-75", "60-65", "50-60", "under-50"]);
+
 console.log(`meet-check: ok (${moves.length} moves, ${factCount} facts in ${facts.length} topics, longest brief ${briefText(longest).length} chars, mailto ${mailtoHref(longest).length} chars)`);
