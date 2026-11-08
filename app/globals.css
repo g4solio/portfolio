@@ -1985,26 +1985,41 @@ html.js body:has(.meet-arcade[data-mode="cabinet"]) {
   color: #a9aba6;
 }
 
-.crt-fit {
+/* GAME OVER: the fit as dot-leader rows and a plain sum, the brief as a torn ticket, four buttons. */
+.crt-tally {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 2px 14px;
+  gap: 2px;
   margin: 0;
-  font-family: var(--pixel);
-  font-size: 10px;
+  font: 10px/1.6 var(--pixel);
+  text-transform: uppercase;
 }
 
-.crt-fit > div {
-  display: contents;
+.crt-tally > div {
+  display: flex;
+  gap: 6px;
 }
 
-.crt-fit dt {
+.crt-tally dt {
+  display: flex;
+  flex: 1;
+  gap: 6px;
   color: var(--crt-hi);
 }
 
-.crt-fit dd {
+.crt-tally dt::after {
+  content: "";
+  flex: 1;
+  margin-bottom: 5px;
+  border-bottom: 2px dotted #3a3d3a;
+}
+
+.crt-tally dd {
   margin: 0;
-  text-transform: uppercase;
+}
+
+.crt-tally-sum {
+  margin: 0;
+  font: 10px/1 var(--pixel);
 }
 
 .crt-brief {
@@ -2018,6 +2033,47 @@ html.js body:has(.meet-arcade[data-mode="cabinet"]) {
   font: 11px/1.5 var(--mono);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+
+.crt-ticket {
+  max-height: 132px;
+  padding: 12px 12px 14px;
+  border: 0;
+  background: var(--crt-text);
+  color: var(--crt);
+  scrollbar-color: #6f726e transparent;
+  scrollbar-width: thin;
+  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 12px 100%;
+}
+
+.crt-ticket a {
+  color: var(--crt);
+}
+
+.crt-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.crt-btns button {
+  padding: 9px 6px;
+  border: 1px solid #3a3d3a;
+  border-radius: 4px;
+  background: none;
+  color: var(--crt-text);
+  font: 11px/1 var(--pixel);
+  cursor: pointer;
+}
+
+.crt-btns button.is-on {
+  border-color: var(--crt-hi);
+  color: var(--crt-hi);
+}
+
+.crt-btns button:focus-visible {
+  outline: 1px dashed var(--crt-hi);
+  outline-offset: 2px;
 }
 
 .crt-round {
@@ -2421,6 +2477,15 @@ html.js body:has(.meet-arcade[data-mode="cabinet"]) {
 
   .crt-caption-px {
     font-size: 13px;
+  }
+
+  .crt-tally,
+  .crt-tally-sum {
+    font-size: 11px;
+  }
+
+  .crt-btns button {
+    font-size: 12px;
   }
 }
 

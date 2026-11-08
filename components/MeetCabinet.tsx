@@ -217,13 +217,13 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
   let line = "";
   let hint = "";
   let items: Item[] = [];
-  // A laid-out move screen (issue #6); the plain menu otherwise. Two-column screens step by rows.
+  // A laid-out move screen (issue #6); the plain menu otherwise. Two-column screens, GAME OVER's buttons included, step by rows.
   const layout = stage === "play" && turn.kind === "move" ? current?.layout : undefined;
-  const cols = layout === "stages" || layout === "bosses" ? 2 : 1;
+  const cols = layout === "stages" || layout === "bosses" || stage === "over" ? 2 : 1;
   if (stage === "over") {
     title = "GAME OVER";
     line = gameOverLine(name);
-    hint = "↑↓ MOVE · A SELECT";
+    hint = "ARROWS MOVE · A SELECT";
     items = [
       {
         id: "submit",
@@ -294,7 +294,7 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
       // A plain menu wraps around; a laid-out screen stops at its edges, so up never jumps to the bottom.
       const moveSel = (delta: number) => {
         if (items.length === 0) return;
-        setSel((s) => (layout ? clamp(s + delta, 0, items.length - 1) : (s + delta + items.length) % items.length));
+        setSel((s) => (layout || stage === "over" ? clamp(s + delta, 0, items.length - 1) : (s + delta + items.length) % items.length));
         cue("move");
       };
       if (e.key === "ArrowDown" || e.key === "s" || e.key === "S") {
@@ -413,11 +413,8 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
 
               {stage === "over" && (
                 <>
-                  <dl className="crt-fit">
-                    <dt>FIT</dt>
-                    <dd>
-                      {scoreOf(answers)}/{scope.length} INSIDE MY SCOPE
-                    </dd>
+                  {/* The fit, one plain line per criterion and a plain sum: no score count-up, so a miss never reads as losing. */}
+                  <dl className="crt-tally">
                     {scope.map((c) => (
                       <div key={c.key}>
                         <dt>{c.label}</dt>
@@ -425,7 +422,10 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
                       </div>
                     ))}
                   </dl>
-                  <pre className="crt-brief" tabIndex={0}>
+                  <p className="crt-tally-sum">
+                    INSIDE MY SCOPE ON {scoreOf(answers)} OF {scope.length}
+                  </p>
+                  <pre className="crt-brief crt-ticket" tabIndex={0}>
                     {linkify(briefText(answers))}
                   </pre>
                 </>
@@ -460,7 +460,26 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
 
               {menu && layout && current && <MoveLayout move={current} items={items} sel={sel} setSel={setSel} />}
 
-              {menu && !layout && (
+              {stage === "over" && (
+                <div className="crt-btns">
+                  {items.map((it, i) => (
+                    <button
+                      key={it.id}
+                      type="button"
+                      className={i === sel ? "is-on" : ""}
+                      aria-label={it.label}
+                      onClick={it.run}
+                      onMouseEnter={() => setSel(i)}
+                      onFocus={() => setSel(i)}
+                      aria-current={i === sel ? "true" : undefined}
+                    >
+                      {it.label.split(" · ")[0]}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {menu && !layout && stage !== "over" && (
                 <ol className="crt-menu">
                   {items.map((it, i) => (
                     <li key={it.id} className={i === sel ? "is-on" : ""}>
