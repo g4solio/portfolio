@@ -2,16 +2,17 @@
 
 import { type ReactElement, type ReactNode, useEffect, useRef } from "react";
 import { Schematic } from "@/components/Schematic";
-import { type Move, layoutSlots } from "@/data/meet";
+import { type Layout, type Move, layoutSlots } from "@/data/meet";
 import type { SchematicId } from "@/data/portfolio";
+import { Typed } from "./Typed";
 
 // The laid-out cabinet screens: same tube, same four colours, the same items and keys as the plain menu.
 // What changes is the layout and its pixel art. Picked from rendered candidates for issue #6.
 
 type Item = { id: string; label: string; run: () => void };
 
-/** Pixel art as code grids in the tube's colours: # text, o highlight, d dim. One rect per run of a row. */
-const INK: Record<string, string> = { "#": "px-t", o: "px-h", d: "px-d" };
+/** Pixel art as code grids in the tube's colours: # text, o highlight, d dim, k the tube itself. One rect per run of a row. */
+const INK: Record<string, string> = { "#": "px-t", o: "px-h", d: "px-d", k: "px-k" };
 function Pixels({ rows, cell }: { rows: string[]; cell: number }) {
   const w = Math.max(...rows.map((r) => r.length));
   const runs: ReactElement[] = [];
@@ -39,6 +40,253 @@ const STAR = ["....#....", "....#....", "...###...", "#########", ".#######.", "
 const RUNGS = [STAR, ["#######", "", ...chevrons(3)], chevrons(3), chevrons(2), chevrons(1)];
 /** The cat asleep on the hood, the same grid as the sticker in scripts/cabinet/render.html. */
 const CAT = ["#....#......", "##..##......", "######......", "#o##o#......", "######......", ".####.......", "######......", "#######.....", "#######.....", "#######...#.", "#######..##.", "#######.##..", "#########...", "##.###......"];
+
+/** The designated Mage from the side art: the 24 × 34 grid scripts/cabinet/render.html builds, in the tube's inks. */
+const MAGE = (() => {
+  const g = Array.from({ length: 34 }, () => Array(24).fill("."));
+  const span = (r: number, c0: number, c1: number, ch = "#") => {
+    for (let c = c0; c <= c1; c++) g[r][c] = ch;
+  };
+  ["..ooooo..", ".ooooooo.", "ooooooooo", "ooooooooo", "ooooooooo", ".ooooooo.", "..ooooo.."].forEach((row, i) => [...row].forEach((ch, j) => ch !== "." && (g[8 + i][j] = ch)));
+  span(6, 4, 4, "o"); span(7, 3, 3, "o"); span(7, 5, 5, "o"); // flame
+  [[0, 16, 16], [1, 16, 16], [2, 15, 17], [3, 15, 17], [4, 14, 18], [5, 14, 18], [6, 13, 19], [7, 13, 19], [8, 12, 20], [9, 9, 22], [10, 13, 19], [11, 13, 19]].forEach(([r, a, b]) => span(r, a, b)); // hat, brim, head
+  for (let r = 12; r <= 33; r++) span(r, r < 18 ? 12 : r < 24 ? 11 : r < 30 ? 10 : 9, 20); // robe
+  span(15, 9, 11); span(16, 8, 11); span(17, 8, 11); span(18, 9, 11); // sleeve
+  span(16, 6, 7, "d"); span(17, 6, 7, "d"); // hand
+  for (let r = 12; r <= 14; r++) span(r, 14, 18, "d");
+  span(15, 15, 17, "d"); span(16, 15, 17, "d"); span(17, 16, 16, "d"); // beard
+  span(20, 11, 20, "o"); // sash
+  for (let r = 4; r <= 33; r++) span(r, 22, 22);
+  span(1, 22, 22, "o"); span(2, 21, 23, "o"); span(3, 22, 22, "o"); // staff, crystal
+  return g.map((r) => r.join(""));
+})();
+
+/**
+ * The typed moves dress the one input the cabinet owns, passed in as `field`: NAME ENTRY seats the
+ * recruiter as player 2 beside Davide, INSERT COIN puts the coin door above it, PLAYER 1 writes the role
+ * as the Mage's class, FREE PLAY opens it up. Any other typed move gets the plain field.
+ */
+export function TypedField({ layout, field, prefix, filled }: { layout?: Layout; field: ReactNode; prefix: string; filled: boolean }) {
+  if (layout === "players") {
+    return (
+      <div className="crt-players">
+        <div>
+          <b>1P</b>
+          <span>DAVIDE</span>
+          <i>HOST</i>
+        </div>
+        <label className="is-on">
+          <b>2P</b>
+          {field}
+          <i>JOINING</i>
+        </label>
+      </div>
+    );
+  }
+  if (layout === "class") {
+    return (
+      <div className="crt-class">
+        <Pixels rows={MAGE} cell={2.6} />
+        <div>
+          <span className="crt-k">PLAYER 1</span>
+          <b>DAVIDE</b>
+          <label>
+            <span className="crt-k">CLASS</span>
+            {field}
+          </label>
+        </div>
+      </div>
+    );
+  }
+  const plain = (
+    <label className={`crt-field${layout === "open" ? " crt-open" : ""}`}>
+      <span>{layout === "coin" ? "◉" : prefix}</span>
+      {field}
+    </label>
+  );
+  if (layout !== "coin") return plain;
+  return (
+    <>
+      <div className="crt-door" aria-hidden="true">
+        {[0, 1].map((i) => (
+          <span key={i}>
+            <i />
+            <b>INSERT COIN</b>
+          </span>
+        ))}
+      </div>
+      {plain}
+      <p className="crt-credit" aria-hidden="true">
+        CREDIT {filled ? 1 : 0}
+      </p>
+    </>
+  );
+}
+
+/**
+ * Art beside a plain menu, all from the move's line: LOADOUT's equipped kit, SELECT MODE's loading bar
+ * (the notice, then the month to recharge), and the ROUNDS tower for the choice under the cursor.
+ */
+export function MenuArt({ move, sel }: { move: Move; sel: number }) {
+  const art = move.art ?? [];
+  if (move.layout === "kit") {
+    return (
+      <div className="crt-kit" aria-hidden="true">
+        <span className="crt-k">EQUIPPED</span>
+        {art.map((a) => (
+          <span key={a}>{a}</span>
+        ))}
+      </div>
+    );
+  }
+  if (move.layout === "loading") {
+    return (
+      <div className="crt-loading" aria-hidden="true">
+        <div>
+          {art.slice(0, -1).map((a, i) => (
+            <i key={a} className={i === 0 ? "is-on" : ""}>
+              {a}
+            </i>
+          ))}
+        </div>
+        <span className="crt-k">{art.at(-1)}</span>
+      </div>
+    );
+  }
+  const floors = (move.choices?.[sel]?.short ?? "").split(" · ");
+  return (
+    <div className="crt-tower" aria-hidden="true">
+      <span className="is-top">OFFER</span>
+      {[...floors].reverse().map((f, i) => (
+        <span key={i} className={f === "TAKE-HOME" ? "is-th" : ""}>
+          {f}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+// The cabinet's own stickers (scripts/cabinet/render.html), in the tube's inks; k is a hole in the sticker.
+const PAD = ["....########....", "..############..", ".##############.", "###k#######k####", "##kkk####k#k####", "###k#######k####", ".##############.", "..####....####..", "..###......###.."];
+const PHONES = ["....######....", "..##......##..", ".#..........#.", ".#..........#.", "#............#", "#............#", "##..........##", "###........###", "###........###", "###........###", "###........###", ".##........##."];
+const BUBBLE = [".############.", "#kkkkkkkkkkkk#", "#kkkkkkkkkkkk#", "#kk##k##k##kk#", "#kk##k##k##kk#", "#kkkkkkkkkkkk#", "#kkkkkkkkkkkk#", ".############.", "...###........", "..##..........", ".#............"];
+const HAT = ["......#.......", ".....###......", ".....###......", "....#####.....", "....#####.....", "...#######....", "...#######....", "..#########...", "..####o####...", ".###########..", "##############", ".############."];
+/** The "enumerated twice" warning, as a sign. */
+const WARN = ["....o....", "...ooo...", "...oko...", "..ookoo..", "..ookoo..", ".oookooo.", ".ooooooo.", "ooookoooo", "ooooooooo"];
+/** The ship from the Galactic Fighters round (components/meet/rounds.tsx), for the casebook. */
+const SHIP = [".....#.....", "....###....", "....###....", "#...###...#", "##.#####.##", "###########", "#.#######.#"];
+
+/** One sticker per fact topic: the cabinet's, the MO plate and the >_ prompt as type, a dash for the honest answer. */
+export function TopicSticker({ topic, cell }: { topic: string; cell: number }) {
+  const grid: Record<string, string[]> = { games: PAD, tabletop: HAT, comics: BUBBLE, music: PHONES, cats: CAT, code: WARN, work: SHIP };
+  if (grid[topic]) return <Pixels rows={grid[topic]} cell={cell} />;
+  const type: Record<string, string> = { modena: "MO", tools: ">_", sport: "–" };
+  return (
+    <span className={`crt-type is-${topic}`} style={{ fontSize: cell * 6 }} aria-hidden="true">
+      {type[topic] ?? "?"}
+    </span>
+  );
+}
+
+/** BONUS STAGE: the topics left as a two-column board of stickers; skip, the last item, sits apart. */
+export function TopicBoard({ items, sel, setSel }: { items: Item[]; sel: number; setSel: (i: number) => void }) {
+  const pick = (i: number) => ({
+    type: "button" as const,
+    onClick: items[i].run,
+    onMouseEnter: () => setSel(i),
+    onFocus: () => setSel(i),
+    "aria-current": i === sel ? ("true" as const) : undefined,
+  });
+  const last = items.length - 1;
+  return (
+    <>
+      <div className="crt-board">
+        {items.slice(0, last).map((it, i) => (
+          <button key={it.id} className={i === sel ? "is-on" : ""} {...pick(i)}>
+            <span className="crt-board-art">
+              <TopicSticker topic={it.id} cell={2} />
+            </span>
+            {it.label}
+          </button>
+        ))}
+      </div>
+      <div className="crt-asides">
+        <button className={`crt-aside${sel === last ? " is-on" : ""}`} {...pick(last)}>
+          {items[last].label}
+        </button>
+      </div>
+    </>
+  );
+}
+
+/**
+ * A fact, after its topic is picked. A line with a shape of its own gets a format: the games top three as
+ * the high-score table, the music top three as a chart, the tools at the text mode's prompt, comics in a
+ * speech bubble. Every other fact sits under its topic's sticker.
+ */
+export function FactBody({ topic, index, line }: { topic: string; index: number; line: string }) {
+  const games = topic === "games" && index === 0 ? /top three: (.+)\.$/.exec(line) : null;
+  const music = topic === "music" ? /^(.+) have been my top three on Spotify for years\.$/.exec(line) : null;
+  const chart = (names: string[]) => (
+    <table className="crt-scores">
+      <tbody>
+        {names.map((n, i) => (
+          <tr key={n}>
+            <td>{["1ST", "2ND", "3RD"][i]}</td>
+            <td>{n}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+  if (games) {
+    return (
+      <>
+        {chart(games[1].split(", "))}
+        <p className="crt-line">{line.slice(0, games.index).trim()}</p>
+      </>
+    );
+  }
+  if (music) {
+    return (
+      <>
+        <p className="crt-k">TOP 3 · SPOTIFY · FOR YEARS</p>
+        {chart(music[1].split(/, | and /))}
+      </>
+    );
+  }
+  if (topic === "tools") {
+    return (
+      <div className="crt-term">
+        <p>
+          <span>&gt;</span> {topic}
+        </p>
+        <p className="crt-line">
+          <Typed text={line} />
+        </p>
+      </div>
+    );
+  }
+  if (topic === "comics") {
+    return (
+      <div className="crt-panel">
+        <p className="crt-speech">
+          <Typed text={line} />
+        </p>
+      </div>
+    );
+  }
+  return (
+    <>
+      <span className="crt-fact-art">
+        <TopicSticker topic={topic} cell={5} />
+      </span>
+      <p className="crt-line">
+        <Typed text={line} />
+      </p>
+    </>
+  );
+}
 
 const SCENES: Record<string, ReactNode> = {
   REMOTE: <Pixels rows={HOUSE} cell={3} />,
@@ -122,7 +370,7 @@ function Portrait({ id }: { id: SchematicId }) {
 
 /** The choices of a laid-out move: the layout holds the first ones, the rest sit aside as buttons. */
 export function MoveLayout({ move, items, sel, setSel }: { move: Move; items: Item[]; sel: number; setSel: (i: number) => void }) {
-  const layout = move.layout ?? "countdown";
+  const layout = move.layout as keyof typeof layoutSlots;
   const slots = layoutSlots[layout];
   const choices = move.choices ?? [];
   const on = (i: number) => (i === sel ? " is-on" : "");

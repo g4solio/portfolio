@@ -8,6 +8,7 @@ import {
   factCount,
   facts,
   gameOverLine,
+  layoutSlots,
   mailtoHref,
   moves,
   rounds,
@@ -17,7 +18,7 @@ import {
   verdictWord,
 } from "@/data/meet";
 import views from "@/data/meet-cabinet.json";
-import { Countdown, MoveLayout } from "./meet/layouts";
+import { Countdown, FactBody, MenuArt, MoveLayout, TopicBoard, TypedField } from "./meet/layouts";
 import { ROUND_TITLES, Round } from "./meet/rounds";
 import { type Cue, createSound } from "./meet/sound";
 import { Typed, linkify } from "./meet/Typed";
@@ -66,33 +67,6 @@ function homography(w: number, h: number, q: number[][]): string {
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 const pad2 = (n: number) => String(n).padStart(2, "0");
 const topicLabel = (cmd: string) => facts.find((t) => t.cmd === cmd)?.label ?? cmd;
-
-/** The first games fact is a top three, so it goes up as the high-score table. */
-function FactBody({ topic, index, line }: { topic: string; index: number; line: string }) {
-  const top = topic === "games" && index === 0 ? /top three: (.+)\.$/.exec(line) : null;
-  if (!top) {
-    return (
-      <p className="crt-line">
-        <Typed text={line} />
-      </p>
-    );
-  }
-  return (
-    <>
-      <table className="crt-scores">
-        <tbody>
-          {top[1].split(", ").map((title, i) => (
-            <tr key={title}>
-              <td>{["1ST", "2ND", "3RD"][i]}</td>
-              <td>{title}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <p className="crt-line">{line.slice(0, top.index).trim()}</p>
-    </>
-  );
-}
 
 export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMode: () => void }) {
   const [stage, setStage] = useState<Stage>("attract");
@@ -219,7 +193,8 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
   let items: Item[] = [];
   // A laid-out move screen (issue #6); the plain menu otherwise. Two-column screens, GAME OVER's buttons included, step by rows.
   const layout = stage === "play" && turn.kind === "move" ? current?.layout : undefined;
-  const cols = layout === "stages" || layout === "bosses" || stage === "over" ? 2 : 1;
+  const board = !!layout && layout in layoutSlots;
+  const cols = layout === "stages" || layout === "bosses" || stage === "over" || (stage === "play" && turn.kind === "ask") ? 2 : 1;
   if (stage === "over") {
     title = "GAME OVER";
     line = gameOverLine(name);
@@ -249,7 +224,7 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
   } else if (turn.kind === "ask") {
     title = "BONUS STAGE";
     line = askLine(name);
-    hint = "↑↓ MOVE · A SELECT";
+    hint = "ARROWS MOVE · A SELECT";
     items = [...remaining.map((t) => ({ id: t.cmd, label: t.label, run: () => ask(t.cmd) })), { id: "skip", label: "skip · next question", run: proceed }];
   } else if (turn.kind === "fact") {
     title = `BONUS · ${topicLabel(turn.topic)}`;
@@ -294,7 +269,7 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
       // A plain menu wraps around; a laid-out screen stops at its edges, so up never jumps to the bottom.
       const moveSel = (delta: number) => {
         if (items.length === 0) return;
-        setSel((s) => (layout || stage === "over" ? clamp(s + delta, 0, items.length - 1) : (s + delta + items.length) % items.length));
+        setSel((s) => (layout || cols > 1 ? clamp(s + delta, 0, items.length - 1) : (s + delta + items.length) % items.length));
         cue("move");
       };
       if (e.key === "ArrowDown" || e.key === "s" || e.key === "S") {
@@ -341,6 +316,19 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
   useEffect(() => {
     if (ready && typedKey) inputRef.current?.focus({ preventScroll: true });
   }, [ready, typedKey]);
+
+  // The plain menu; a move with art beside it (LOADOUT, SELECT MODE, ROUNDS) keeps it whole.
+  const list = (
+    <ol className="crt-menu">
+      {items.map((it, i) => (
+        <li key={it.id} className={i === sel ? "is-on" : ""}>
+          <button type="button" onClick={it.run} onMouseEnter={() => setSel(i)} onFocus={() => setSel(i)} aria-current={i === sel ? "true" : undefined}>
+            {it.label}
+          </button>
+        </li>
+      ))}
+    </ol>
+  );
 
   return (
     <section className="room" data-stage={stage} aria-label="The arcade cabinet">
@@ -439,26 +427,30 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
                     submitTyped();
                   }}
                 >
-                  <label className="crt-field">
-                    <span>{current.key === "name" ? "NAME:" : "> "}</span>
-                    <input
-                      key={current.key}
-                      ref={inputRef}
-                      value={typedValue}
-                      onChange={(e) => setTypedValue(e.target.value)}
-                      maxLength={current.typed.max}
-                      placeholder={current.typed.hint}
-                      autoComplete="off"
-                      autoCapitalize="off"
-                      spellCheck={false}
-                      enterKeyHint="send"
-                      aria-label={current.topic}
-                    />
-                  </label>
+                  <TypedField
+                    layout={current.layout}
+                    prefix={current.key === "name" ? "NAME:" : "> "}
+                    filled={typedValue.trim() !== ""}
+                    field={
+                      <input
+                        key={current.key}
+                        ref={inputRef}
+                        value={typedValue}
+                        onChange={(e) => setTypedValue(e.target.value)}
+                        maxLength={current.typed.max}
+                        placeholder={current.typed.hint}
+                        autoComplete="off"
+                        autoCapitalize="off"
+                        spellCheck={false}
+                        enterKeyHint="send"
+                        aria-label={current.topic}
+                      />
+                    }
+                  />
                 </form>
               )}
 
-              {menu && layout && current && <MoveLayout move={current} items={items} sel={sel} setSel={setSel} />}
+              {menu && board && current && <MoveLayout move={current} items={items} sel={sel} setSel={setSel} />}
 
               {stage === "over" && (
                 <div className="crt-btns">
@@ -479,17 +471,14 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
                 </div>
               )}
 
-              {menu && !layout && stage !== "over" && (
-                <ol className="crt-menu">
-                  {items.map((it, i) => (
-                    <li key={it.id} className={i === sel ? "is-on" : ""}>
-                      <button type="button" onClick={it.run} onMouseEnter={() => setSel(i)} onFocus={() => setSel(i)} aria-current={i === sel ? "true" : undefined}>
-                        {it.label}
-                      </button>
-                    </li>
-                  ))}
-                </ol>
-              )}
+              {menu && stage === "play" && turn.kind === "ask" && <TopicBoard items={items} sel={sel} setSel={setSel} />}
+
+              {menu && !board && stage === "play" && turn.kind !== "ask" && (layout && current ? (
+                <div className={`crt-with-art is-${layout}`}>
+                  <MenuArt move={current} sel={sel} />
+                  {list}
+                </div>
+              ) : list)}
 
               {note && <p className="crt-note">{note}</p>}
 

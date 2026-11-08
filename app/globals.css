@@ -2414,6 +2414,338 @@ html.js body:has(.meet-arcade[data-mode="cabinet"]) {
   left: 44px;
 }
 
+/* The typed screens: NAME ENTRY seats player 2, INSERT COIN has the coin door, PLAYER 1 a class card, FREE PLAY opens up. */
+.crt-k {
+  display: block;
+  font: 10px/1.2 var(--pixel);
+  color: #6f726e;
+  letter-spacing: 0.06em;
+}
+
+.crt-players {
+  display: grid;
+  gap: 10px;
+}
+
+.crt-players > * {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #3a3d3a;
+  font: 16px/1 var(--pixel);
+}
+
+.crt-players .is-on {
+  padding: 9px 11px;
+  border: 2px solid var(--crt-hi);
+}
+
+.crt-players b {
+  font-weight: 700;
+  color: #6f726e;
+}
+
+.crt-players .is-on b {
+  color: var(--crt-hi);
+}
+
+.crt-players i {
+  font: 10px/1 var(--pixel);
+  font-style: normal;
+  color: #6f726e;
+}
+
+.crt-players input,
+.crt-class input {
+  min-width: 0;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  color: var(--crt-hi);
+  font: 16px/1.2 var(--pixel);
+  text-transform: uppercase;
+  caret-color: var(--crt-hi);
+}
+
+.crt-players input:focus,
+.crt-class input:focus {
+  outline: none;
+}
+
+.crt-players input::placeholder,
+.crt-class input::placeholder {
+  color: #6f726e;
+  font: 13px/1.3 var(--mono);
+  text-transform: none;
+}
+
+.crt-class {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: end;
+  gap: 16px;
+  padding: 14px;
+  border: 2px solid var(--crt-hi);
+}
+
+.crt-class > div {
+  min-width: 0;
+}
+
+.crt-class b {
+  display: block;
+  margin: 4px 0 14px;
+  font: 700 22px/1 var(--pixel);
+  color: var(--crt-hi);
+}
+
+.crt-class input {
+  width: 100%;
+  border-bottom: 1px solid #2c2f2c;
+}
+
+.crt-class input:focus {
+  border-bottom-color: var(--crt-hi);
+}
+
+.crt-door {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 10px;
+  padding: 16px;
+  border: 2px solid #3a3d3a;
+}
+
+.crt-door span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 6px;
+  border: 1px solid #2c2f2c;
+  background: #151815;
+}
+
+.crt-door i {
+  width: 8px;
+  height: 34px;
+  border: 2px solid #3a3d3a;
+  background: #000;
+}
+
+.crt-door b {
+  padding: 3px 6px;
+  background: var(--crt-hi);
+  color: var(--crt);
+  font: 400 10px/1 var(--pixel);
+}
+
+.crt-credit {
+  margin: 8px 0 0;
+  font: 12px/1 var(--pixel);
+  color: var(--crt-hi);
+  text-align: right;
+}
+
+.crt-open input,
+.crt-open input:focus {
+  border-bottom-color: transparent;
+}
+
+/* Art beside a plain menu: LOADOUT's kit, SELECT MODE's loading bar, the ROUNDS tower. */
+.crt-with-art {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+
+.crt-with-art.is-tower {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  align-items: end;
+  gap: 14px;
+}
+
+.crt-kit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.crt-kit > span:not(.crt-k) {
+  padding: 4px 7px;
+  border: 1px solid var(--crt-text);
+  font: 10px/1 var(--pixel);
+  text-transform: uppercase;
+}
+
+.crt-loading {
+  display: grid;
+  gap: 6px;
+}
+
+.crt-loading > div {
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-auto-flow: column;
+  gap: 3px;
+  padding: 3px;
+  border: 2px solid #3a3d3a;
+}
+
+.crt-loading i {
+  padding: 7px 4px;
+  background: #2c2f2c;
+  font: 10px/1 var(--pixel);
+  font-style: normal;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.crt-loading i.is-on {
+  background: var(--crt-hi);
+  color: var(--crt);
+}
+
+.crt-loading .crt-k {
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.crt-tower {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.crt-tower span {
+  padding: 7px 4px;
+  border: 1px solid #3a3d3a;
+  font: 10px/1 var(--pixel);
+  text-align: center;
+}
+
+.crt-tower .is-top {
+  border-color: var(--crt-hi);
+  background: var(--crt-hi);
+  color: var(--crt);
+}
+
+.crt-tower .is-th {
+  border: 1px dashed var(--crt-hi);
+  color: var(--crt-hi);
+}
+
+/* BONUS STAGE: the topics as a board of the cabinet's stickers. The facts: a format where the line has one, a sticker otherwise. */
+.crt-px .px-k {
+  fill: var(--crt);
+}
+
+.crt-type {
+  font-family: var(--pixel);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--crt-text);
+}
+
+.crt-type.is-modena {
+  padding: 0.12em 0.45em;
+  border: 0.14em solid var(--crt-text);
+  border-radius: 50%;
+}
+
+.crt-type.is-tools {
+  color: var(--crt-hi);
+}
+
+.crt-type.is-sport {
+  color: #6f726e;
+}
+
+.crt-board {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.crt-board button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 46px;
+  padding: 0 8px;
+  border: 1px solid #3a3d3a;
+  background: none;
+  color: var(--crt-text);
+  font: 10px/1.2 var(--pixel);
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.crt-board button.is-on {
+  padding: 0 7px;
+  border: 2px solid var(--crt-hi);
+  color: var(--crt-hi);
+}
+
+.crt-board button:focus-visible {
+  outline: 1px dashed var(--crt-hi);
+  outline-offset: 2px;
+}
+
+.crt-board-art {
+  display: inline-flex;
+  flex: none;
+  justify-content: center;
+  width: 36px;
+}
+
+.crt-fact-art {
+  display: flex;
+  justify-content: center;
+  padding: 6px 0;
+}
+
+.crt .crt-k {
+  margin: 0;
+}
+
+.crt-term {
+  padding: 10px 12px;
+  border: 1px solid #3a3d3a;
+  background: #050605;
+}
+
+.crt-term p {
+  margin: 0 0 6px;
+}
+
+.crt-term span {
+  color: var(--crt-hi);
+}
+
+.crt-panel {
+  padding: 14px;
+  border: 3px solid var(--crt-text);
+}
+
+.crt-speech {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--crt-text);
+  color: var(--crt);
+  font-size: 14px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
 .room-caption {
   display: flex;
   flex-wrap: wrap;
@@ -2486,6 +2818,20 @@ html.js body:has(.meet-arcade[data-mode="cabinet"]) {
 
   .crt-btns button {
     font-size: 12px;
+  }
+
+  .crt-with-art .crt-menu button {
+    padding-block: 5px;
+  }
+
+  .crt-k,
+  .crt-players i,
+  .crt-door b,
+  .crt-kit > span:not(.crt-k),
+  .crt-loading i,
+  .crt-tower span,
+  .crt-board button {
+    font-size: 11px;
   }
 }
 
