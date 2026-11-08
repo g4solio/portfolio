@@ -249,7 +249,7 @@ export function MeetTranscript() {
       {/* Without JavaScript the moves and the facts are a readable document and the answer is an email. */}
       <div className="meet-doc">
         <p>
-          With JavaScript this page is a short text adventure: thirteen moves about the role, a fact
+          With JavaScript this page is an intake desk: thirteen questions about the role, a fact
           about me of your choice after each one, and a brief to mail me at the end. Without it, here
           is what I’m looking for, the questions, and the facts; answer the questions in an email to{" "}
           <a href={`mailto:${meetEmail}`}>{meetEmail}</a> with the subject “Role brief for Davide

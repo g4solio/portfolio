@@ -7,7 +7,7 @@ import { chapters } from "./portfolio.ts";
 export const meetEmail = "david3gozz1@gmail.com";
 export const meetTitle = "Let’s get to know each other";
 export const meetDescription =
-  "An arcade cabinet for recruiters: thirteen moves about the role as its screens, a fact about me of your choice after each one, three of them as short games, and a role brief you can send me at the end.";
+  "The intake desk for recruiters: thirteen questions about the role, a fact about me of your choice after each one, and a role brief you can send me at the end.";
 export const siteUrl = "https://g4solio.github.io/portfolio/";
 
 export type CriterionKey = "location" | "seniority" | "stack" | "pay" | "relocation";
@@ -36,30 +36,14 @@ export type Choice = {
   label: string;
   /** What this answer says about the scope; absent when the move is not judged. */
   verdicts?: Partial<Record<CriterionKey, Verdict>>;
-  /** What a laid-out screen prints for this choice: a stage tile's "MODE · WHERE", the counter's readout, an aside button. */
-  short?: string;
 };
-
-/**
- * The layouts that replace a move's menu, and how many of its choices each holds; the choices after
- * those sit aside, as buttons below. Data order is screen order, top to bottom and left to right, so the
- * arrows keep their meaning on every screen.
- */
-export const layoutSlots = { stages: 6, ladder: 5, counter: 5, bosses: 4 } as const;
-/**
- * How the cabinet lays a move's screen out: a slot layout above, art beside a plain menu, or one that
- * dresses a typed field. No layout: the plain menu or field.
- */
-export type Layout = keyof typeof layoutSlots | "kit" | "loading" | "tower" | "countdown" | "players" | "coin" | "class" | "open";
-export const menuLayouts: Layout[] = ["kit", "loading", "tower"];
-export const typedLayouts: Layout[] = ["countdown", "players", "coin", "class", "open"];
 
 export type Move = {
   key: string;
   /** Status-line topic. */
   topic: string;
-  /** The cabinet screen this move plays as: the arcade's name for the question. */
-  screen: string;
+  /** The sheet's name in the drafting board's title block, in Italian like the rest of the officina. */
+  tavola: string;
   /** Davide's line: his side of the exchange, ending in the question. */
   line: string;
   /** Command moves list choices; typed moves take free text. */
@@ -67,9 +51,6 @@ export type Move = {
   typed?: { hint: string; max: number; optional?: boolean };
   /** Label in the brief. */
   brief: string;
-  layout?: Layout;
-  /** What the art beside the menu prints, all from the line: LOADOUT's kit; SELECT MODE's bar segments, then its caption. */
-  art?: string[];
 };
 
 const inside = (keys: CriterionKey[]) => Object.fromEntries(keys.map((k) => [k, "inside"])) as Partial<Record<CriterionKey, Verdict>>;
@@ -78,59 +59,54 @@ export const moves: Move[] = [
   {
     key: "name",
     topic: "Hello",
-    screen: "NAME ENTRY",
+    tavola: "PRESENTAZIONI",
     line:
       "Let’s get to know each other: thirteen moves about the role, the last three optional, and after each one you get to ask me something. At the end there’s a brief you can send me. I’m Davide; who am I talking to? A first name is plenty, or skip.",
     typed: { hint: "your first name, or skip", max: 40, optional: true },
     brief: "From",
-    layout: "players",
   },
   {
     key: "company",
     topic: "Company",
-    screen: "INSERT COIN",
+    tavola: "AZIENDA",
     line: "Who is hiring? “Confidential” is a fine answer for now.",
     typed: { hint: "company name, or confidential", max: 80 },
     brief: "Company",
-    layout: "coin",
   },
   {
     key: "role",
     topic: "Role",
-    screen: "PLAYER 1",
+    tavola: "RUOLO",
     line:
       "I’m after software that has to keep working: distributed services, legacy platforms, systems connected to real machines, with backend at the centre. What is the title of the role?",
     typed: { hint: "role title", max: 80 },
     brief: "Role",
-    layout: "class",
   },
   {
     key: "location",
     topic: "Location",
-    screen: "STAGE SELECT",
+    tavola: "SEDE",
     line:
       "I’m based in Modena. Remote with a team on European hours works for me, and so does hybrid up to two days a week within reach. Where would this role sit?",
     choices: [
-      // A 3 × 2 stage grid: one row per mode, the stage within reach of Modena first.
-      { cmd: "remote-eu", label: "fully remote, team on European hours", verdicts: inside(["location", "relocation"]), short: "REMOTE · EU HOURS" },
-      { cmd: "remote", label: "fully remote, team elsewhere", verdicts: { location: "outside", relocation: "inside" }, short: "REMOTE · TEAM ELSEWHERE" },
-      { cmd: "hybrid-modena", label: "hybrid, within reach of Modena", verdicts: inside(["location", "relocation"]), short: "HYBRID · NEAR MODENA" },
-      { cmd: "hybrid", label: "hybrid, elsewhere in Italy", verdicts: { location: "outside", relocation: "outside" }, short: "HYBRID · REST OF ITALY" },
-      { cmd: "onsite-modena", label: "on site, within reach of Modena", verdicts: { location: "outside", relocation: "inside" }, short: "ON SITE · NEAR MODENA" },
-      { cmd: "onsite", label: "on site, elsewhere", verdicts: { location: "outside", relocation: "outside" }, short: "ON SITE · ELSEWHERE" },
+      { cmd: "remote-eu", label: "fully remote, team on European hours", verdicts: inside(["location", "relocation"]) },
+      { cmd: "remote", label: "fully remote, team elsewhere", verdicts: { location: "outside", relocation: "inside" } },
+      { cmd: "hybrid-modena", label: "hybrid, within reach of Modena", verdicts: inside(["location", "relocation"]) },
+      { cmd: "hybrid", label: "hybrid, elsewhere in Italy", verdicts: { location: "outside", relocation: "outside" } },
+      { cmd: "onsite-modena", label: "on site, within reach of Modena", verdicts: { location: "outside", relocation: "inside" } },
+      { cmd: "onsite", label: "on site, elsewhere", verdicts: { location: "outside", relocation: "outside" } },
       { cmd: "unknown", label: "not decided yet" },
     ],
     brief: "Location",
-    layout: "stages",
   },
   {
     key: "seniority",
     topic: "Seniority",
-    screen: "DIFFICULTY",
+    tavola: "LIVELLO",
     line:
       "Seven professional years; the senior title dates from MSC, 2021 to 2023, and I’m looking at senior and above. What seniority does the role carry?",
     choices: [
-      // The ladder, top rung first.
+      // Top rung first.
       { cmd: "principal", label: "principal, or head of", verdicts: inside(["seniority"]) },
       { cmd: "lead", label: "lead or staff", verdicts: inside(["seniority"]) },
       { cmd: "senior", label: "senior", verdicts: inside(["seniority"]) },
@@ -139,12 +115,11 @@ export const moves: Move[] = [
       { cmd: "unknown", label: "not defined yet" },
     ],
     brief: "Seniority",
-    layout: "ladder",
   },
   {
     key: "stack",
     topic: "Stack",
-    screen: "LOADOUT",
+    tavola: "STACK",
     line:
       "My core is .NET and C# on the backend: Redis, RabbitMQ, SQL, the protocols machines speak. Full-stack .NET is fine too. These days AI agents do most of my typing; architecture, review and the CI that enforces them stay mine. What is the main stack?",
     choices: [
@@ -156,31 +131,28 @@ export const moves: Move[] = [
       { cmd: "unknown", label: "not sure" },
     ],
     brief: "Stack",
-    layout: "kit",
-    art: ["C#", ".NET", "Redis", "RabbitMQ", "SQL", "protocols", "AI agents"],
   },
   {
     key: "pay",
     topic: "Compensation",
-    screen: "CREDITS",
+    tavola: "COMPENSO",
     line: "My floor is a RAL of €60k, and I aim for €65k and above. Which band is the role in?",
     choices: [
-      // The credit counter, top band first, so up is a band up.
-      { cmd: "75-plus", label: "€75k and above", verdicts: inside(["pay"]), short: "€75K +" },
-      { cmd: "65-75", label: "€65k to €75k", verdicts: inside(["pay"]), short: "€65–75K" },
-      { cmd: "60-65", label: "€60k to €65k", verdicts: inside(["pay"]), short: "€60–65K" },
-      { cmd: "50-60", label: "€50k to €60k", verdicts: { pay: "outside" }, short: "€50–60K" },
-      { cmd: "under-50", label: "under €50k", verdicts: { pay: "outside" }, short: "< €50K" },
-      { cmd: "consulting", label: "a consulting rate; the figure goes in the notes", short: "consulting rate" },
+      // Top band first.
+      { cmd: "75-plus", label: "€75k and above", verdicts: inside(["pay"]) },
+      { cmd: "65-75", label: "€65k to €75k", verdicts: inside(["pay"]) },
+      { cmd: "60-65", label: "€60k to €65k", verdicts: inside(["pay"]) },
+      { cmd: "50-60", label: "€50k to €60k", verdicts: { pay: "outside" } },
+      { cmd: "under-50", label: "under €50k", verdicts: { pay: "outside" } },
+      { cmd: "consulting", label: "a consulting rate; the figure goes in the notes" },
       { cmd: "undisclosed", label: "not disclosed" },
     ],
     brief: "Compensation",
-    layout: "counter",
   },
   {
     key: "contract",
     topic: "Contract",
-    screen: "SELECT MODE",
+    tavola: "CONTRATTO",
     line:
       "Contracts next. My notice period is a month, and I like to add another to recharge and arrive at my best, so count on about two months from a signed offer. Which one is on the table?",
     choices: [
@@ -191,51 +163,45 @@ export const moves: Move[] = [
       { cmd: "unknown", label: "not decided yet" },
     ],
     brief: "Contract",
-    layout: "loading",
-    art: ["notice · 1 month", "recharge · 1 month", "about two months from a signed offer"],
   },
   {
     key: "note",
     topic: "Engineering note",
-    screen: "BOSS SELECT",
+    tavola: "NOTA TECNICA",
     line: "Four engineering notes are on my portfolio, one per decision. Which one is closest to this role?",
     choices: [
       ...chapters.flatMap((c) => (c.decision ? [{ cmd: c.decision.schematic, label: `${c.decision.number} · ${c.decision.title}` }] : [])),
       { cmd: "none", label: "none of them" },
     ],
     brief: "Closest engineering note",
-    layout: "bosses",
   },
   {
     key: "process",
     topic: "Process",
-    screen: "ROUNDS",
+    tavola: "SELEZIONE",
     line:
       "How does the hiring process look? What works for me: meeting the engineering lead in the first or second round, a real problem from your codebase over a puzzle, a take-home only if it fits in two hours, and a decision within three weeks.",
     choices: [
-      // The tower prints the rounds of the choice under the cursor, bottom floor first.
-      { cmd: "short", label: "up to three rounds, no take-home", short: "ROUND 1 · ROUND 2 · ROUND 3" },
-      { cmd: "take-home", label: "includes a take-home", short: "ROUND 1 · TAKE-HOME · …" },
-      { cmd: "long", label: "four rounds or more", short: "ROUND 1 · ROUND 2 · ROUND 3 · ROUND 4 +" },
-      { cmd: "unknown", label: "not defined yet", short: "?" },
+      { cmd: "short", label: "up to three rounds, no take-home" },
+      { cmd: "take-home", label: "includes a take-home" },
+      { cmd: "long", label: "four rounds or more" },
+      { cmd: "unknown", label: "not defined yet" },
     ],
     brief: "Process",
-    layout: "tower",
   },
   {
     key: "notes",
     topic: "Notes",
-    screen: "FREE PLAY",
+    tavola: "NOTE",
     line:
       "Anything the moves missed? The job description link goes here, and the team size and why the position is open if you know them. “skip” works.",
     typed: { hint: "notes or a link, or skip", max: 200, optional: true },
     brief: "Notes",
-    layout: "open",
   },
   {
     key: "feedback-exchange",
     topic: "Feedback",
-    screen: "RATE THIS GAME",
+    tavola: "IMPRESSIONI",
     line: "Two more, both optional and both for me. What would have made this exchange better?",
     typed: { hint: "feedback, or skip", max: 200, optional: true },
     brief: "Feedback on the exchange",
@@ -243,11 +209,10 @@ export const moves: Move[] = [
   {
     key: "feedback-profile",
     topic: "Feedback",
-    screen: "CONTINUE?",
+    tavola: "PROFILO",
     line: "Last one. What is missing from my profile for this role?",
     typed: { hint: "feedback, or skip", max: 200, optional: true },
     brief: "What my profile is missing",
-    layout: "countdown",
   },
 ];
 
@@ -322,11 +287,18 @@ export const askLine = (name: string) => `Your turn${name ? `, ${name}` : ""}. A
 export const closingLine = (name: string) =>
   `That’s all thirteen${name ? `, ${name}` : ""}. look still has whatever you didn’t ask. score shows the role against my scope, inventory the brief, and send mails it to me.`;
 export const exhaustedLine = `You’ve heard all ${factCount}. Ask me the rest in person.`;
-/** The cabinet's last screen, above the brief. */
-export const gameOverLine = (name: string) =>
-  `That’s all thirteen${name ? `, ${name}` : ""}. Below is the brief: SUBMIT opens it in your own mail client, COPY copies it as text, MANUAL is my one-page CV.`;
-/** Topics whose first fact arrives as a round of its own game: the runner for the bug, the shooter for Galactic Fighters, the pounce for the cats. */
-export const rounds: Record<string, "runner" | "shooter" | "pounce"> = { code: "runner", work: "shooter", cats: "pounce" };
+/** The desk's turn line: the topics are the keys on the board. */
+export const keysLine = "Take a key off the board and I’ll tell you about that one, or skip to the next question.";
+/** The desk's last words, above the fit and the buttons. */
+export const doneLine = (name: string) =>
+  `That’s all thirteen${name ? `, ${name}` : ""}. The job card is the brief. Send opens it in your own mail client, and copy takes it as text.`;
+
+/** The desk prints a line as its question, large, and the rest of what Davide says under it. No question: the first sentence leads. */
+export function splitLine(line: string): { ask: string; say: string } {
+  const parts = line.split(/(?<=[.?!])\s+/);
+  const i = Math.max(0, parts.findIndex((x) => x.endsWith("?")));
+  return { ask: parts[i], say: parts.filter((_, k) => k !== i).join(" ") };
+}
 export const unknownLine = "I didn’t catch that. The commands are listed above.";
 /** For cast, fireball and the like: the mage stays in character, once. */
 export const mageLine = "The designated mage declines. Spell slots are for the table; here the commands are help, look and score.";

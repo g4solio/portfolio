@@ -83,7 +83,7 @@ const STATEMENT = ["Software that has to", "keep working."];
 
 const assets = [
   { file: "public/og.png", svg: banner({ w: 1200, h: 630, theme: "paper", eyebrow: EYEBROW, statement: STATEMENT, tagline: TAGLINE }) },
-  { file: "public/og-meet.png", svg: banner({ w: 1200, h: 630, theme: "paper", eyebrow: "davide gozzi — for recruiters", statement: ["Let’s get to know", "each other."], tagline: "an arcade cabinet · thirteen moves · a brief you can send me" }) },
+  { file: "public/og-meet.png", svg: banner({ w: 1200, h: 630, theme: "paper", eyebrow: "davide gozzi — for recruiters", statement: ["Let’s get to know", "each other."], tagline: "an intake desk · thirteen questions · a brief you can send me" }) },
   { file: "public/brand/linkedin-banner.png", svg: banner({ w: 1584, h: 396, theme: "paper", eyebrow: EYEBROW, statement: STATEMENT, tagline: TAGLINE, left: 470, pad: 80, statementSize: 54, markSize: 112 }) },
   { file: "public/brand/x-header.png", svg: banner({ w: 1500, h: 500, theme: "paper", eyebrow: EYEBROW, statement: STATEMENT, tagline: TAGLINE, left: 470, pad: 80, statementSize: 58, markSize: 120 }) },
   { file: "public/brand/github-readme-banner-paper.png", svg: banner({ w: 1280, h: 320, theme: "paper", eyebrow: EYEBROW, statement: ["Software that has to keep working."], tagline: TAGLINE, left: 64, pad: 64, statementSize: 46, markSize: 96 }) },

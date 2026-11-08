@@ -27,8 +27,9 @@ studies. OSUS closes the page as an independent product and engineering lab.
   as the worked example.
 - OSUS projects, led by a live preview of RosettAI.
 - A downloadable one-page CV and a verifiable EF SET English certificate.
-- Meet, at `/meet/`: an arcade cabinet for recruiters, thirteen moves as its
-  screens, three short games among the facts about me, and a role brief they mail
+- Meet, at `/meet/`: the intake desk of an officina for recruiters, thirteen
+  questions asked plainly with the answers on a drafting board, a fact about me
+  off the key board after each one, and the job card as the role brief they mail
   me. The earlier transcript game stays as its text mode.
 
 ## Design direction
@@ -83,9 +84,7 @@ npm run build
 node scripts/meet-check.mjs
 ```
 
-The production build is exported to `out/`. The cabinet stills and their screen
-corners are regenerated with `node scripts/cabinet.mjs` after a change to
-`scripts/cabinet/render.html`.
+The production build is exported to `out/`.
 
 Regenerate the brand assets (the Open Graph image, the LinkedIn banner, the X
 header, the GitHub banners in Paper and Ink, the repository social previews,
@@ -128,7 +127,7 @@ app/
   globals.css             visual system, motion and responsive layout
   tokens.css              generated from brand/tokens.json
   layout.tsx              metadata and social preview configuration
-  meet/page.tsx           the recruiters' arcade cabinet, /meet/
+  meet/page.tsx           the recruiters' intake desk, /meet/
 
 brand/
   tokens.json             the casebook's colors, Paper and Ink
@@ -137,32 +136,26 @@ components/
   BootSequence.tsx        session boot and wordmark hand-off
   Chapters.tsx            professional chapter layouts
   Mark.tsx                the mark, drawn as a casebook figure
-  MeetArcade.tsx          /meet/ with JavaScript: the cabinet, or text mode
-  MeetCabinet.tsx         the cabinet: the stills, the live screen on the tube, the screens
+  Meet.tsx                /meet/ with JavaScript: the desk, or text mode
+  MeetDesk.tsx            the desk: the wall, the key board, the drafting board, the job card, the counter
   MeetTranscript.tsx      the transcript game, now text mode: status line, log, commands, prompt
-  meet/layouts.tsx        each screen's layout and pixel art, the BONUS STAGE board, the fact formats
-  meet/rounds.tsx         the three one-button rounds: runner, shooter, pounce
-  meet/sound.ts           the cabinet's opt-in blips
-  meet/Typed.tsx          the typed reveal the cabinet and the transcript share
+  meet/art.ts             the desk's drawn things as SVG: keys, window, clock, cat, stickers, the pencil ring
+  meet/Typed.tsx          the transcript's typed reveal and its links
   PortfolioPage.tsx       page structure, main copy and the drafting motion
   Schematic.tsx           inline engineering diagrams
   wordmark.generated.ts   the wordmark's letter outlines (npm run wordmark)
 
 data/
   portfolio.ts            experience, decisions, and OSUS project data
-  meet.ts                 the scope, the thirteen moves and their screens, the facts, the brief
-  meet-cabinet.json       the stills' screen corners and hotspots, written by scripts/cabinet.mjs
+  meet.ts                 the scope, the thirteen moves and their sheet names, the facts, the brief
 
 public/
   Davide_Gozzi_CV.pdf     downloadable one-page CV
-  meet-cabinet-*.webp     the cabinet rendered once: the hero and the play view
   brand/                  rendered banners, previews and avatars, served with the site
   og.png                  social preview image
 
 scripts/
   brand.mjs               brand asset generator
-  cabinet.mjs             renders the cabinet stills and their metadata with headless Chrome
-  cabinet/render.html     the cabinet scene: three.js, the garage world, the stickers
   cv/Davide_Gozzi_CV.html CV source, rendered to public/Davide_Gozzi_CV.pdf
   meet-check.mjs          the one check for /meet/: scoring and the brief
   fonts/                  the static 600 weight of Space Grotesk, for the wordmark and the CV
