@@ -41,12 +41,14 @@ export type Choice = {
 };
 
 /**
- * How the cabinet lays a move's screen out, and how many of its choices the layout holds; the choices
- * after those sit aside, as buttons below. Data order is screen order, top to bottom and left to right,
- * so the arrows keep their meaning on every screen. A move without a layout gets the plain menu.
+ * The layouts that replace a move's menu, and how many of its choices each holds; the choices after
+ * those sit aside, as buttons below. Data order is screen order, top to bottom and left to right, so the
+ * arrows keep their meaning on every screen.
  */
-export const layoutSlots = { stages: 6, ladder: 5, counter: 5, bosses: 4, countdown: 0 } as const;
-export type Layout = keyof typeof layoutSlots;
+export const layoutSlots = { stages: 6, ladder: 5, counter: 5, bosses: 4 } as const;
+/** How the cabinet lays a move's screen out: a slot layout above, or one that dresses a typed field. No layout: the plain menu or field. */
+export type Layout = keyof typeof layoutSlots | "countdown" | "players" | "coin" | "class" | "open";
+export const typedLayouts: Layout[] = ["countdown", "players", "coin", "class", "open"];
 
 export type Move = {
   key: string;
@@ -75,6 +77,7 @@ export const moves: Move[] = [
       "Let’s get to know each other: thirteen moves about the role, the last three optional, and after each one you get to ask me something. At the end there’s a brief you can send me. I’m Davide; who am I talking to? A first name is plenty, or skip.",
     typed: { hint: "your first name, or skip", max: 40, optional: true },
     brief: "From",
+    layout: "players",
   },
   {
     key: "company",
@@ -83,6 +86,7 @@ export const moves: Move[] = [
     line: "Who is hiring? “Confidential” is a fine answer for now.",
     typed: { hint: "company name, or confidential", max: 80 },
     brief: "Company",
+    layout: "coin",
   },
   {
     key: "role",
@@ -92,6 +96,7 @@ export const moves: Move[] = [
       "I’m after software that has to keep working: distributed services, legacy platforms, systems connected to real machines, with backend at the centre. What is the title of the role?",
     typed: { hint: "role title", max: 80 },
     brief: "Role",
+    layout: "class",
   },
   {
     key: "location",
@@ -213,6 +218,7 @@ export const moves: Move[] = [
       "Anything the moves missed? The job description link goes here, and the team size and why the position is open if you know them. “skip” works.",
     typed: { hint: "notes or a link, or skip", max: 200, optional: true },
     brief: "Notes",
+    layout: "open",
   },
   {
     key: "feedback-exchange",

@@ -2,7 +2,7 @@
 
 import { type ReactElement, type ReactNode, useEffect, useRef } from "react";
 import { Schematic } from "@/components/Schematic";
-import { type Move, layoutSlots } from "@/data/meet";
+import { type Layout, type Move, layoutSlots } from "@/data/meet";
 import type { SchematicId } from "@/data/portfolio";
 
 // The laid-out cabinet screens: same tube, same four colours, the same items and keys as the plain menu.
@@ -39,6 +39,88 @@ const STAR = ["....#....", "....#....", "...###...", "#########", ".#######.", "
 const RUNGS = [STAR, ["#######", "", ...chevrons(3)], chevrons(3), chevrons(2), chevrons(1)];
 /** The cat asleep on the hood, the same grid as the sticker in scripts/cabinet/render.html. */
 const CAT = ["#....#......", "##..##......", "######......", "#o##o#......", "######......", ".####.......", "######......", "#######.....", "#######.....", "#######...#.", "#######..##.", "#######.##..", "#########...", "##.###......"];
+
+/** The designated Mage from the side art: the 24 × 34 grid scripts/cabinet/render.html builds, in the tube's inks. */
+const MAGE = (() => {
+  const g = Array.from({ length: 34 }, () => Array(24).fill("."));
+  const span = (r: number, c0: number, c1: number, ch = "#") => {
+    for (let c = c0; c <= c1; c++) g[r][c] = ch;
+  };
+  ["..ooooo..", ".ooooooo.", "ooooooooo", "ooooooooo", "ooooooooo", ".ooooooo.", "..ooooo.."].forEach((row, i) => [...row].forEach((ch, j) => ch !== "." && (g[8 + i][j] = ch)));
+  span(6, 4, 4, "o"); span(7, 3, 3, "o"); span(7, 5, 5, "o"); // flame
+  [[0, 16, 16], [1, 16, 16], [2, 15, 17], [3, 15, 17], [4, 14, 18], [5, 14, 18], [6, 13, 19], [7, 13, 19], [8, 12, 20], [9, 9, 22], [10, 13, 19], [11, 13, 19]].forEach(([r, a, b]) => span(r, a, b)); // hat, brim, head
+  for (let r = 12; r <= 33; r++) span(r, r < 18 ? 12 : r < 24 ? 11 : r < 30 ? 10 : 9, 20); // robe
+  span(15, 9, 11); span(16, 8, 11); span(17, 8, 11); span(18, 9, 11); // sleeve
+  span(16, 6, 7, "d"); span(17, 6, 7, "d"); // hand
+  for (let r = 12; r <= 14; r++) span(r, 14, 18, "d");
+  span(15, 15, 17, "d"); span(16, 15, 17, "d"); span(17, 16, 16, "d"); // beard
+  span(20, 11, 20, "o"); // sash
+  for (let r = 4; r <= 33; r++) span(r, 22, 22);
+  span(1, 22, 22, "o"); span(2, 21, 23, "o"); span(3, 22, 22, "o"); // staff, crystal
+  return g.map((r) => r.join(""));
+})();
+
+/**
+ * The typed moves dress the one input the cabinet owns, passed in as `field`: NAME ENTRY seats the
+ * recruiter as player 2 beside Davide, INSERT COIN puts the coin door above it, PLAYER 1 writes the role
+ * as the Mage's class, FREE PLAY opens it up. Any other typed move gets the plain field.
+ */
+export function TypedField({ layout, field, prefix, filled }: { layout?: Layout; field: ReactNode; prefix: string; filled: boolean }) {
+  if (layout === "players") {
+    return (
+      <div className="crt-players">
+        <div>
+          <b>1P</b>
+          <span>DAVIDE</span>
+          <i>HOST</i>
+        </div>
+        <label className="is-on">
+          <b>2P</b>
+          {field}
+          <i>JOINING</i>
+        </label>
+      </div>
+    );
+  }
+  if (layout === "class") {
+    return (
+      <div className="crt-class">
+        <Pixels rows={MAGE} cell={2.6} />
+        <div>
+          <span className="crt-k">PLAYER 1</span>
+          <b>DAVIDE</b>
+          <label>
+            <span className="crt-k">CLASS</span>
+            {field}
+          </label>
+        </div>
+      </div>
+    );
+  }
+  const plain = (
+    <label className={`crt-field${layout === "open" ? " crt-open" : ""}`}>
+      <span>{layout === "coin" ? "◉" : prefix}</span>
+      {field}
+    </label>
+  );
+  if (layout !== "coin") return plain;
+  return (
+    <>
+      <div className="crt-door" aria-hidden="true">
+        {[0, 1].map((i) => (
+          <span key={i}>
+            <i />
+            <b>INSERT COIN</b>
+          </span>
+        ))}
+      </div>
+      {plain}
+      <p className="crt-credit" aria-hidden="true">
+        CREDIT {filled ? 1 : 0}
+      </p>
+    </>
+  );
+}
 
 const SCENES: Record<string, ReactNode> = {
   REMOTE: <Pixels rows={HOUSE} cell={3} />,
@@ -122,7 +204,7 @@ function Portrait({ id }: { id: SchematicId }) {
 
 /** The choices of a laid-out move: the layout holds the first ones, the rest sit aside as buttons. */
 export function MoveLayout({ move, items, sel, setSel }: { move: Move; items: Item[]; sel: number; setSel: (i: number) => void }) {
-  const layout = move.layout ?? "countdown";
+  const layout = move.layout as keyof typeof layoutSlots;
   const slots = layoutSlots[layout];
   const choices = move.choices ?? [];
   const on = (i: number) => (i === sel ? " is-on" : "");

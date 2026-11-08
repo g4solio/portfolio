@@ -92,15 +92,16 @@ assert.ok(facts.find((t) => t.cmd === "work").lines[0].includes("Galactic Fighte
 assert.match(gameOverLine("Marta"), /thirteen, Marta/);
 
 // The laid-out screens: a layout holds its slots in data order and the rest sit aside; what it prints fits.
-const { layoutSlots } = await import("../data/meet.ts");
+const { layoutSlots, typedLayouts } = await import("../data/meet.ts");
 const { chapters } = await import("../data/portfolio.ts");
 const schematics = new Set(chapters.flatMap((c) => (c.decision ? [c.decision.schematic] : [])));
 for (const m of moves.filter((x) => x.layout)) {
-  if (m.layout === "countdown") {
-    assert.ok(m.typed, `${m.key}: the countdown takes a typed answer`);
+  if (typedLayouts.includes(m.layout)) {
+    assert.ok(m.typed, `${m.key}: the ${m.layout} dresses a typed field`);
     continue;
   }
   const slots = layoutSlots[m.layout];
+  assert.ok(slots, `${m.key}: unknown layout ${m.layout}`);
   assert.ok(m.choices && m.choices.length > slots, `${m.key}: the ${m.layout} holds ${slots} choices and sets at least one aside`);
   for (const c of m.choices) assert.ok(!c.short || c.short.length <= 24, `${m.key}/${c.cmd}: short too long for the tube`);
   const held = m.choices.slice(0, slots);

@@ -8,6 +8,7 @@ import {
   factCount,
   facts,
   gameOverLine,
+  layoutSlots,
   mailtoHref,
   moves,
   rounds,
@@ -17,7 +18,7 @@ import {
   verdictWord,
 } from "@/data/meet";
 import views from "@/data/meet-cabinet.json";
-import { Countdown, MoveLayout } from "./meet/layouts";
+import { Countdown, MoveLayout, TypedField } from "./meet/layouts";
 import { ROUND_TITLES, Round } from "./meet/rounds";
 import { type Cue, createSound } from "./meet/sound";
 import { Typed, linkify } from "./meet/Typed";
@@ -439,26 +440,30 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
                     submitTyped();
                   }}
                 >
-                  <label className="crt-field">
-                    <span>{current.key === "name" ? "NAME:" : "> "}</span>
-                    <input
-                      key={current.key}
-                      ref={inputRef}
-                      value={typedValue}
-                      onChange={(e) => setTypedValue(e.target.value)}
-                      maxLength={current.typed.max}
-                      placeholder={current.typed.hint}
-                      autoComplete="off"
-                      autoCapitalize="off"
-                      spellCheck={false}
-                      enterKeyHint="send"
-                      aria-label={current.topic}
-                    />
-                  </label>
+                  <TypedField
+                    layout={current.layout}
+                    prefix={current.key === "name" ? "NAME:" : "> "}
+                    filled={typedValue.trim() !== ""}
+                    field={
+                      <input
+                        key={current.key}
+                        ref={inputRef}
+                        value={typedValue}
+                        onChange={(e) => setTypedValue(e.target.value)}
+                        maxLength={current.typed.max}
+                        placeholder={current.typed.hint}
+                        autoComplete="off"
+                        autoCapitalize="off"
+                        spellCheck={false}
+                        enterKeyHint="send"
+                        aria-label={current.topic}
+                      />
+                    }
+                  />
                 </form>
               )}
 
-              {menu && layout && current && <MoveLayout move={current} items={items} sel={sel} setSel={setSel} />}
+              {menu && layout && layout in layoutSlots && current && <MoveLayout move={current} items={items} sel={sel} setSel={setSel} />}
 
               {stage === "over" && (
                 <div className="crt-btns">
