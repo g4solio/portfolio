@@ -2,7 +2,7 @@
 // (Node strips the types from data/meet.ts itself; no build step.)
 import assert from "node:assert/strict";
 
-const { moves, scope, facts, factCount, verdicts, scoreOf, briefText, mailtoHref, splitLine, doneLine } = await import("../data/meet.ts");
+const { moves, scope, facts, factCount, verdicts, scoreOf, briefText, mailtoHref, doneLine, askLine } = await import("../data/meet.ts");
 
 const globalCommands = ["help", "look", "scope", "score", "inventory", "back", "send", "copy", "cv", "cast", "fireball", "magic missile", "skip"];
 
@@ -16,7 +16,9 @@ for (const m of moves) {
     for (const k of Object.keys(c.verdicts ?? {})) assert.ok(scope.some((s) => s.key === k), `${m.key}/${c.cmd}: unknown criterion ${k}`);
   }
   assert.ok(m.choices || m.typed, `${m.key}: neither choices nor typed`);
-  assert.ok(m.line.length <= 300, `${m.key}: line too long to type (${m.line.length})`);
+  assert.ok(m.line.length <= 300, `${m.key}: line too long (${m.line.length})`);
+  // The question is the big line: short, and a question.
+  assert.ok(m.ask.endsWith("?") && m.ask.length <= 48, `${m.key}: the big line should be a short question`);
 }
 
 // The facts: topics with unique commands that shadow nothing, short lines, the Spotify link.
@@ -82,19 +84,16 @@ assert.ok(mailtoHref(longest).length <= 6000, `mailto too long: ${mailtoHref(lon
 assert.ok(mailtoHref(ideal).startsWith("mailto:david3gozz1@gmail.com?subject=Role%20brief%20for%20Davide%20Gozzi%3A%20Senior%20backend%20engineer%20%C2%B7%20Acme%20Robotics&body="));
 assert.ok(mailtoHref(ideal).includes("%0D%0A"), "mailto body uses CRLF");
 
-// The desk: every sheet has its own name that fits the title block, and every line splits into a question and the rest.
+// The desk: every sheet has its own name that fits the title block.
 const tavole = moves.map((m) => m.tavola);
 assert.equal(new Set(tavole).size, tavole.length, "duplicate sheet name");
-for (const m of moves) {
-  assert.ok(m.tavola && m.tavola.length <= 16, `${m.key}: sheet name missing or too long`);
-  const { ask, say } = splitLine(m.line);
-  assert.ok(ask.endsWith("?"), `${m.key}: no question to put on the wall`);
-  assert.equal(ask.length + say.length + (say ? 1 : 0), m.line.length, `${m.key}: the split loses text`);
-}
-assert.deepEqual(splitLine(doneLine("Marta")), {
-  ask: "That’s all thirteen, Marta.",
-  say: "The job card is the brief. Send opens it in your own mail client, and copy takes it as text.",
-});
+for (const m of moves) assert.ok(m.tavola && m.tavola.length <= 16, `${m.key}: sheet name missing or too long`);
+assert.equal(doneLine("Marta").ask, "Thanks, Marta. That’s everything.");
+// The ask turn: the rule once, after the first answer; a last call after the thirteenth; short nudges between.
+assert.match(askLine("Marta", 1).line, /^Nice to meet you, Marta\. Now it’s your turn\.$/);
+assert.deepEqual(askLine("", moves.length), { ask: "Anything else before we wrap up?", line: "" });
+for (let i = 2; i < moves.length; i++) assert.ok(askLine("Marta", i).ask.length <= 30 && !askLine("Marta", i).line, `ask ${i}: a short nudge`);
+
 // Top first: the seniority's top rung and the pay's top band lead the sheet.
 const order = (key) => moves.find((m) => m.key === key).choices.slice(0, 5).map((c) => c.cmd);
 assert.deepEqual(order("seniority"), ["principal", "lead", "senior", "mid", "junior"]);

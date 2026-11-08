@@ -14,7 +14,6 @@ import {
   moves,
   scope,
   scoreOf,
-  splitLine,
   verdicts,
   verdictWord,
 } from "@/data/meet";
@@ -59,7 +58,8 @@ export function MeetDesk({ active, onTextMode }: { active: boolean; onTextMode: 
   const remaining = facts.filter((t) => (asked[t.cmd] ?? 0) < t.lines.length);
   const filled = moves.filter((m) => answers[m.key]).length;
   const moveNo = step === -1 ? moves.length : step + 1;
-  const canGoBack = turn.kind === "move" && moves.some((m) => m.key in answers);
+  const answered = moves.filter((m) => m.key in answers).length;
+  const canGoBack = turn.kind === "move" && answered > 0;
 
   /** A question answered: the recruiter's turn to ask, unless every fact is out. */
   const answer = (value: string) => {
@@ -82,7 +82,7 @@ export function MeetDesk({ active, onTextMode }: { active: boolean; onTextMode: 
     const value = typedValue.trim();
     if (value) answer(value.slice(0, current.typed.max));
     else if (current.typed.optional) answer("");
-    else setNote("I need an answer here.");
+    else setNote("This one needs an answer.");
   };
 
   const ask = (topic: string) => {
@@ -120,7 +120,8 @@ export function MeetDesk({ active, onTextMode }: { active: boolean; onTextMode: 
   let tavola = "";
   let items: Item[] = [];
   if (over) {
-    head = splitLine(doneLine(name));
+    const done = doneLine(name);
+    head = { ask: done.ask, say: done.line };
     tavola = "RIEPILOGO";
     items = [
       {
@@ -128,7 +129,7 @@ export function MeetDesk({ active, onTextMode }: { active: boolean; onTextMode: 
         label: "send it to me",
         run: () => {
           window.location.assign(mailtoHref(answers));
-          setNote("Opening your mail client with the brief. If nothing happens, copy works too.");
+          setNote("Opening your email app. If nothing happens, use copy instead.");
         },
       },
       {
@@ -145,7 +146,9 @@ export function MeetDesk({ active, onTextMode }: { active: boolean; onTextMode: 
       { id: "again", label: "start again", run: reset },
     ];
   } else if (turn.kind === "ask") {
-    head = { ask: splitLine(askLine(name)).ask, say: keysLine };
+    // The rule the first time, with the keys named; a short nudge after.
+    const turnLine = askLine(name, answered);
+    head = { ask: turnLine.ask, say: turnLine.line && `${turnLine.line} ${keysLine}` };
     tavola = "TOCCA A TE";
     // The digits are the keys on this turn, so skipping carries an arrow, not a number.
     items = [{ id: "skip", label: "skip to the next question", run: proceed, mark: "→" }];
@@ -155,7 +158,7 @@ export function MeetDesk({ active, onTextMode }: { active: boolean; onTextMode: 
     tavola = "TOCCA A TE";
     items = [{ id: "next", label: current ? "on to the next question" : "on to the brief", run: proceed }];
   } else if (current) {
-    head = splitLine(current.line);
+    head = { ask: current.ask, say: current.line };
     tavola = current.tavola;
     items = current.choices
       ? current.choices.map((c) => ({ id: c.cmd, label: c.label, run: () => pick(c.cmd) }))

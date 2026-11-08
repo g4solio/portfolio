@@ -301,7 +301,7 @@ export function PortfolioPage() {
             </p>
             <p>
               Recruiting for a role? Start with <Link href="/meet/">Let’s get to know each other</Link>:
-              a short text adventure that ends in a brief you can send me.
+              a small arcade game about the role that ends in a brief you can send me.
             </p>
             <p className="contact-links">
               <a href="Davide_Gozzi_CV.pdf" target="_blank" rel="noreferrer">CV (PDF)</a>

@@ -90,8 +90,10 @@ named on the site with its real figures.
   on it, a black cat asleep in the sun, a bell, and stickers from the fact pool on the
   counter front (the Mage stencil, Azzurro's lute, the d20, the pixel cat, "enumerated
   twice", LINQ, the MO plate, g4solio). The cotto floor is the page's footer. Davide
-  asks each question plainly, in the first person: the question large on the wall,
-  the rest of his line under it. The answers sit on a drafting board, a tecnigrafo
+  asks each question plainly, in the first person: the question big on the wall and
+  his side of it small underneath, said the way he would say it across the counter
+  (short sentences, his position in plain numbers). A question-last paragraph was
+  rejected 2026-11-08 as robotic. The answers sit on a drafting board, a tecnigrafo
   (picked from three boards 2026-11-08): a sheet taped to green vinyl, numbered
   balloons, a title block with TAV. NN / 13, the sheet's Italian name, SCALA 1:1 and
   DIS. D. GOZZI with the date, and a parallel rule with the pencils on it. The answer
@@ -99,17 +101,19 @@ named on the site with its real figures.
   job card on its clipboard, carbon copy behind it, is the brief: it fills in row by
   row, the current row in red, stamped with the day's date. On a phone it is a tab at
   the bottom that opens over the page. After every answer it is the recruiter's turn:
-  take a key off the board for one fact, or skip. A key whose facts are all told is
-  gone from its hook, and the fact is written on the sheet. At the end the sheet
+  take a key off the board for one fact, or skip. Each key's tag is the question the
+  recruiter is asking, printed big above the fact, which is written on the sheet. The
+  first turn states the rule once; later ones are short nudges. A key whose facts are
+  all told is gone from its hook. At the end the wall says thanks and the sheet
   carries the fit against the scope, one row per criterion and a plain sum, then send
   (`mailto:` from the recruiter's own client), copy, the CV and start again. Digits
   pick, Enter confirms, Backspace undoes a question. Text mode (`#text`) is the
-  transcript game, kept whole. Without JavaScript the scope, the moves and the facts
+  transcript game, kept whole, printing each question on its own line, then the
+  rest. Without JavaScript the scope, the moves and the facts
   print as a document. Nothing is stored and nothing blocks anyone: a miss reads
   "outside my ideal scope", an unanswered criterion "not confirmed". Data, the sheet
   names and the brief live in `data/meet.ts`, and `node scripts/meet-check.mjs`
-  checks the data, the scoring, how each line splits into question and context, and
-  the brief. Facts that name games, comics or a film are biography, not references,
+  checks the data, the scoring, the sheet names, the turn lines and the brief. Facts that name games, comics or a film are biography, not references,
   and do not count against the pop-culture budget. Linked once, from the Contact
   section, not in the header navigation.
 

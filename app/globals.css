@@ -1881,6 +1881,9 @@ html.js body:has(.meet-wrap[data-mode="desk"]) .site-shell {
   color: var(--ink-pen);
   font-size: 10.5px;
   line-height: 1.2;
+  /* the tags are the recruiter's questions; "headphones?" is wider than a tag */
+  hyphens: auto;
+  overflow-wrap: break-word;
 }
 
 button.acc-tag {
