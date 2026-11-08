@@ -91,14 +91,24 @@ named on the site with its real figures.
   projected corners. A key or a tap inserts the coin; phones stand at the cabinet from
   the start. Thirteen moves as cabinet screens (NAME ENTRY, INSERT COIN, PLAYER 1,
   STAGE SELECT, DIFFICULTY, LOADOUT, CREDITS, SELECT MODE, BOSS SELECT, ROUNDS, FREE
-  PLAY, RATE THIS GAME, CONTINUE?), in his voice, the last three optional. After every
+  PLAY, RATE THIS GAME, CONTINUE?), in his voice, the last three optional. Five have a
+  layout of their own (picked from rendered candidates 2026-11-08): STAGE SELECT a 3 × 2
+  stage grid, mode by row, with the Ghirlandina behind the stages within reach of
+  Modena; DIFFICULTY a ladder with a rank insignia per rung; CREDITS a credit counter
+  where up is a band up and no band is coloured by fit; BOSS SELECT the four
+  engineering notes as portraits rasterized at runtime from their own schematics;
+  CONTINUE? a countdown stopped at 1 with the hood's cat asleep on it. The others keep
+  the menu. The layout, the choices it holds and the short labels live in
+  `data/meet.ts`, where data order is screen order. After every
   answer it is the recruiter's BONUS STAGE: one topic from the pool of seventeen facts,
   or skip. The first fact of three topics is a twenty-second one-button round whose
   fact arrives whatever the score: the runner where every obstacle is enumerated twice
   (code), the sweep-and-fire shooter for Galactic Fighters (work), the pounce (cats).
   The HUD shows KNOWN and MOVE only; the fit against the scope and the brief appear at
-  GAME OVER, with SUBMIT (`mailto:` from the recruiter's own client), COPY, MANUAL (the
-  CV) and PLAY AGAIN. Arrows move, Enter is A, digits pick, Backspace undoes a move;
+  GAME OVER: one dot-leader row per criterion and a plain sum, never a score count-up,
+  the brief printed as a torn ticket, then SUBMIT (`mailto:` from the recruiter's own
+  client), COPY, MANUAL (the CV) and PLAY AGAIN. Arrows move (by rows on the two-column
+  screens), Enter is A, digits pick, Backspace undoes a move;
   the button on the still is a hotspot. Sound is opt-in, off by default. Text mode
   (`#text`) is the earlier transcript game, kept whole; without JavaScript the scope,
   the moves and the facts print as a document. Nothing is stored; nothing blocks

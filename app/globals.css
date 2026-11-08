@@ -1985,26 +1985,41 @@ html.js body:has(.meet-arcade[data-mode="cabinet"]) {
   color: #a9aba6;
 }
 
-.crt-fit {
+/* GAME OVER: the fit as dot-leader rows and a plain sum, the brief as a torn ticket, four buttons. */
+.crt-tally {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 2px 14px;
+  gap: 2px;
   margin: 0;
-  font-family: var(--pixel);
-  font-size: 10px;
+  font: 10px/1.6 var(--pixel);
+  text-transform: uppercase;
 }
 
-.crt-fit > div {
-  display: contents;
+.crt-tally > div {
+  display: flex;
+  gap: 6px;
 }
 
-.crt-fit dt {
+.crt-tally dt {
+  display: flex;
+  flex: 1;
+  gap: 6px;
   color: var(--crt-hi);
 }
 
-.crt-fit dd {
+.crt-tally dt::after {
+  content: "";
+  flex: 1;
+  margin-bottom: 5px;
+  border-bottom: 2px dotted #3a3d3a;
+}
+
+.crt-tally dd {
   margin: 0;
-  text-transform: uppercase;
+}
+
+.crt-tally-sum {
+  margin: 0;
+  font: 10px/1 var(--pixel);
 }
 
 .crt-brief {
@@ -2020,6 +2035,47 @@ html.js body:has(.meet-arcade[data-mode="cabinet"]) {
   overflow-wrap: anywhere;
 }
 
+.crt-ticket {
+  max-height: 132px;
+  padding: 12px 12px 14px;
+  border: 0;
+  background: var(--crt-text);
+  color: var(--crt);
+  scrollbar-color: #6f726e transparent;
+  scrollbar-width: thin;
+  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 12px 100%;
+}
+
+.crt-ticket a {
+  color: var(--crt);
+}
+
+.crt-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.crt-btns button {
+  padding: 9px 6px;
+  border: 1px solid #3a3d3a;
+  border-radius: 4px;
+  background: none;
+  color: var(--crt-text);
+  font: 11px/1 var(--pixel);
+  cursor: pointer;
+}
+
+.crt-btns button.is-on {
+  border-color: var(--crt-hi);
+  color: var(--crt-hi);
+}
+
+.crt-btns button:focus-visible {
+  outline: 1px dashed var(--crt-hi);
+  outline-offset: 2px;
+}
+
 .crt-round {
   display: flex;
   flex-direction: column;
@@ -2032,6 +2088,330 @@ html.js body:has(.meet-arcade[data-mode="cabinet"]) {
   height: auto;
   border: 1px solid #1f221f;
   image-rendering: pixelated;
+}
+
+/* Laid-out screens (components/meet/layouts.tsx): the same tube and colours, a layout and pixel art per screen. */
+.crt-px {
+  display: block;
+  flex: none;
+}
+
+.crt-px .px-t {
+  fill: var(--crt-text);
+}
+
+.crt-px .px-h {
+  fill: var(--crt-hi);
+}
+
+.crt-px .px-d {
+  fill: #6f726e;
+}
+
+.crt-tile,
+.crt-rung,
+.crt-aside,
+.crt-counter button,
+.crt-meter button,
+.crt-boss {
+  border: 0;
+  background: none;
+  color: var(--crt-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.crt-tile:focus-visible,
+.crt-rung:focus-visible,
+.crt-aside:focus-visible,
+.crt-counter button:focus-visible,
+.crt-meter button:focus-visible,
+.crt-boss:focus-visible {
+  outline: 1px dashed var(--crt-hi);
+  outline-offset: 2px;
+}
+
+.crt-caption {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.crt-caption-px {
+  font: 12px/1.35 var(--pixel);
+  color: var(--crt-hi);
+  text-transform: uppercase;
+}
+
+.crt-asides {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.crt-aside {
+  padding: 8px 12px;
+  border: 1px solid #3a3d3a;
+  border-radius: 4px;
+  font: 11px/1 var(--pixel);
+  text-transform: uppercase;
+}
+
+.crt-aside.is-on {
+  border-color: var(--crt-hi);
+  color: var(--crt-hi);
+}
+
+/* STAGE SELECT: a 3 × 2 stage grid, the Ghirlandina behind the stages within reach of home. */
+.crt-tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.crt-tile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 62px;
+  padding: 0 10px;
+  overflow: hidden;
+  border: 1px solid #3a3d3a;
+  text-align: left;
+}
+
+.crt-tile.is-on {
+  padding: 0 9px;
+  border: 2px solid var(--crt-hi);
+  color: var(--crt-hi);
+}
+
+.crt-tile-wide {
+  grid-column: 1 / -1;
+  justify-content: center;
+  height: 34px;
+  font: 13px/1 var(--pixel);
+  text-transform: uppercase;
+}
+
+.crt-tile-bd {
+  position: absolute;
+  right: 8px;
+  bottom: 0;
+  opacity: 0.55;
+}
+
+.crt-tile-t {
+  position: relative; /* above the tower */
+  white-space: nowrap;
+}
+
+.crt-tile-t b {
+  display: block;
+  font: 400 13px/1.2 var(--pixel);
+}
+
+.crt-tile-t span {
+  display: block;
+  font: 10px/1.3 var(--pixel);
+  color: #6f726e;
+}
+
+.crt-tile.is-on .crt-tile-t span {
+  color: var(--crt-hi);
+}
+
+.crt-scene {
+  display: inline-flex;
+  flex: none;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+/* DIFFICULTY: the ladder, top rung first, a rank insignia on each. */
+.crt-ladder {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding-left: 48px;
+}
+
+.crt-ladder::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 6px;
+  width: 24px;
+  border-inline: 3px solid #3a3d3a;
+  background: repeating-linear-gradient(transparent 0 42px, #3a3d3a 42px 46px);
+}
+
+.crt-rung {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 46px;
+  padding: 0;
+  font: 14px/1 var(--pixel);
+  text-align: left;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.crt-rung-ins {
+  display: flex;
+  justify-content: center;
+  width: 26px;
+}
+
+.crt-rung.is-on {
+  color: var(--crt-hi);
+  opacity: 1;
+}
+
+.crt-rung.is-on .px-t {
+  fill: var(--crt-hi);
+}
+
+.crt-rung.is-on::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -46px;
+  width: 9px;
+  height: 12px;
+  margin-top: -6px;
+  background: var(--crt-hi);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+/* CREDITS: the credit counter; up is a band up, the meter reads low to high. No band is coloured by fit. */
+.crt-counter {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 10px 12px;
+  border: 2px solid #3a3d3a;
+}
+
+.crt-counter button {
+  padding: 2px 18px;
+  color: var(--crt-hi);
+}
+
+.crt-counter-k {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font: 10px/1 var(--pixel);
+  color: #6f726e;
+}
+
+.crt-counter-ar {
+  font: 12px/1 var(--pixel);
+}
+
+.crt-counter .crt-counter-v {
+  font: 700 38px/1.1 var(--pixel);
+  letter-spacing: 0.02em;
+}
+
+.crt-counter .crt-counter-v.is-off {
+  color: #6f726e;
+}
+
+.crt-meter {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+}
+
+.crt-meter button {
+  height: 12px;
+  padding: 0;
+  border: 1px solid #3a3d3a;
+}
+
+.crt-meter button.is-on {
+  border-color: var(--crt-hi);
+  background: var(--crt-hi);
+}
+
+/* BOSS SELECT: the four engineering notes as portraits rasterized from their own schematics. */
+.crt-bosses {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.crt-boss {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 104px;
+  padding: 0;
+  border: 1px solid #3a3d3a;
+}
+
+.crt-boss.is-on {
+  border: 2px solid var(--crt-hi);
+}
+
+.crt-boss-n {
+  position: absolute;
+  top: 5px;
+  left: 6px;
+  font: 11px/1 var(--pixel);
+  color: #6f726e;
+}
+
+.crt-boss.is-on .crt-boss-n {
+  color: var(--crt-hi);
+}
+
+.crt-portrait canvas {
+  display: block;
+  width: 128px;
+  height: 80px;
+  image-rendering: pixelated;
+}
+
+/* CONTINUE?: the countdown stops at 1, the cat from the hood asleep on it. */
+.crt-count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.crt-count .crt-title {
+  color: var(--crt-text);
+  font-size: 22px;
+}
+
+.crt-count-art {
+  position: relative;
+  width: 120px;
+  height: 150px;
+}
+
+.crt-count-n {
+  position: absolute;
+  bottom: 0;
+  left: 22px;
+  font: 700 112px/1 var(--pixel);
+  color: var(--crt-hi);
+}
+
+.crt-count-cat {
+  position: absolute;
+  top: 13px;
+  left: 44px;
 }
 
 .room-caption {
@@ -2080,6 +2460,31 @@ html.js body:has(.meet-arcade[data-mode="cabinet"]) {
   .crt-foot,
   .crt-hud,
   .crt-round-hud {
+    font-size: 12px;
+  }
+
+  .crt-rung {
+    font-size: 16px;
+  }
+
+  .crt-aside {
+    font-size: 12px;
+  }
+
+  .crt-tile-t span {
+    font-size: 11px;
+  }
+
+  .crt-caption-px {
+    font-size: 13px;
+  }
+
+  .crt-tally,
+  .crt-tally-sum {
+    font-size: 11px;
+  }
+
+  .crt-btns button {
     font-size: 12px;
   }
 }
