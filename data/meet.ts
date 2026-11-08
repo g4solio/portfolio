@@ -7,7 +7,7 @@ import { chapters } from "./portfolio.ts";
 export const meetEmail = "david3gozz1@gmail.com";
 export const meetTitle = "Let’s get to know each other";
 export const meetDescription =
-  "A small arcade game for recruiters: describe the role in thirteen questions, ask me something after each one, and leave with a brief that shows how the role fits what I’m looking for.";
+  "Tell me about the role, I’ll tell you about me, and you leave with a short brief to send me. A small arcade game for recruiters.";
 export const siteUrl = "https://g4solio.github.io/portfolio/";
 
 export type CriterionKey = "location" | "seniority" | "stack" | "pay" | "relocation";
@@ -54,13 +54,20 @@ export type Layout = keyof typeof layoutSlots | "kit" | "loading" | "tower" | "c
 export const menuLayouts: Layout[] = ["kit", "loading", "tower"];
 export const typedLayouts: Layout[] = ["countdown", "players", "coin", "class", "open"];
 
+/** What a screen says: the question (or the one thing to do) big, and the side information under it. */
+export type Said = { ask: string; line: string };
+/** A screen's words as one text-mode entry: the question on its own line, then the rest. */
+export const spoken = (s: Said) => (s.line ? `${s.ask}\n${s.line}` : s.ask);
+
 export type Move = {
   key: string;
   /** Status-line topic. */
   topic: string;
   /** The cabinet screen this move plays as: the arcade's name for the question. */
   screen: string;
-  /** Davide's line: his side of the exchange, ending in the question. */
+  /** The question, drawn big. */
+  ask: string;
+  /** Davide's side of it, drawn small under the question. */
   line: string;
   /** Command moves list choices; typed moves take free text. */
   choices?: Choice[];
@@ -79,8 +86,8 @@ export const moves: Move[] = [
     key: "name",
     topic: "Hello",
     screen: "NAME ENTRY",
-    line:
-      "I’m Davide, player 1. You describe the role in thirteen questions, and after each one you get to ask me something. At the end there’s a brief to mail me. Who’s player 2? A first name is plenty.",
+    ask: "Hi, I’m Davide. What should I call you?",
+    line: "Let’s take turns: you tell me about the role, I tell you about me. At the end you get a short brief to send me.",
     typed: { hint: "your first name, or skip", max: 40, optional: true },
     brief: "From",
     layout: "players",
@@ -89,7 +96,8 @@ export const moves: Move[] = [
     key: "company",
     topic: "Company",
     screen: "INSERT COIN",
-    line: "Who’s putting the coin in? The company’s name, or “confidential” if you can’t say yet.",
+    ask: "Who’s hiring?",
+    line: "If you can’t say yet, “confidential” is fine.",
     typed: { hint: "company name, or confidential", max: 80 },
     brief: "Company",
     layout: "coin",
@@ -98,9 +106,9 @@ export const moves: Move[] = [
     key: "role",
     topic: "Role",
     screen: "PLAYER 1",
-    line:
-      "Give player 1 a class: what’s the role called? I’m at my best on the backend of software that has to keep working: distributed services, legacy platforms, systems wired to real machines.",
-    typed: { hint: "the role’s title", max: 80 },
+    ask: "What’s the job title?",
+    line: "I’m happiest on the backend of software that has to keep working: distributed services, legacy platforms, things wired to real machines.",
+    typed: { hint: "job title", max: 80 },
     brief: "Role",
     layout: "class",
   },
@@ -108,8 +116,9 @@ export const moves: Move[] = [
     key: "location",
     topic: "Location",
     screen: "STAGE SELECT",
+    ask: "Where’s the job based?",
     line:
-      "Pick the stage. Home base is Modena: remote works if the team keeps European hours, hybrid if the office is within reach and wants me in two days a week at most.",
+      "I live in Modena. Remote suits me if the team works European hours. Hybrid works too, if the office is close and it’s two days a week at most.",
     choices: [
       // A 3 × 2 stage grid: one row per mode, the stage within reach of Modena first.
       { cmd: "remote-eu", label: "fully remote, team on European hours", verdicts: inside(["location", "relocation"]), short: "REMOTE · EU HOURS" },
@@ -127,8 +136,8 @@ export const moves: Move[] = [
     key: "seniority",
     topic: "Seniority",
     screen: "DIFFICULTY",
-    line:
-      "Difficulty here means seniority. Seven professional years; the senior title came with MSC in 2021. I play on senior or harder. What’s this role set to?",
+    ask: "How senior is the role?",
+    line: "I’ve been doing this professionally for seven years and got the senior title at MSC in 2021, so I’m looking at senior roles and up.",
     choices: [
       // The ladder, top rung first.
       { cmd: "principal", label: "principal, or head of", verdicts: inside(["seniority"]) },
@@ -145,8 +154,9 @@ export const moves: Move[] = [
     key: "stack",
     topic: "Stack",
     screen: "LOADOUT",
+    ask: "What’s the stack?",
     line:
-      "My loadout: C# and .NET on the backend, with Redis, RabbitMQ, SQL and the protocols machines speak; full-stack .NET works too. AI agents do most of my typing; architecture, review and CI stay mine. What does the role run on?",
+      "I’m a .NET backend developer: C#, Redis, RabbitMQ, SQL, and the protocols machines speak. Full-stack .NET is fine too. AI agents do most of my typing now, but the architecture and the review are still mine.",
     choices: [
       { cmd: "dotnet-backend", label: ".NET, backend at the centre", verdicts: inside(["stack"]) },
       { cmd: "dotnet-fullstack", label: ".NET, full-stack", verdicts: inside(["stack"]) },
@@ -163,7 +173,8 @@ export const moves: Move[] = [
     key: "pay",
     topic: "Compensation",
     screen: "CREDITS",
-    line: "Credits here means the RAL. My floor is €60k, and I’m aiming for €65k and up. Which band is this role in?",
+    ask: "What does it pay?",
+    line: "I’m aiming for a RAL of €65k or more, and €60k is my floor.",
     choices: [
       // The credit counter, top band first, so up is a band up.
       { cmd: "75-plus", label: "€75k and above", verdicts: inside(["pay"]), short: "€75K +" },
@@ -181,8 +192,8 @@ export const moves: Move[] = [
     key: "contract",
     topic: "Contract",
     screen: "SELECT MODE",
-    line:
-      "Mode means the contract. Whichever it is, I start about two months from a signed offer: one month of notice, one to recharge and arrive at my best. What’s on the table?",
+    ask: "What kind of contract is it?",
+    line: "Whatever it is, I can start about two months after signing: one month of notice, then one to recharge so I show up at my best.",
     choices: [
       { cmd: "employee", label: "permanent employee" },
       { cmd: "fixed-term", label: "fixed-term employee" },
@@ -192,13 +203,14 @@ export const moves: Move[] = [
     ],
     brief: "Contract",
     layout: "loading",
-    art: ["notice · 1 month", "recharge · 1 month", "about two months from a signed offer"],
+    art: ["notice · 1 month", "recharge · 1 month", "about two months after signing"],
   },
   {
     key: "note",
     topic: "Engineering note",
     screen: "BOSS SELECT",
-    line: "Four bosses, each an engineering note from my portfolio: a real decision, its constraints and what I learned. Which fight looks most like this role?",
+    ask: "Which of these is closest to the job?",
+    line: "Each one is an engineering note from my portfolio, about a real decision and what it taught me.",
     choices: [
       ...chapters.flatMap((c) => (c.decision ? [{ cmd: c.decision.schematic, label: `${c.decision.number} · ${c.decision.title}` }] : [])),
       { cmd: "none", label: "none of them" },
@@ -210,8 +222,9 @@ export const moves: Move[] = [
     key: "process",
     topic: "Process",
     screen: "ROUNDS",
+    ask: "What’s the hiring process like?",
     line:
-      "How many floors up to the offer? I do best when I meet the engineering lead by round two, get a real problem from your codebase rather than a puzzle, a take-home only if it fits in two hours, and a decision within three weeks.",
+      "I do best when I meet the engineering lead by round two and work on a real problem from your codebase instead of a puzzle. Take-homes are fine if they fit in two hours, and I’d love a decision within three weeks.",
     choices: [
       // The tower prints the rounds of the choice under the cursor, bottom floor first.
       { cmd: "short", label: "up to three rounds, no take-home", short: "ROUND 1 · ROUND 2 · ROUND 3" },
@@ -226,8 +239,8 @@ export const moves: Move[] = [
     key: "notes",
     topic: "Notes",
     screen: "FREE PLAY",
-    line:
-      "Free play: anything my questions missed. The job ad link helps most; so do the team’s size and why the seat is open.",
+    ask: "Anything I didn’t ask about?",
+    line: "A link to the job ad helps a lot, and so does the team size or why the position is open.",
     typed: { hint: "job ad link, notes, or skip", max: 200, optional: true },
     brief: "Notes",
     layout: "open",
@@ -236,7 +249,8 @@ export const moves: Move[] = [
     key: "feedback-exchange",
     topic: "Feedback",
     screen: "RATE THIS GAME",
-    line: "Two more, both optional, both for me. What would have made this better for you?",
+    ask: "What would have made this better?",
+    line: "Two quick ones for me now. Both are optional.",
     typed: { hint: "what to change, or skip", max: 200, optional: true },
     brief: "Feedback on the exchange",
   },
@@ -244,7 +258,8 @@ export const moves: Move[] = [
     key: "feedback-profile",
     topic: "Feedback",
     screen: "CONTINUE?",
-    line: "Last one, and the one I learn most from: what’s missing from my profile for this role?",
+    ask: "What’s missing from my profile for this role?",
+    line: "Last one. Be honest, it’s the one I learn the most from.",
     typed: { hint: "what’s missing, or skip", max: 200, optional: true },
     brief: "What my profile is missing",
     layout: "countdown",
@@ -298,7 +313,7 @@ export const facts: FactTopic[] = [
   { cmd: "cats", label: "any pets?", lines: ["Cats. Always cats."] },
   {
     cmd: "code",
-    label: "best bug, favourite feature?",
+    label: "favourite bug?",
     lines: [
       "The bug that lives in my head: an IEnumerable handed between actor steps was enumerated more than once, and every extra pass re-triggered work in a system that expected exactly one.",
       "LINQ is my favourite .NET feature, and I have a soft spot for message brokers.",
@@ -322,18 +337,20 @@ export const factCount = facts.reduce((n, t) => n + t.lines.length, 0);
  * The recruiter's turn after a move: the rule the first time, a short nudge that varies after, a last call
  * before the brief. `answered` counts the moves answered so far.
  */
-export function askLine(name: string, answered: number): string {
+export function askLine(name: string, answered: number): Said {
   const n = name ? `, ${name}` : "";
-  if (answered <= 1) return `Nice to meet you${n}. After every answer it’s your turn: pick one and I’ll tell you about it. Three of them start a twenty-second game.`;
-  if (answered >= moves.length) return `One last question before the brief${n}?`;
-  return [`Your turn${n}.`, "Ask me one, or skip ahead.", `Your pick${n}.`, "Another one?", "Ask away, or keep going."][answered % 5];
+  if (answered <= 1) return { ask: "What do you want to know?", line: `Nice to meet you${n}. Now it’s your turn. Three of these are quick games.` };
+  if (answered >= moves.length) return { ask: `Anything else before we wrap up${n}?`, line: "" };
+  return { ask: [`Your turn${n}.`, "Ask me something.", `Your pick${n}.`, "Curious about anything?", "Anything else?"][answered % 5], line: "" };
 }
 export const closingLine = (name: string) =>
-  `That’s all thirteen${name ? `, ${name}` : ""}. score shows how the role fits what I’m after, inventory prints the brief, send mails it to me. look still has whatever you didn’t ask.`;
+  `That’s everything${name ? `, ${name}` : ""}, thanks. Type score to see how the role lines up with what I’m looking for, inventory to read the brief, or send to email it to me. look still has whatever you didn’t ask.`;
 export const exhaustedLine = `You’ve heard all ${factCount}. Ask me the rest in person.`;
 /** The cabinet's last screen, above the brief. */
-export const gameOverLine = (name: string) =>
-  `That’s all thirteen${name ? `, ${name}` : ""}. Below: how the role fits what I’m after, and the brief to send me. Nothing leaves this page until you press send in your own mail.`;
+export const gameOverLine = (name: string): Said => ({
+  ask: `Thanks${name ? `, ${name}` : ""}. That’s everything.`,
+  line: "Here’s how the role lines up with what I’m looking for, and a brief you can email me. It only goes out if you send it.",
+});
 /** Topics whose first fact arrives as a round of its own game: the runner for the bug, the shooter for Galactic Fighters, the pounce for the cats. */
 export const rounds: Record<string, "runner" | "shooter" | "pounce"> = { code: "runner", work: "shooter", cats: "pounce" };
 export const unknownLine = "I didn’t catch that. The commands are listed above.";

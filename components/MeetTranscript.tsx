@@ -5,6 +5,7 @@ import { Typed, linkify, prefersReducedMotion } from "@/components/meet/Typed";
 import {
   type Answers,
   askLine,
+  spoken,
   briefText,
   closingLine,
   exhaustedLine,
@@ -47,7 +48,7 @@ function Numeral({ value, width = 1 }: { value: number; width?: number }) {
 
 export function MeetTranscript() {
   const [answers, setAnswers] = useState<Answers>({});
-  const [log, setLog] = useState<Entry[]>([{ text: moves[0].line }]);
+  const [log, setLog] = useState<Entry[]>([{ text: spoken(moves[0]) }]);
   const [input, setInput] = useState("");
   // After every answer it is the recruiter's turn to ask: the "ask" phase.
   const [phase, setPhase] = useState<"answer" | "ask">("answer");
@@ -86,15 +87,15 @@ export function MeetTranscript() {
     const nm = current.key === "name" ? value : name;
     if (remaining.length > 0) {
       setPhase("ask");
-      return say(echo, askLine(nm, step + 1));
+      return say(echo, spoken(askLine(nm, step + 1)));
     }
     const next = moves[step + 1];
-    say(echo, next ? next.line : closingLine(nm));
+    say(echo, next ? spoken(next) : closingLine(nm));
   };
 
   /** The ask is done (a fact, or skipped); the next question follows. */
   const proceed = (echo: string, fact?: string) => {
-    const question = current ? current.line : closingLine(name);
+    const question = current ? spoken(current) : closingLine(name);
     setPhase("answer");
     setLog((l) => (fact ? [...l, { cmd: echo, text: fact }, { text: question }] : [...l, { cmd: echo, text: question }]));
   };
@@ -122,11 +123,11 @@ export function MeetTranscript() {
         delete rest[last.key];
         setAnswers(rest);
         setPhase("answer");
-        return say(text, last.line);
+        return say(text, spoken(last));
       }
       case "send":
         window.location.assign(mailtoHref(answers));
-        return say(text, "Opening your mail client with the brief. If nothing happens, copy works too.");
+        return say(text, "Opening your email app. If nothing happens, type copy instead.");
       case "copy":
         navigator.clipboard.writeText(briefText(answers)).then(
           () => say(text, "Copied. Paste it wherever you reached me."),
@@ -148,7 +149,7 @@ export function MeetTranscript() {
       const topic = remaining.find((t) => t.cmd === cmd || t.label === cmd) ?? (Number.isInteger(n) ? remaining[n - 1] : undefined);
       return topic ? proceed(topic.cmd, tell(topic.cmd)) : say(text, unknownLine);
     }
-    if (!current) return say(text, "The moves are done. Commands: score, inventory, send, copy, cv.");
+    if (!current) return say(text, "That’s everything. You can still type score, inventory, send, copy or cv.");
     if (current.choices) {
       const n = Number.parseInt(cmd, 10);
       const choice =
@@ -157,7 +158,7 @@ export function MeetTranscript() {
       return choice ? answer(choice.cmd, choice.cmd) : say(text, unknownLine);
     }
     if (current.typed) {
-      if (cmd === "skip") return current.typed.optional ? answer(text, "") : say(text, "I need an answer here.");
+      if (cmd === "skip") return current.typed.optional ? answer(text, "") : say(text, "This one needs an answer.");
       return answer(text, text.slice(0, current.typed.max));
     }
   };
@@ -265,7 +266,9 @@ export function MeetTranscript() {
         <ol>
           {moves.map((m) => (
             <li key={m.key}>
-              <p>{m.line}</p>
+              <p>
+                <b>{m.ask}</b> {m.line}
+              </p>
               {m.choices && (
                 <ul>
                   {m.choices.map((c) => (

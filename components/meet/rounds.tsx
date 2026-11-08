@@ -1,7 +1,7 @@
 "use client";
 
 import { type RefObject, useEffect, useRef, useState } from "react";
-import { rounds } from "@/data/meet";
+import { rounds, type Said } from "@/data/meet";
 
 // Three one-button rounds, each twenty seconds, each ending with the fact whatever the score.
 // The pixel art is code grids in the tube's colours; the loop is requestAnimationFrame with delta time.
@@ -18,10 +18,10 @@ type Kind = (typeof rounds)[string];
 export const ROUND_TITLES: Record<Kind, string> = { runner: "ENUMERATED TWICE", shooter: "GALACTIC FIGHTERS", pounce: "ALWAYS CATS" };
 const HINTS: Record<Kind, string> = { runner: "A · JUMP", shooter: "A · FIRE", pounce: "A · POUNCE" };
 /** What the round asks of you, above the canvas; the fact waits at the end whatever the score. */
-export const ROUND_BRIEFS: Record<Kind, string> = {
-  runner: "Every obstacle comes twice, so every jump has to clear the pair. Twenty seconds; my answer comes after, whatever the score.",
-  shooter: "The space shooter I worked on in high school, cut to one button: the ship steers itself, you fire. My answer comes after, whatever the score.",
-  pounce: "Chase the dot: A pounces where it is now, and it rarely waits. My answer comes after, whatever the score.",
+export const ROUND_BRIEFS: Record<Kind, Said> = {
+  runner: { ask: "Jump each pair.", line: "Every obstacle shows up twice. Twenty seconds, and you get my answer whatever your score." },
+  shooter: { ask: "Just fire.", line: "It’s the space shooter I worked on in high school, down to one button. The ship steers itself." },
+  pounce: { ask: "Catch the dot.", line: "It never sits still. Twenty seconds, and you get my answer either way." },
 };
 
 type Game = {

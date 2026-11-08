@@ -134,7 +134,7 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
     const value = typedValue.trim();
     if (!value) {
       if (current.typed.optional) answer("");
-      else setNote("I need an answer here.");
+      else setNote("This one needs an answer.");
       return;
     }
     answer(value.slice(0, current.typed.max));
@@ -188,6 +188,7 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
 
   // What the screen shows and what A does there.
   let title = "";
+  let question = "";
   let line = "";
   let hint = "";
   let items: Item[] = [];
@@ -197,7 +198,7 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
   const cols = layout === "stages" || layout === "bosses" || stage === "over" || (stage === "play" && turn.kind === "ask") ? 2 : 1;
   if (stage === "over") {
     title = "GAME OVER";
-    line = gameOverLine(name);
+    ({ ask: question, line } = gameOverLine(name));
     hint = "ARROWS MOVE · A SELECT";
     items = [
       {
@@ -205,7 +206,7 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
         label: "SUBMIT · mail me the brief",
         run: () => {
           window.location.assign(mailtoHref(answers));
-          setNote("Opening your mail client with the brief. If nothing happens, COPY works too.");
+          setNote("Opening your email app. If nothing happens, use COPY instead.");
         },
       },
       {
@@ -223,19 +224,20 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
     ];
   } else if (turn.kind === "ask") {
     title = "BONUS STAGE";
-    line = askLine(name, Object.keys(answers).length);
+    ({ ask: question, line } = askLine(name, Object.keys(answers).length));
     hint = "ARROWS MOVE · A SELECT";
     items = [...remaining.map((t) => ({ id: t.cmd, label: t.label, run: () => ask(t.cmd) })), { id: "skip", label: "skip · next question", run: proceed }];
   } else if (turn.kind === "fact") {
-    title = topicLabel(turn.topic).toUpperCase(); // the question they asked
+    title = "BONUS STAGE";
+    question = topicLabel(turn.topic).replace(/^./, (c) => c.toUpperCase()); // the question they asked
     hint = "A · CONTINUE";
     items = [{ id: "ok", label: "PRESS A", run: proceed }];
   } else if (turn.kind === "round") {
     title = `ROUND · ${ROUND_TITLES[rounds[turn.topic]]}`;
-    line = ROUND_BRIEFS[rounds[turn.topic]];
+    ({ ask: question, line } = ROUND_BRIEFS[rounds[turn.topic]]);
   } else if (current) {
     title = current.screen;
-    line = current.line;
+    ({ ask: question, line } = current);
     if (current.choices) {
       hint = cols > 1 ? "ARROWS MOVE · A SELECT" : layout === "counter" ? "↑↓ BAND · A SELECT" : "↑↓ MOVE · A SELECT";
       items = current.choices.map((c) => ({ id: c.cmd, label: c.label, run: () => answer(c.cmd) }));
@@ -385,12 +387,16 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
                   MOVE {pad2(moveNo)}/{moves.length}
                 </span>
               </div>
-              {layout === "countdown" ? <Countdown title={title} /> : <h2 className="crt-title">{title}</h2>}
+              {layout === "countdown" ? <Countdown title={title} /> : <p className="crt-screen">{title}</p>}
 
-              {(turn.kind !== "fact" || stage === "over") && line && (
-                <p className="crt-line" aria-live="polite">
-                  <Typed key={`${stage}-${turn.kind}-${step}`} text={line} />
-                </p>
+              {/* The question big, Davide's side of it small underneath. */}
+              {question && (
+                <div className="crt-head" aria-live="polite">
+                  <h2 className="crt-ask">
+                    <Typed key={`${stage}-${turn.kind}-${step}`} text={question} />
+                  </h2>
+                  {line && <p className="crt-side">{line}</p>}
+                </div>
               )}
 
               {turn.kind === "round" && stage === "play" && <Round key={turn.topic} topic={turn.topic} pressRef={pressRef} onDone={roundDone} />}

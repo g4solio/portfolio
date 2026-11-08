@@ -303,7 +303,7 @@ const SCENES: Record<string, ReactNode> = {
 export function Countdown({ title }: { title: string }) {
   return (
     <div className="crt-count">
-      <h2 className="crt-title">{title}</h2>
+      <p className="crt-title">{title}</p>
       <span className="crt-count-art" aria-hidden="true">
         <span className="crt-count-n">1</span>
         <span className="crt-count-cat">

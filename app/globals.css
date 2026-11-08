@@ -1775,6 +1775,38 @@ html.js body:has(.meet-arcade[data-mode="cabinet"]) {
   color: var(--crt-hi);
 }
 
+/* Every screen: its arcade name small, the question big, Davide's side of it small underneath. */
+.crt-screen {
+  margin: 0;
+  font: 11px/1.4 var(--pixel);
+  letter-spacing: 0.04em;
+  color: var(--crt-hi);
+}
+
+.crt-head {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.crt-ask {
+  margin: 0;
+  font: 600 21px/1.25 var(--mono);
+  color: var(--crt-text);
+  text-wrap: balance;
+}
+
+.crt-ask::after {
+  margin-top: 12px;
+}
+
+.crt-side {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #a9aba6;
+}
+
 .crt-line {
   margin: 0;
   white-space: pre-wrap;
@@ -2787,6 +2819,18 @@ html.js body:has(.meet-arcade[data-mode="cabinet"]) {
 
   .crt-title {
     font-size: 17px;
+  }
+
+  .crt-screen {
+    font-size: 12px;
+  }
+
+  .crt-ask {
+    font-size: 23px;
+  }
+
+  .crt-side {
+    font-size: 14px;
   }
 
   .crt-foot,

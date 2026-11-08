@@ -16,7 +16,9 @@ for (const m of moves) {
     for (const k of Object.keys(c.verdicts ?? {})) assert.ok(scope.some((s) => s.key === k), `${m.key}/${c.cmd}: unknown criterion ${k}`);
   }
   assert.ok(m.choices || m.typed, `${m.key}: neither choices nor typed`);
-  assert.ok(m.line.length <= 300, `${m.key}: line too long to type (${m.line.length})`);
+  assert.ok(m.line.length <= 300, `${m.key}: line too long (${m.line.length})`);
+  // The question is the big line: short, and a question.
+  assert.ok(m.ask.endsWith("?") && m.ask.length <= 48, `${m.key}: the big line should be a short question`);
 }
 
 // The facts: topics with unique commands that shadow nothing, short lines, the Spotify link.
@@ -92,12 +94,12 @@ assert.ok(facts.find((t) => t.cmd === "work").lines[0].includes("Galactic Fighte
 // The fact screens read two lines as charts; a reworded line would quietly fall back to plain text.
 assert.match(facts.find((t) => t.cmd === "games").lines[0], /top three: (.+), (.+), (.+)\.$/, "the games top three keeps its chart shape");
 assert.match(facts.find((t) => t.cmd === "music").lines[0], /^(.+), (.+) and (.+) have been my top three on Spotify for years\.$/, "the music top three keeps its chart shape");
-assert.match(gameOverLine("Marta"), /thirteen, Marta/);
+assert.equal(gameOverLine("Marta").ask, "Thanks, Marta. That’s everything.");
 // The ask turn: the rule once, after the first answer; a last call after the thirteenth; short nudges between.
 const { askLine } = await import("../data/meet.ts");
-assert.match(askLine("Marta", 1), /^Nice to meet you, Marta\..*twenty-second game\.$/);
-assert.match(askLine("", moves.length), /^One last question before the brief\?$/);
-for (let i = 2; i < moves.length; i++) assert.ok(askLine("Marta", i).length <= 30 && !askLine("Marta", i).startsWith("Nice"), `ask ${i}: a short nudge`);
+assert.match(askLine("Marta", 1).line, /^Nice to meet you, Marta\..*quick games\.$/);
+assert.deepEqual(askLine("", moves.length), { ask: "Anything else before we wrap up?", line: "" });
+for (let i = 2; i < moves.length; i++) assert.ok(askLine("Marta", i).ask.length <= 30 && !askLine("Marta", i).line, `ask ${i}: a short nudge`);
 
 // The laid-out screens: a layout holds its slots in data order and the rest sit aside; what it prints fits.
 const { layoutSlots, typedLayouts, menuLayouts } = await import("../data/meet.ts");
