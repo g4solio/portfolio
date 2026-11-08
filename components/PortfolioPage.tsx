@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { BootSequence } from "./BootSequence";
 import { Chapters } from "./Chapters";
@@ -297,6 +298,10 @@ export function PortfolioPage() {
             <p>
               Email is the most reliable way to reach me. I read everything, including the
               interesting problems.
+            </p>
+            <p>
+              Recruiting for a role? Start with <Link href="/meet/">Let’s get to know each other</Link>:
+              a short text adventure that ends in a brief you can send me.
             </p>
             <p className="contact-links">
               <a href="Davide_Gozzi_CV.pdf" target="_blank" rel="noreferrer">CV (PDF)</a>

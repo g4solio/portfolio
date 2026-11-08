@@ -79,6 +79,35 @@ named on the site with its real figures.
   remain unlinked names. Do not add links for them without a new decision.
 - Boot sequence contract: runs once per browser session, immediately skippable,
   never gates content; the full page stays readable without JavaScript.
+- Meet (`/meet/`, user-confirmed 2026-11-07, rebuilt as the cabinet 2026-11-08): the
+  page for recruiters who message Davide on LinkedIn. An arcade cabinet of his own:
+  plywood sides with the designated Mage stencilled on them, a black front covered in
+  stickers from the fact pool (the cat, the d20, Azzurro's lute, the MO plate, LINQ,
+  the "enumerated twice" warning, the dinosaur, the gamepad, g4solio), a cat asleep on
+  the hood, a cotto floor, a plaster wall that is the page. The cabinet is rendered
+  once (`scripts/cabinet/render.html`, three.js in headless Chrome, run by
+  `node scripts/cabinet.mjs`) into two stills, the hero at 30° and the play view
+  face-on; the page maps a live screen onto the tube with a matrix3d from the still's
+  projected corners. A key or a tap inserts the coin; phones stand at the cabinet from
+  the start. Thirteen moves as cabinet screens (NAME ENTRY, INSERT COIN, PLAYER 1,
+  STAGE SELECT, DIFFICULTY, LOADOUT, CREDITS, SELECT MODE, BOSS SELECT, ROUNDS, FREE
+  PLAY, RATE THIS GAME, CONTINUE?), in his voice, the last three optional. After every
+  answer it is the recruiter's BONUS STAGE: one topic from the pool of seventeen facts,
+  or skip. The first fact of three topics is a twenty-second one-button round whose
+  fact arrives whatever the score: the runner where every obstacle is enumerated twice
+  (code), the sweep-and-fire shooter for Galactic Fighters (work), the pounce (cats).
+  The HUD shows KNOWN and MOVE only; the fit against the scope and the brief appear at
+  GAME OVER, with SUBMIT (`mailto:` from the recruiter's own client), COPY, MANUAL (the
+  CV) and PLAY AGAIN. Arrows move, Enter is A, digits pick, Backspace undoes a move;
+  the button on the still is a hotspot. Sound is opt-in, off by default. Text mode
+  (`#text`) is the earlier transcript game, kept whole; without JavaScript the scope,
+  the moves and the facts print as a document. Nothing is stored; nothing blocks
+  anyone: a miss reads "outside my ideal scope", an unanswered criterion "not
+  confirmed". Data, screens and the brief live in `data/meet.ts`;
+  `node scripts/meet-check.mjs` checks the data, the scoring, the screens and the
+  brief. Facts that name games, comics or a film are biography, not references, and do
+  not count against the pop-culture budget; the rounds borrow mechanics, never names.
+  Linked once, from the Contact section; not in the header navigation.
 
 ## Brand Commitments
 
@@ -108,6 +137,14 @@ named on the site with its real figures.
   Still binding: no scroll hijacking, nothing gated behind animation, reduced
   motion makes everything instant, the page reads in full without JavaScript.
   Decision titles and OSUS product names stay plain ink to keep the dose small.
+- Meet is the one scoped exception to the single idiom (user-confirmed 2026-11-07;
+  the garage world chosen from rendered alternatives 2026-11-08): a concept Davide
+  names is a world, built whole. Colour beyond the casebook palette, a place the
+  cabinet stands in, decals drawn from his real facts, pixel art as code grids in the
+  tube's CRT colours, sound opt-in and off by default. No logos or characters that
+  belong to someone else, no human portrait, no Zork quotes. The pop-culture budget
+  stays at three; the rounds borrow mechanics, not names. The transcript game stays
+  as text mode, in the mono face on paper.
 - Visual specifics (palette, type, layout) belong to the design record, not here.
 
 ## Evidence on Hand
