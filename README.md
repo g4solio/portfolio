@@ -140,6 +140,7 @@ components/
   MeetArcade.tsx          /meet/ with JavaScript: the cabinet, or text mode
   MeetCabinet.tsx         the cabinet: the stills, the live screen on the tube, the screens
   MeetTranscript.tsx      the transcript game, now text mode: status line, log, commands, prompt
+  meet/layouts.tsx        the laid-out screens: stage grid, ladder, counter, boss portraits, countdown
   meet/rounds.tsx         the three one-button rounds: runner, shooter, pounce
   meet/sound.ts           the cabinet's opt-in blips
   meet/Typed.tsx          the typed reveal the cabinet and the transcript share
