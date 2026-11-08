@@ -17,6 +17,7 @@ import {
   verdictWord,
 } from "@/data/meet";
 import views from "@/data/meet-cabinet.json";
+import { Countdown, MoveLayout } from "./meet/layouts";
 import { ROUND_TITLES, Round } from "./meet/rounds";
 import { type Cue, createSound } from "./meet/sound";
 import { Typed, linkify } from "./meet/Typed";
@@ -216,6 +217,9 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
   let line = "";
   let hint = "";
   let items: Item[] = [];
+  // A laid-out move screen (issue #6); the plain menu otherwise. Two-column screens step by rows.
+  const layout = stage === "play" && turn.kind === "move" ? current?.layout : undefined;
+  const cols = layout === "stages" || layout === "bosses" ? 2 : 1;
   if (stage === "over") {
     title = "GAME OVER";
     line = gameOverLine(name);
@@ -257,7 +261,7 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
     title = current.screen;
     line = current.line;
     if (current.choices) {
-      hint = "↑↓ MOVE · A SELECT";
+      hint = cols > 1 ? "ARROWS MOVE · A SELECT" : layout === "counter" ? "↑↓ BAND · A SELECT" : "↑↓ MOVE · A SELECT";
       items = current.choices.map((c) => ({ id: c.cmd, label: c.label, run: () => answer(c.cmd) }));
     } else {
       hint = current.typed?.hint ?? "";
@@ -287,17 +291,21 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
         return;
       }
       if (typing || turn.kind === "round") return;
+      // A plain menu wraps around; a laid-out screen stops at its edges, so up never jumps to the bottom.
       const moveSel = (delta: number) => {
         if (items.length === 0) return;
-        setSel((s) => (s + delta + items.length) % items.length);
+        setSel((s) => (layout ? clamp(s + delta, 0, items.length - 1) : (s + delta + items.length) % items.length));
         cue("move");
       };
       if (e.key === "ArrowDown" || e.key === "s" || e.key === "S") {
         e.preventDefault();
-        moveSel(1);
+        moveSel(cols);
       } else if (e.key === "ArrowUp" || e.key === "w" || e.key === "W") {
         e.preventDefault();
-        moveSel(-1);
+        moveSel(-cols);
+      } else if (cols > 1 && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
+        e.preventDefault();
+        moveSel(e.key === "ArrowRight" ? 1 : -1);
       } else if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         items[sel]?.run();
@@ -386,7 +394,7 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
                   MOVE {pad2(moveNo)}/{moves.length}
                 </span>
               </div>
-              <h2 className="crt-title">{title}</h2>
+              {layout === "countdown" ? <Countdown title={title} /> : <h2 className="crt-title">{title}</h2>}
 
               {turn.kind === "round" && stage === "play" && <Round key={turn.topic} topic={turn.topic} pressRef={pressRef} onDone={roundDone} />}
 
@@ -450,7 +458,9 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
                 </form>
               )}
 
-              {menu && (
+              {menu && layout && current && <MoveLayout move={current} items={items} sel={sel} setSel={setSel} />}
+
+              {menu && !layout && (
                 <ol className="crt-menu">
                   {items.map((it, i) => (
                     <li key={it.id} className={i === sel ? "is-on" : ""}>
