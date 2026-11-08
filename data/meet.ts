@@ -36,7 +36,17 @@ export type Choice = {
   label: string;
   /** What this answer says about the scope; absent when the move is not judged. */
   verdicts?: Partial<Record<CriterionKey, Verdict>>;
+  /** What a laid-out screen prints for this choice: a stage tile's "MODE · WHERE", the counter's readout, an aside button. */
+  short?: string;
 };
+
+/**
+ * How the cabinet lays a move's screen out, and how many of its choices the layout holds; the choices
+ * after those sit aside, as buttons below. Data order is screen order, top to bottom and left to right,
+ * so the arrows keep their meaning on every screen. A move without a layout gets the plain menu.
+ */
+export const layoutSlots = { stages: 6, ladder: 5, counter: 5, bosses: 4, countdown: 0 } as const;
+export type Layout = keyof typeof layoutSlots;
 
 export type Move = {
   key: string;
@@ -51,6 +61,7 @@ export type Move = {
   typed?: { hint: string; max: number; optional?: boolean };
   /** Label in the brief. */
   brief: string;
+  layout?: Layout;
 };
 
 const inside = (keys: CriterionKey[]) => Object.fromEntries(keys.map((k) => [k, "inside"])) as Partial<Record<CriterionKey, Verdict>>;
@@ -89,15 +100,17 @@ export const moves: Move[] = [
     line:
       "I’m based in Modena. Remote with a team on European hours works for me, and so does hybrid up to two days a week within reach. Where would this role sit?",
     choices: [
-      { cmd: "remote-eu", label: "fully remote, team on European hours", verdicts: inside(["location", "relocation"]) },
-      { cmd: "remote", label: "fully remote, team elsewhere", verdicts: { location: "outside", relocation: "inside" } },
-      { cmd: "hybrid-modena", label: "hybrid, within reach of Modena", verdicts: inside(["location", "relocation"]) },
-      { cmd: "hybrid", label: "hybrid, elsewhere in Italy", verdicts: { location: "outside", relocation: "outside" } },
-      { cmd: "onsite-modena", label: "on site, within reach of Modena", verdicts: { location: "outside", relocation: "inside" } },
-      { cmd: "onsite", label: "on site, elsewhere", verdicts: { location: "outside", relocation: "outside" } },
+      // A 3 × 2 stage grid: one row per mode, the stage within reach of Modena first.
+      { cmd: "remote-eu", label: "fully remote, team on European hours", verdicts: inside(["location", "relocation"]), short: "REMOTE · EU HOURS" },
+      { cmd: "remote", label: "fully remote, team elsewhere", verdicts: { location: "outside", relocation: "inside" }, short: "REMOTE · TEAM ELSEWHERE" },
+      { cmd: "hybrid-modena", label: "hybrid, within reach of Modena", verdicts: inside(["location", "relocation"]), short: "HYBRID · NEAR MODENA" },
+      { cmd: "hybrid", label: "hybrid, elsewhere in Italy", verdicts: { location: "outside", relocation: "outside" }, short: "HYBRID · REST OF ITALY" },
+      { cmd: "onsite-modena", label: "on site, within reach of Modena", verdicts: { location: "outside", relocation: "inside" }, short: "ON SITE · NEAR MODENA" },
+      { cmd: "onsite", label: "on site, elsewhere", verdicts: { location: "outside", relocation: "outside" }, short: "ON SITE · ELSEWHERE" },
       { cmd: "unknown", label: "not decided yet" },
     ],
     brief: "Location",
+    layout: "stages",
   },
   {
     key: "seniority",
@@ -106,14 +119,16 @@ export const moves: Move[] = [
     line:
       "Seven professional years; the senior title dates from MSC, 2021 to 2023, and I’m looking at senior and above. What seniority does the role carry?",
     choices: [
-      { cmd: "senior", label: "senior", verdicts: inside(["seniority"]) },
-      { cmd: "lead", label: "lead or staff", verdicts: inside(["seniority"]) },
+      // The ladder, top rung first.
       { cmd: "principal", label: "principal, or head of", verdicts: inside(["seniority"]) },
+      { cmd: "lead", label: "lead or staff", verdicts: inside(["seniority"]) },
+      { cmd: "senior", label: "senior", verdicts: inside(["seniority"]) },
       { cmd: "mid", label: "mid-level", verdicts: { seniority: "outside" } },
       { cmd: "junior", label: "junior", verdicts: { seniority: "outside" } },
       { cmd: "unknown", label: "not defined yet" },
     ],
     brief: "Seniority",
+    layout: "ladder",
   },
   {
     key: "stack",
@@ -137,15 +152,17 @@ export const moves: Move[] = [
     screen: "CREDITS",
     line: "My floor is a RAL of €60k, and I aim for €65k and above. Which band is the role in?",
     choices: [
-      { cmd: "under-50", label: "under €50k", verdicts: { pay: "outside" } },
-      { cmd: "50-60", label: "€50k to €60k", verdicts: { pay: "outside" } },
-      { cmd: "60-65", label: "€60k to €65k", verdicts: inside(["pay"]) },
-      { cmd: "65-75", label: "€65k to €75k", verdicts: inside(["pay"]) },
-      { cmd: "75-plus", label: "€75k and above", verdicts: inside(["pay"]) },
-      { cmd: "consulting", label: "a consulting rate; the figure goes in the notes" },
+      // The credit counter, top band first, so up is a band up.
+      { cmd: "75-plus", label: "€75k and above", verdicts: inside(["pay"]), short: "€75K +" },
+      { cmd: "65-75", label: "€65k to €75k", verdicts: inside(["pay"]), short: "€65–75K" },
+      { cmd: "60-65", label: "€60k to €65k", verdicts: inside(["pay"]), short: "€60–65K" },
+      { cmd: "50-60", label: "€50k to €60k", verdicts: { pay: "outside" }, short: "€50–60K" },
+      { cmd: "under-50", label: "under €50k", verdicts: { pay: "outside" }, short: "< €50K" },
+      { cmd: "consulting", label: "a consulting rate; the figure goes in the notes", short: "consulting rate" },
       { cmd: "undisclosed", label: "not disclosed" },
     ],
     brief: "Compensation",
+    layout: "counter",
   },
   {
     key: "contract",
@@ -172,6 +189,7 @@ export const moves: Move[] = [
       { cmd: "none", label: "none of them" },
     ],
     brief: "Closest engineering note",
+    layout: "bosses",
   },
   {
     key: "process",
@@ -211,6 +229,7 @@ export const moves: Move[] = [
     line: "Last one. What is missing from my profile for this role?",
     typed: { hint: "feedback, or skip", max: 200, optional: true },
     brief: "What my profile is missing",
+    layout: "countdown",
   },
 ];
 
