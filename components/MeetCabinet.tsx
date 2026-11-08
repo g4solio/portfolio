@@ -18,7 +18,7 @@ import {
   verdictWord,
 } from "@/data/meet";
 import views from "@/data/meet-cabinet.json";
-import { Countdown, MoveLayout, TypedField } from "./meet/layouts";
+import { Countdown, MenuArt, MoveLayout, TypedField } from "./meet/layouts";
 import { ROUND_TITLES, Round } from "./meet/rounds";
 import { type Cue, createSound } from "./meet/sound";
 import { Typed, linkify } from "./meet/Typed";
@@ -220,6 +220,7 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
   let items: Item[] = [];
   // A laid-out move screen (issue #6); the plain menu otherwise. Two-column screens, GAME OVER's buttons included, step by rows.
   const layout = stage === "play" && turn.kind === "move" ? current?.layout : undefined;
+  const board = !!layout && layout in layoutSlots;
   const cols = layout === "stages" || layout === "bosses" || stage === "over" ? 2 : 1;
   if (stage === "over") {
     title = "GAME OVER";
@@ -343,6 +344,19 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
     if (ready && typedKey) inputRef.current?.focus({ preventScroll: true });
   }, [ready, typedKey]);
 
+  // The plain menu; a move with art beside it (LOADOUT, SELECT MODE, ROUNDS) keeps it whole.
+  const list = (
+    <ol className="crt-menu">
+      {items.map((it, i) => (
+        <li key={it.id} className={i === sel ? "is-on" : ""}>
+          <button type="button" onClick={it.run} onMouseEnter={() => setSel(i)} onFocus={() => setSel(i)} aria-current={i === sel ? "true" : undefined}>
+            {it.label}
+          </button>
+        </li>
+      ))}
+    </ol>
+  );
+
   return (
     <section className="room" data-stage={stage} aria-label="The arcade cabinet">
       {/* The arrival: the whole cabinet in its corner. A key or a tap walks up to it. */}
@@ -463,7 +477,7 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
                 </form>
               )}
 
-              {menu && layout && layout in layoutSlots && current && <MoveLayout move={current} items={items} sel={sel} setSel={setSel} />}
+              {menu && board && current && <MoveLayout move={current} items={items} sel={sel} setSel={setSel} />}
 
               {stage === "over" && (
                 <div className="crt-btns">
@@ -484,17 +498,12 @@ export function MeetCabinet({ active, onTextMode }: { active: boolean; onTextMod
                 </div>
               )}
 
-              {menu && !layout && stage !== "over" && (
-                <ol className="crt-menu">
-                  {items.map((it, i) => (
-                    <li key={it.id} className={i === sel ? "is-on" : ""}>
-                      <button type="button" onClick={it.run} onMouseEnter={() => setSel(i)} onFocus={() => setSel(i)} aria-current={i === sel ? "true" : undefined}>
-                        {it.label}
-                      </button>
-                    </li>
-                  ))}
-                </ol>
-              )}
+              {menu && !board && stage !== "over" && (layout && current ? (
+                <div className={`crt-with-art is-${layout}`}>
+                  <MenuArt move={current} sel={sel} />
+                  {list}
+                </div>
+              ) : list)}
 
               {note && <p className="crt-note">{note}</p>}
 

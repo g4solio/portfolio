@@ -92,18 +92,30 @@ assert.ok(facts.find((t) => t.cmd === "work").lines[0].includes("Galactic Fighte
 assert.match(gameOverLine("Marta"), /thirteen, Marta/);
 
 // The laid-out screens: a layout holds its slots in data order and the rest sit aside; what it prints fits.
-const { layoutSlots, typedLayouts } = await import("../data/meet.ts");
+const { layoutSlots, typedLayouts, menuLayouts } = await import("../data/meet.ts");
 const { chapters } = await import("../data/portfolio.ts");
 const schematics = new Set(chapters.flatMap((c) => (c.decision ? [c.decision.schematic] : [])));
+for (const m of moves) {
+  // Every part of a short (a tile's mode and place, a tower's floor) fits the tube on its own.
+  for (const c of m.choices ?? []) for (const part of c.short?.split(" · ") ?? []) assert.ok(part.length <= 24, `${m.key}/${c.cmd}: "${part}" too long for the tube`);
+  assert.ok(!m.art || menuLayouts.includes(m.layout), `${m.key}: art without a menu layout to print it`);
+}
 for (const m of moves.filter((x) => x.layout)) {
   if (typedLayouts.includes(m.layout)) {
     assert.ok(m.typed, `${m.key}: the ${m.layout} dresses a typed field`);
     continue;
   }
+  if (menuLayouts.includes(m.layout)) {
+    assert.ok(m.choices, `${m.key}: the ${m.layout} sits beside a menu`);
+    // Content truth: what the art prints is what the line says.
+    if (m.layout === "kit") for (const a of m.art) assert.ok(m.line.toLowerCase().includes(a.toLowerCase()), `${m.key}: "${a}" is not in the line`);
+    if (m.layout === "loading") assert.ok(m.art.length >= 3 && m.line.includes(m.art.at(-1)), `${m.key}: the bar needs segments and a caption from the line`);
+    if (m.layout === "tower") for (const c of m.choices) assert.ok(c.short, `${m.key}/${c.cmd}: the tower prints a short`);
+    continue;
+  }
   const slots = layoutSlots[m.layout];
   assert.ok(slots, `${m.key}: unknown layout ${m.layout}`);
   assert.ok(m.choices && m.choices.length > slots, `${m.key}: the ${m.layout} holds ${slots} choices and sets at least one aside`);
-  for (const c of m.choices) assert.ok(!c.short || c.short.length <= 24, `${m.key}/${c.cmd}: short too long for the tube`);
   const held = m.choices.slice(0, slots);
   if (m.layout === "stages" || m.layout === "counter") for (const c of held) assert.ok(c.short, `${m.key}/${c.cmd}: the ${m.layout} prints a short`);
   if (m.layout === "stages") for (const c of held) assert.ok(["REMOTE", "HYBRID", "ON SITE"].includes(c.short.split(" · ")[0]), `${m.key}/${c.cmd}: a stage names its mode first`);

@@ -122,6 +122,49 @@ export function TypedField({ layout, field, prefix, filled }: { layout?: Layout;
   );
 }
 
+/**
+ * Art beside a plain menu, all from the move's line: LOADOUT's equipped kit, SELECT MODE's loading bar
+ * (the notice, then the month to recharge), and the ROUNDS tower for the choice under the cursor.
+ */
+export function MenuArt({ move, sel }: { move: Move; sel: number }) {
+  const art = move.art ?? [];
+  if (move.layout === "kit") {
+    return (
+      <div className="crt-kit" aria-hidden="true">
+        <span className="crt-k">EQUIPPED</span>
+        {art.map((a) => (
+          <span key={a}>{a}</span>
+        ))}
+      </div>
+    );
+  }
+  if (move.layout === "loading") {
+    return (
+      <div className="crt-loading" aria-hidden="true">
+        <div>
+          {art.slice(0, -1).map((a, i) => (
+            <i key={a} className={i === 0 ? "is-on" : ""}>
+              {a}
+            </i>
+          ))}
+        </div>
+        <span className="crt-k">{art.at(-1)}</span>
+      </div>
+    );
+  }
+  const floors = (move.choices?.[sel]?.short ?? "").split(" · ");
+  return (
+    <div className="crt-tower" aria-hidden="true">
+      <span className="is-top">OFFER</span>
+      {[...floors].reverse().map((f, i) => (
+        <span key={i} className={f === "TAKE-HOME" ? "is-th" : ""}>
+          {f}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 const SCENES: Record<string, ReactNode> = {
   REMOTE: <Pixels rows={HOUSE} cell={3} />,
   HYBRID: (

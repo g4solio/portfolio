@@ -2555,6 +2555,92 @@ html.js body:has(.meet-arcade[data-mode="cabinet"]) {
   border-bottom-color: transparent;
 }
 
+/* Art beside a plain menu: LOADOUT's kit, SELECT MODE's loading bar, the ROUNDS tower. */
+.crt-with-art {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+
+.crt-with-art.is-tower {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  align-items: end;
+  gap: 14px;
+}
+
+.crt-kit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.crt-kit > span:not(.crt-k) {
+  padding: 4px 7px;
+  border: 1px solid var(--crt-text);
+  font: 10px/1 var(--pixel);
+  text-transform: uppercase;
+}
+
+.crt-loading {
+  display: grid;
+  gap: 6px;
+}
+
+.crt-loading > div {
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-auto-flow: column;
+  gap: 3px;
+  padding: 3px;
+  border: 2px solid #3a3d3a;
+}
+
+.crt-loading i {
+  padding: 7px 4px;
+  background: #2c2f2c;
+  font: 10px/1 var(--pixel);
+  font-style: normal;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.crt-loading i.is-on {
+  background: var(--crt-hi);
+  color: var(--crt);
+}
+
+.crt-loading .crt-k {
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.crt-tower {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.crt-tower span {
+  padding: 7px 4px;
+  border: 1px solid #3a3d3a;
+  font: 10px/1 var(--pixel);
+  text-align: center;
+}
+
+.crt-tower .is-top {
+  border-color: var(--crt-hi);
+  background: var(--crt-hi);
+  color: var(--crt);
+}
+
+.crt-tower .is-th {
+  border: 1px dashed var(--crt-hi);
+  color: var(--crt-hi);
+}
+
 .room-caption {
   display: flex;
   flex-wrap: wrap;
@@ -2629,9 +2715,16 @@ html.js body:has(.meet-arcade[data-mode="cabinet"]) {
     font-size: 12px;
   }
 
+  .crt-with-art .crt-menu button {
+    padding-block: 5px;
+  }
+
   .crt-k,
   .crt-players i,
-  .crt-door b {
+  .crt-door b,
+  .crt-kit > span:not(.crt-k),
+  .crt-loading i,
+  .crt-tower span {
     font-size: 11px;
   }
 }
