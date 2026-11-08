@@ -4,14 +4,15 @@ import { type ReactElement, type ReactNode, useEffect, useRef } from "react";
 import { Schematic } from "@/components/Schematic";
 import { type Layout, type Move, layoutSlots } from "@/data/meet";
 import type { SchematicId } from "@/data/portfolio";
+import { Typed } from "./Typed";
 
 // The laid-out cabinet screens: same tube, same four colours, the same items and keys as the plain menu.
 // What changes is the layout and its pixel art. Picked from rendered candidates for issue #6.
 
 type Item = { id: string; label: string; run: () => void };
 
-/** Pixel art as code grids in the tube's colours: # text, o highlight, d dim. One rect per run of a row. */
-const INK: Record<string, string> = { "#": "px-t", o: "px-h", d: "px-d" };
+/** Pixel art as code grids in the tube's colours: # text, o highlight, d dim, k the tube itself. One rect per run of a row. */
+const INK: Record<string, string> = { "#": "px-t", o: "px-h", d: "px-d", k: "px-k" };
 function Pixels({ rows, cell }: { rows: string[]; cell: number }) {
   const w = Math.max(...rows.map((r) => r.length));
   const runs: ReactElement[] = [];
@@ -162,6 +163,128 @@ export function MenuArt({ move, sel }: { move: Move; sel: number }) {
         </span>
       ))}
     </div>
+  );
+}
+
+// The cabinet's own stickers (scripts/cabinet/render.html), in the tube's inks; k is a hole in the sticker.
+const PAD = ["....########....", "..############..", ".##############.", "###k#######k####", "##kkk####k#k####", "###k#######k####", ".##############.", "..####....####..", "..###......###.."];
+const PHONES = ["....######....", "..##......##..", ".#..........#.", ".#..........#.", "#............#", "#............#", "##..........##", "###........###", "###........###", "###........###", "###........###", ".##........##."];
+const BUBBLE = [".############.", "#kkkkkkkkkkkk#", "#kkkkkkkkkkkk#", "#kk##k##k##kk#", "#kk##k##k##kk#", "#kkkkkkkkkkkk#", "#kkkkkkkkkkkk#", ".############.", "...###........", "..##..........", ".#............"];
+const HAT = ["......#.......", ".....###......", ".....###......", "....#####.....", "....#####.....", "...#######....", "...#######....", "..#########...", "..####o####...", ".###########..", "##############", ".############."];
+/** The "enumerated twice" warning, as a sign. */
+const WARN = ["....o....", "...ooo...", "...oko...", "..ookoo..", "..ookoo..", ".oookooo.", ".ooooooo.", "ooookoooo", "ooooooooo"];
+/** The ship from the Galactic Fighters round (components/meet/rounds.tsx), for the casebook. */
+const SHIP = [".....#.....", "....###....", "....###....", "#...###...#", "##.#####.##", "###########", "#.#######.#"];
+
+/** One sticker per fact topic: the cabinet's, the MO plate and the >_ prompt as type, a dash for the honest answer. */
+export function TopicSticker({ topic, cell }: { topic: string; cell: number }) {
+  const grid: Record<string, string[]> = { games: PAD, tabletop: HAT, comics: BUBBLE, music: PHONES, cats: CAT, code: WARN, work: SHIP };
+  if (grid[topic]) return <Pixels rows={grid[topic]} cell={cell} />;
+  const type: Record<string, string> = { modena: "MO", tools: ">_", sport: "–" };
+  return (
+    <span className={`crt-type is-${topic}`} style={{ fontSize: cell * 6 }} aria-hidden="true">
+      {type[topic] ?? "?"}
+    </span>
+  );
+}
+
+/** BONUS STAGE: the topics left as a two-column board of stickers; skip, the last item, sits apart. */
+export function TopicBoard({ items, sel, setSel }: { items: Item[]; sel: number; setSel: (i: number) => void }) {
+  const pick = (i: number) => ({
+    type: "button" as const,
+    onClick: items[i].run,
+    onMouseEnter: () => setSel(i),
+    onFocus: () => setSel(i),
+    "aria-current": i === sel ? ("true" as const) : undefined,
+  });
+  const last = items.length - 1;
+  return (
+    <>
+      <div className="crt-board">
+        {items.slice(0, last).map((it, i) => (
+          <button key={it.id} className={i === sel ? "is-on" : ""} {...pick(i)}>
+            <span className="crt-board-art">
+              <TopicSticker topic={it.id} cell={2} />
+            </span>
+            {it.label}
+          </button>
+        ))}
+      </div>
+      <div className="crt-asides">
+        <button className={`crt-aside${sel === last ? " is-on" : ""}`} {...pick(last)}>
+          {items[last].label}
+        </button>
+      </div>
+    </>
+  );
+}
+
+/**
+ * A fact, after its topic is picked. A line with a shape of its own gets a format: the games top three as
+ * the high-score table, the music top three as a chart, the tools at the text mode's prompt, comics in a
+ * speech bubble. Every other fact sits under its topic's sticker.
+ */
+export function FactBody({ topic, index, line }: { topic: string; index: number; line: string }) {
+  const games = topic === "games" && index === 0 ? /top three: (.+)\.$/.exec(line) : null;
+  const music = topic === "music" ? /^(.+) have been my top three on Spotify for years\.$/.exec(line) : null;
+  const chart = (names: string[]) => (
+    <table className="crt-scores">
+      <tbody>
+        {names.map((n, i) => (
+          <tr key={n}>
+            <td>{["1ST", "2ND", "3RD"][i]}</td>
+            <td>{n}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+  if (games) {
+    return (
+      <>
+        {chart(games[1].split(", "))}
+        <p className="crt-line">{line.slice(0, games.index).trim()}</p>
+      </>
+    );
+  }
+  if (music) {
+    return (
+      <>
+        <p className="crt-k">TOP 3 · SPOTIFY · FOR YEARS</p>
+        {chart(music[1].split(/, | and /))}
+      </>
+    );
+  }
+  if (topic === "tools") {
+    return (
+      <div className="crt-term">
+        <p>
+          <span>&gt;</span> {topic}
+        </p>
+        <p className="crt-line">
+          <Typed text={line} />
+        </p>
+      </div>
+    );
+  }
+  if (topic === "comics") {
+    return (
+      <div className="crt-panel">
+        <p className="crt-speech">
+          <Typed text={line} />
+        </p>
+      </div>
+    );
+  }
+  return (
+    <>
+      <span className="crt-fact-art">
+        <TopicSticker topic={topic} cell={5} />
+      </span>
+      <p className="crt-line">
+        <Typed text={line} />
+      </p>
+    </>
   );
 }
 

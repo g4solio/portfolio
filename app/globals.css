@@ -2641,6 +2641,111 @@ html.js body:has(.meet-arcade[data-mode="cabinet"]) {
   color: var(--crt-hi);
 }
 
+/* BONUS STAGE: the topics as a board of the cabinet's stickers. The facts: a format where the line has one, a sticker otherwise. */
+.crt-px .px-k {
+  fill: var(--crt);
+}
+
+.crt-type {
+  font-family: var(--pixel);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--crt-text);
+}
+
+.crt-type.is-modena {
+  padding: 0.12em 0.45em;
+  border: 0.14em solid var(--crt-text);
+  border-radius: 50%;
+}
+
+.crt-type.is-tools {
+  color: var(--crt-hi);
+}
+
+.crt-type.is-sport {
+  color: #6f726e;
+}
+
+.crt-board {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.crt-board button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 46px;
+  padding: 0 8px;
+  border: 1px solid #3a3d3a;
+  background: none;
+  color: var(--crt-text);
+  font: 10px/1.2 var(--pixel);
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.crt-board button.is-on {
+  padding: 0 7px;
+  border: 2px solid var(--crt-hi);
+  color: var(--crt-hi);
+}
+
+.crt-board button:focus-visible {
+  outline: 1px dashed var(--crt-hi);
+  outline-offset: 2px;
+}
+
+.crt-board-art {
+  display: inline-flex;
+  flex: none;
+  justify-content: center;
+  width: 36px;
+}
+
+.crt-fact-art {
+  display: flex;
+  justify-content: center;
+  padding: 6px 0;
+}
+
+.crt .crt-k {
+  margin: 0;
+}
+
+.crt-term {
+  padding: 10px 12px;
+  border: 1px solid #3a3d3a;
+  background: #050605;
+}
+
+.crt-term p {
+  margin: 0 0 6px;
+}
+
+.crt-term span {
+  color: var(--crt-hi);
+}
+
+.crt-panel {
+  padding: 14px;
+  border: 3px solid var(--crt-text);
+}
+
+.crt-speech {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--crt-text);
+  color: var(--crt);
+  font-size: 14px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
 .room-caption {
   display: flex;
   flex-wrap: wrap;
@@ -2724,7 +2829,8 @@ html.js body:has(.meet-arcade[data-mode="cabinet"]) {
   .crt-door b,
   .crt-kit > span:not(.crt-k),
   .crt-loading i,
-  .crt-tower span {
+  .crt-tower span,
+  .crt-board button {
     font-size: 11px;
   }
 }

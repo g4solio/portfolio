@@ -89,6 +89,9 @@ for (const m of moves) assert.ok(m.screen && m.screen.length <= 16, `${m.key}: s
 for (const [topic, game] of Object.entries(rounds)) assert.ok(facts.some((t) => t.cmd === topic), `round ${game}: unknown topic ${topic}`);
 assert.ok(facts.find((t) => t.cmd === "code").lines[0].includes("enumerated more than once"), "the runner's fact leads code");
 assert.ok(facts.find((t) => t.cmd === "work").lines[0].includes("Galactic Fighters"), "the shooter's fact leads work");
+// The fact screens read two lines as charts; a reworded line would quietly fall back to plain text.
+assert.match(facts.find((t) => t.cmd === "games").lines[0], /top three: (.+), (.+), (.+)\.$/, "the games top three keeps its chart shape");
+assert.match(facts.find((t) => t.cmd === "music").lines[0], /^(.+), (.+) and (.+) have been my top three on Spotify for years\.$/, "the music top three keeps its chart shape");
 assert.match(gameOverLine("Marta"), /thirteen, Marta/);
 
 // The laid-out screens: a layout holds its slots in data order and the rest sit aside; what it prints fits.
