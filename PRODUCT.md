@@ -79,61 +79,43 @@ named on the site with its real figures.
   remain unlinked names. Do not add links for them without a new decision.
 - Boot sequence contract: runs once per browser session, immediately skippable,
   never gates content; the full page stays readable without JavaScript.
-- Meet (`/meet/`, user-confirmed 2026-11-07, rebuilt as the cabinet 2026-11-08): the
-  page for recruiters who message Davide on LinkedIn. An arcade cabinet of his own:
-  plywood sides with the designated Mage stencilled on them, a black front covered in
-  stickers from the fact pool (the cat, the d20, Azzurro's lute, the MO plate, LINQ,
-  the "enumerated twice" warning, the dinosaur, the gamepad, g4solio), a cat asleep on
-  the hood, a cotto floor, a plaster wall that is the page. The cabinet is rendered
-  once (`scripts/cabinet/render.html`, three.js in headless Chrome, run by
-  `node scripts/cabinet.mjs`) into two stills, the hero at 30° and the play view
-  face-on; the page maps a live screen onto the tube with a matrix3d from the still's
-  projected corners. A key or a tap inserts the coin; phones stand at the cabinet from
-  the start. Thirteen moves as cabinet screens (NAME ENTRY, INSERT COIN, PLAYER 1,
-  STAGE SELECT, DIFFICULTY, LOADOUT, CREDITS, SELECT MODE, BOSS SELECT, ROUNDS, FREE
-  PLAY, RATE THIS GAME, CONTINUE?), in his voice, the last three optional. Every screen
-  reads in three sizes: the arcade name small, the question big, and his side of it
-  small underneath, said the way he would say it across the cabinet (short sentences,
-  his position in plain numbers). Rounds put the one thing to do big, GAME OVER the
-  thanks. The screen name carries the arcade joke; the words never explain it (a
-  question-last paragraph was rejected 2026-11-08 as robotic). Text mode prints the
-  question on its own line, then the rest. The attract
-  screen, live and in the hero still, reads PLAYER 2 WANTED. Each screen
-  reads as what it is named (picked from rendered candidates 2026-11-08, issue #6):
-  NAME ENTRY seats the recruiter as 2P beside Davide as 1P; INSERT COIN has the
-  cabinet's coin door, CREDIT turning 1 once a name is typed; PLAYER 1 writes the role
-  as the designated Mage's class; STAGE SELECT a 3 × 2 stage grid, mode by row, with
-  the Ghirlandina behind the stages within reach of Modena; DIFFICULTY a ladder with a
-  rank insignia per rung; LOADOUT the kit from his line above the menu; CREDITS a
-  credit counter where up is a band up and no band is coloured by fit; SELECT MODE a
-  loading bar, the notice and a month to recharge; BOSS SELECT the four engineering
-  notes as portraits rasterized at runtime from their own schematics; ROUNDS a tower
-  of the process under the cursor up to OFFER; FREE PLAY an open field; CONTINUE? a
-  countdown stopped at 1 with the hood's cat asleep on it. RATE THIS GAME keeps the
-  plain field: decorative stars were rejected as a button that isn't one. The layouts,
-  the choices they hold, the short labels and the art live in `data/meet.ts`, where
-  data order is screen order. After every answer it is the recruiter's BONUS STAGE: a
-  board of the cabinet's stickers, one per topic from the pool of seventeen facts, each
-  labelled with the question the recruiter is asking and printed big above the fact, or
-  skip. The first ask states the rule once; later ones are short nudges. A fact whose line has a shape gets a format (the games and music top threes as
-  charts, the tools at the text mode's prompt, comics in a speech bubble); every other
-  fact sits under its topic's sticker. The first fact of three topics is a twenty-second one-button round whose
-  fact arrives whatever the score, as a line above the canvas says: the runner where every obstacle is enumerated twice
-  (code), the sweep-and-fire shooter for Galactic Fighters (work), the pounce (cats).
-  The HUD shows KNOWN and MOVE only; the fit against the scope and the brief appear at
-  GAME OVER: one dot-leader row per criterion and a plain sum, never a score count-up,
-  the brief printed as a torn ticket, then SUBMIT (`mailto:` from the recruiter's own
-  client), COPY, CV and PLAY AGAIN. Arrows move (by rows on the two-column
-  screens), Enter is A, digits pick, Backspace undoes a move;
-  the button on the still is a hotspot. Sound is opt-in, off by default. Text mode
-  (`#text`) is the earlier transcript game, kept whole; without JavaScript the scope,
-  the moves and the facts print as a document. Nothing is stored; nothing blocks
-  anyone: a miss reads "outside my ideal scope", an unanswered criterion "not
-  confirmed". Data, screens and the brief live in `data/meet.ts`;
-  `node scripts/meet-check.mjs` checks the data, the scoring, the screens and the
-  brief. Facts that name games, comics or a film are biography, not references, and do
-  not count against the pop-culture budget; the rounds borrow mechanics, never names.
-  Linked once, from the Contact section; not in the header navigation.
+- Meet (`/meet/`, user-confirmed 2026-11-07, the cabinet 2026-11-08, rebuilt as the
+  accettazione the same day): the page for recruiters who message Davide on LinkedIn.
+  After testing the arcade cabinet Davide dropped the videogame frame, because every
+  question had to be decoded through a metaphor. The page is now the accettazione of
+  his officina, picked from rendered alternatives: a plaster wall, an enamel
+  ACCETTAZIONE sign, a TURNO display counting the question, a plywood key board where
+  each fact topic is a key on a brass hook with a worn tag, a window onto Modena with
+  the Ghirlandina, a clock at twenty to five, a plywood counter with the afternoon sun
+  on it, a black cat asleep in the sun, a bell, and stickers from the fact pool on the
+  counter front (the Mage stencil, Azzurro's lute, the d20, the pixel cat, "enumerated
+  twice", LINQ, the MO plate, g4solio). The cotto floor is the page's footer. Davide
+  asks each question plainly, in the first person: the question big on the wall and
+  his side of it small underneath, said the way he would say it across the counter
+  (short sentences, his position in plain numbers). A question-last paragraph was
+  rejected 2026-11-08 as robotic. The answers sit on a drafting board, a tecnigrafo
+  (picked from three boards 2026-11-08): a sheet taped to green vinyl, numbered
+  balloons, a title block with TAV. NN / 13, the sheet's Italian name, SCALA 1:1 and
+  DIS. D. GOZZI with the date, and a parallel rule with the pencils on it. The answer
+  picked gets a ring in red pencil, drawn by hand, then goes onto the job card. The
+  job card on its clipboard, carbon copy behind it, is the brief: it fills in row by
+  row, the current row in red, stamped with the day's date. On a phone it is a tab at
+  the bottom that opens over the page. After every answer it is the recruiter's turn:
+  take a key off the board for one fact, or skip. Each key's tag is the question the
+  recruiter is asking, printed big above the fact, which is written on the sheet. The
+  first turn states the rule once; later ones are short nudges. A key whose facts are
+  all told is gone from its hook. At the end the wall says thanks and the sheet
+  carries the fit against the scope, one row per criterion and a plain sum, then send
+  (`mailto:` from the recruiter's own client), copy, the CV and start again. Digits
+  pick, Enter confirms, Backspace undoes a question. Text mode (`#text`) is the
+  transcript game, kept whole, printing each question on its own line, then the
+  rest. Without JavaScript the scope, the moves and the facts
+  print as a document. Nothing is stored and nothing blocks anyone: a miss reads
+  "outside my ideal scope", an unanswered criterion "not confirmed". Data, the sheet
+  names and the brief live in `data/meet.ts`, and `node scripts/meet-check.mjs`
+  checks the data, the scoring, the sheet names, the turn lines and the brief. Facts that name games, comics or a film are biography, not references,
+  and do not count against the pop-culture budget. Linked once, from the Contact
+  section, not in the header navigation.
 
 ## Brand Commitments
 
@@ -164,13 +146,13 @@ named on the site with its real figures.
   motion makes everything instant, the page reads in full without JavaScript.
   Decision titles and OSUS product names stay plain ink to keep the dose small.
 - Meet is the one scoped exception to the single idiom (user-confirmed 2026-11-07;
-  the garage world chosen from rendered alternatives 2026-11-08): a concept Davide
-  names is a world, built whole. Colour beyond the casebook palette, a place the
-  cabinet stands in, decals drawn from his real facts, pixel art as code grids in the
-  tube's CRT colours, sound opt-in and off by default. No logos or characters that
-  belong to someone else, no human portrait, no Zork quotes. The pop-culture budget
-  stays at three; the rounds borrow mechanics, not names. The transcript game stays
-  as text mode, in the mono face on paper.
+  the garage world chosen from rendered alternatives 2026-11-08, the accettazione the
+  same day): a concept Davide names is a world, built whole. Colour beyond the
+  casebook palette, the officina's intake desk as the place, decoration drawn as code
+  from his real facts (pixel grids, SVG). No game frame and no mascot that talks: the
+  cat sleeps. No logos or characters that belong to someone else, no human portrait,
+  no Zork quotes. The pop-culture budget stays at three. The transcript game stays as
+  text mode, in the mono face on paper.
 - Visual specifics (palette, type, layout) belong to the design record, not here.
 
 ## Evidence on Hand

@@ -1604,31 +1604,45 @@ html.js .meet-doc {
   caret-shape: block;
 }
 
-/* ---- Meet: the cabinet (/meet/) ------------------------------------------ */
-/* The garage world: a plywood cabinet rendered once (scripts/cabinet.mjs) and the live screen
-   mapped onto its tube with a matrix3d. The page is the wall it stands against. */
+/* ---- Meet: the accettazione (/meet/) -------------------------------------- */
+/* The officina's intake desk: a plaster wall that is the page, the key board, the drafting board with
+   the answers, the job card that is the brief, the counter with the cat asleep in the sun, the cotto
+   floor that is the footer. Drawn things live in components/meet/art.ts. */
 
 :root {
   --wall: #e7dccb;
   --wall-light: #f0e8db;
+  --plywood: repeating-linear-gradient(90deg, #dcc59f 0 9px, #d3b98e 9px 11px, #dfcaa6 11px 23px, #d6bd93 23px 24px);
+  --ink-pen: #24408f;
+  --pencil-red: #c8322a;
 }
 
-/* The cabinet by default, the transcript as text mode; without JavaScript only the document. */
-html:not(.js) .room,
+.meet-wrap {
+  width: min(var(--canvas), 100% - 48px);
+  margin-inline: auto;
+}
+
+/* The desk by default, the transcript as text mode; without JavaScript only the document. */
+html:not(.js) .acc,
 html:not(.js) .meet-modebar {
   display: none;
 }
 
-html.js .meet-arcade[data-mode="cabinet"] .meet {
+html.js .meet-wrap[data-mode="desk"] .meet {
   display: none;
 }
 
-html.js .meet-arcade[data-mode="text"] .room {
+html.js .meet-wrap[data-mode="text"] .acc {
   display: none;
 }
 
-html.js body:has(.meet-arcade[data-mode="cabinet"]) {
+html.js body:has(.meet-wrap[data-mode="desk"]) {
   background: radial-gradient(120% 70% at 85% 0%, var(--wall-light) 0%, var(--wall) 60%) fixed;
+}
+
+/* The counter and the floor run to the window's edges; what runs past them is clipped, never scrolled to. */
+html.js body:has(.meet-wrap[data-mode="desk"]) .site-shell {
+  overflow-x: clip;
 }
 
 .meet-modebar {
@@ -1640,7 +1654,8 @@ html.js body:has(.meet-arcade[data-mode="cabinet"]) {
 }
 
 .meet-modebar button,
-.room-caption button {
+.acc-caption button,
+.acc-back {
   padding: 0;
   border: 0;
   background: none;
@@ -1653,1241 +1668,961 @@ html.js body:has(.meet-arcade[data-mode="cabinet"]) {
   cursor: pointer;
 }
 
-.room {
+.acc {
   position: relative;
-  padding-top: 24px;
+  padding-top: 14px;
+  color: #1b1b18;
 }
 
-/* The arrival: the whole cabinet. */
-.cab-hero {
+.acc-caption {
   display: flex;
-  justify-content: center;
-}
-
-.cab-hero-btn {
-  height: min(86vh, 960px);
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-
-.cab-hero-btn img {
-  display: block;
-  height: 100%;
-  width: auto;
-  max-width: 100%;
-  object-fit: contain;
-}
-
-.cab-hero-btn:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 8px;
-  border-radius: 6px;
-}
-
-.room[data-stage="attract"] .cab-view {
-  display: none;
-}
-
-.room:not([data-stage="attract"]) .cab-hero {
-  display: none;
-}
-
-/* Standing at the cabinet. */
-.cab-view {
-  position: relative;
-  height: min(88vh, 960px);
-  overflow: hidden;
-}
-
-.cab-still {
-  position: absolute;
-  display: block;
-  max-width: none;
-  pointer-events: none;
-}
-
-.cab-hot {
-  position: absolute;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: transparent;
-  cursor: pointer;
-}
-
-.cab-hot:focus-visible {
-  outline: 2px solid var(--crt-hi);
-  outline-offset: 3px;
-}
-
-/* The tube: the one dark surface, in the CRT tokens of the boot sequence. */
-.crt {
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  box-sizing: border-box;
-  padding: 16px 18px 14px;
-  background: var(--crt);
-  color: var(--crt-text);
-  font-family: var(--mono);
-  font-size: 14px;
-  line-height: 1.5;
-  transform-origin: 0 0;
-  overflow: hidden;
-  box-shadow:
-    inset 0 0 0 1px #1a1c1a,
-    inset 0 0 36px rgba(0, 0, 0, 0.6);
-}
-
-.crt::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(transparent 0 2px, rgba(0, 0, 0, 0.16) 2px 3px);
-  pointer-events: none;
-}
-
-.crt.is-tap {
-  cursor: pointer;
-}
-
-.crt-hud,
-.crt-round-hud {
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--pixel);
-  font-size: 10px;
-  letter-spacing: 0.04em;
-  color: var(--crt-hi);
-}
-
-.crt-title {
-  margin: 0;
-  font-family: var(--pixel);
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 1.4;
-  color: var(--crt-hi);
-}
-
-/* Every screen: its arcade name small, the question big, Davide's side of it small underneath. */
-.crt-screen {
-  margin: 0;
-  font: 11px/1.4 var(--pixel);
-  letter-spacing: 0.04em;
-  color: var(--crt-hi);
-}
-
-.crt-head {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.crt-ask {
-  margin: 0;
-  font: 600 21px/1.25 var(--mono);
-  color: var(--crt-text);
-  text-wrap: balance;
-}
-
-.crt-ask::after {
-  margin-top: 12px;
-}
-
-.crt-side {
-  margin: 0;
-  font-size: 12.5px;
-  line-height: 1.5;
-  color: #a9aba6;
-}
-
-.crt-line {
-  margin: 0;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  opacity: 0.92;
-}
-
-.crt-line a,
-.crt-brief a {
-  color: var(--crt-hi);
-}
-
-.crt .meet-cur {
-  background: var(--crt-hi);
-}
-
-.crt-menu {
-  list-style: none;
-  margin: 2px 0 0;
-  padding: 0;
-  overflow: auto;
-  font-family: var(--pixel);
-  font-size: 11.5px;
-  line-height: 1.3;
-}
-
-.crt-menu button {
-  position: relative;
-  display: block;
-  width: 100%;
-  padding: 6px 0 6px 20px;
-  border: 0;
-  background: none;
-  color: var(--crt-text);
-  font: inherit;
-  text-align: left;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  opacity: 0.72;
-  cursor: pointer;
-}
-
-.crt-menu li.is-on button {
-  color: var(--crt-hi);
-  opacity: 1;
-}
-
-.crt-menu li.is-on button::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 2px;
-  width: 7px;
-  height: 10px;
-  margin-top: -5px;
-  background: var(--crt-hi);
-  clip-path: polygon(0 0, 100% 50%, 0 100%);
-}
-
-.crt-menu button:focus-visible,
-.crt-soft button:focus-visible,
-.crt-back:focus-visible,
-.crt-attract:focus-visible {
-  outline: 1px dashed var(--crt-hi);
-  outline-offset: -1px;
-}
-
-.crt-form {
-  margin-top: 6px;
-}
-
-.crt-field {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  font-family: var(--pixel);
-  font-size: 16px;
-  color: var(--crt-hi);
-}
-
-.crt-field input {
-  flex: 1;
-  min-width: 0;
-  padding: 4px 0;
-  border: 0;
-  border-bottom: 1px solid #2c2f2c;
-  background: none;
-  color: var(--crt-text);
-  font: 16px/1.3 var(--pixel);
-  text-transform: uppercase;
-  caret-color: var(--crt-hi);
-  caret-shape: block;
-}
-
-.crt-field input:focus {
-  outline: none;
-  border-bottom-color: var(--crt-hi);
-}
-
-.crt-field input::placeholder {
-  color: #6f726e;
-  font: 13px/1.3 var(--mono);
-  text-transform: none;
-  opacity: 1;
-}
-
-.crt-foot {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-top: auto;
-  font-family: var(--pixel);
-  font-size: 10px;
-  color: var(--crt-text);
-}
-
-.crt-soft {
-  display: flex;
-  gap: 8px;
-}
-
-.crt-soft button,
-.crt-back {
-  padding: 8px 12px;
-  border: 1px solid #3a3d3a;
-  border-radius: 4px;
-  background: none;
-  color: var(--crt-text);
-  font: 11px/1 var(--pixel);
-  cursor: pointer;
-}
-
-.crt-soft button:first-child {
-  border-color: var(--crt-hi);
-  color: var(--crt-hi);
-}
-
-.crt-soft button:hover,
-.crt-back:hover {
-  border-color: var(--crt-hi);
-}
-
-.crt-blink {
-  animation: dg-blink 1.2s steps(1) infinite;
-}
-
-.crt-attract {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 22px;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--crt-text);
-  text-align: center;
-  cursor: pointer;
-}
-
-.crt-kicker {
-  font: 13px/1.6 var(--pixel);
-  color: var(--crt-hi);
-}
-
-.crt-big {
-  max-width: 11ch;
-  font: 26px/1.3 var(--pixel);
-}
-
-.crt-attract .crt-blink {
-  font: 18px/1 var(--pixel);
-  color: var(--crt-hi);
-}
-
-.crt-dim {
-  color: #6f726e;
-  font-size: 13px;
-}
-
-.crt-scores {
-  border-collapse: collapse;
-  margin: 2px 0 8px;
-  font-family: var(--pixel);
-  font-size: 13px;
-}
-
-.crt-scores td {
-  padding: 5px 18px 5px 0;
-}
-
-.crt-scores td:first-child {
-  color: var(--crt-hi);
-}
-
-.crt-result {
-  margin: 0;
-  font: 11px/1.5 var(--pixel);
-  color: var(--crt-hi);
-}
-
-.crt-note {
-  margin: 0;
-  font-size: 12px;
-  color: #a9aba6;
-}
-
-/* GAME OVER: the fit as dot-leader rows and a plain sum, the brief as a torn ticket, four buttons. */
-.crt-tally {
-  display: grid;
-  gap: 2px;
-  margin: 0;
-  font: 10px/1.6 var(--pixel);
-  text-transform: uppercase;
-}
-
-.crt-tally > div {
-  display: flex;
-  gap: 6px;
-}
-
-.crt-tally dt {
-  display: flex;
-  flex: 1;
-  gap: 6px;
-  color: var(--crt-hi);
-}
-
-.crt-tally dt::after {
-  content: "";
-  flex: 1;
-  margin-bottom: 5px;
-  border-bottom: 2px dotted #3a3d3a;
-}
-
-.crt-tally dd {
-  margin: 0;
-}
-
-.crt-tally-sum {
-  margin: 0;
-  font: 10px/1 var(--pixel);
-}
-
-.crt-brief {
-  max-height: 150px;
-  margin: 0;
-  padding: 8px 0;
-  border-top: 1px solid #2c2f2c;
-  border-bottom: 1px solid #2c2f2c;
-  overflow: auto;
-  color: #c9cbc5;
-  font: 11px/1.5 var(--mono);
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-.crt-ticket {
-  max-height: 132px;
-  padding: 12px 12px 14px;
-  border: 0;
-  background: var(--crt-text);
-  color: var(--crt);
-  scrollbar-color: #6f726e transparent;
-  scrollbar-width: thin;
-  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 12px 100%;
-}
-
-.crt-ticket a {
-  color: var(--crt);
-}
-
-.crt-btns {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-}
-
-.crt-btns button {
-  padding: 9px 6px;
-  border: 1px solid #3a3d3a;
-  border-radius: 4px;
-  background: none;
-  color: var(--crt-text);
-  font: 11px/1 var(--pixel);
-  cursor: pointer;
-}
-
-.crt-btns button.is-on {
-  border-color: var(--crt-hi);
-  color: var(--crt-hi);
-}
-
-.crt-btns button:focus-visible {
-  outline: 1px dashed var(--crt-hi);
-  outline-offset: 2px;
-}
-
-.crt-round {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.crt-canvas {
-  display: block;
-  width: 100%;
-  height: auto;
-  border: 1px solid #1f221f;
-  image-rendering: pixelated;
-}
-
-/* Laid-out screens (components/meet/layouts.tsx): the same tube and colours, a layout and pixel art per screen. */
-.crt-px {
-  display: block;
-  flex: none;
-}
-
-.crt-px .px-t {
-  fill: var(--crt-text);
-}
-
-.crt-px .px-h {
-  fill: var(--crt-hi);
-}
-
-.crt-px .px-d {
-  fill: #6f726e;
-}
-
-.crt-tile,
-.crt-rung,
-.crt-aside,
-.crt-counter button,
-.crt-meter button,
-.crt-boss {
-  border: 0;
-  background: none;
-  color: var(--crt-text);
-  font: inherit;
-  cursor: pointer;
-}
-
-.crt-tile:focus-visible,
-.crt-rung:focus-visible,
-.crt-aside:focus-visible,
-.crt-counter button:focus-visible,
-.crt-meter button:focus-visible,
-.crt-boss:focus-visible {
-  outline: 1px dashed var(--crt-hi);
-  outline-offset: 2px;
-}
-
-.crt-caption {
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.4;
-}
-
-.crt-caption-px {
-  font: 12px/1.35 var(--pixel);
-  color: var(--crt-hi);
-  text-transform: uppercase;
-}
-
-.crt-asides {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.crt-aside {
-  padding: 8px 12px;
-  border: 1px solid #3a3d3a;
-  border-radius: 4px;
-  font: 11px/1 var(--pixel);
-  text-transform: uppercase;
-}
-
-.crt-aside.is-on {
-  border-color: var(--crt-hi);
-  color: var(--crt-hi);
-}
-
-/* STAGE SELECT: a 3 × 2 stage grid, the Ghirlandina behind the stages within reach of home. */
-.crt-tiles {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-
-.crt-tile {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  height: 62px;
-  padding: 0 10px;
-  overflow: hidden;
-  border: 1px solid #3a3d3a;
-  text-align: left;
-}
-
-.crt-tile.is-on {
-  padding: 0 9px;
-  border: 2px solid var(--crt-hi);
-  color: var(--crt-hi);
-}
-
-.crt-tile-wide {
-  grid-column: 1 / -1;
-  justify-content: center;
-  height: 34px;
-  font: 13px/1 var(--pixel);
-  text-transform: uppercase;
-}
-
-.crt-tile-bd {
-  position: absolute;
-  right: 8px;
-  bottom: 0;
-  opacity: 0.55;
-}
-
-.crt-tile-t {
-  position: relative; /* above the tower */
-  white-space: nowrap;
-}
-
-.crt-tile-t b {
-  display: block;
-  font: 400 13px/1.2 var(--pixel);
-}
-
-.crt-tile-t span {
-  display: block;
-  font: 10px/1.3 var(--pixel);
-  color: #6f726e;
-}
-
-.crt-tile.is-on .crt-tile-t span {
-  color: var(--crt-hi);
-}
-
-.crt-scene {
-  display: inline-flex;
-  flex: none;
-  align-items: flex-end;
-  gap: 3px;
-}
-
-/* DIFFICULTY: the ladder, top rung first, a rank insignia on each. */
-.crt-ladder {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  padding-left: 48px;
-}
-
-.crt-ladder::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 6px;
-  width: 24px;
-  border-inline: 3px solid #3a3d3a;
-  background: repeating-linear-gradient(transparent 0 42px, #3a3d3a 42px 46px);
-}
-
-.crt-rung {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  height: 46px;
-  padding: 0;
-  font: 14px/1 var(--pixel);
-  text-align: left;
-  text-transform: uppercase;
-  opacity: 0.72;
-}
-
-.crt-rung-ins {
-  display: flex;
-  justify-content: center;
-  width: 26px;
-}
-
-.crt-rung.is-on {
-  color: var(--crt-hi);
-  opacity: 1;
-}
-
-.crt-rung.is-on .px-t {
-  fill: var(--crt-hi);
-}
-
-.crt-rung.is-on::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: -46px;
-  width: 9px;
-  height: 12px;
-  margin-top: -6px;
-  background: var(--crt-hi);
-  clip-path: polygon(0 0, 100% 50%, 0 100%);
-}
-
-/* CREDITS: the credit counter; up is a band up, the meter reads low to high. No band is coloured by fit. */
-.crt-counter {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 24px 10px 12px;
-  border: 2px solid #3a3d3a;
-}
-
-.crt-counter button {
-  padding: 2px 18px;
-  color: var(--crt-hi);
-}
-
-.crt-counter-k {
-  position: absolute;
-  top: 8px;
-  left: 10px;
-  font: 10px/1 var(--pixel);
-  color: #6f726e;
-}
-
-.crt-counter-ar {
-  font: 12px/1 var(--pixel);
-}
-
-.crt-counter .crt-counter-v {
-  font: 700 38px/1.1 var(--pixel);
-  letter-spacing: 0.02em;
-}
-
-.crt-counter .crt-counter-v.is-off {
-  color: #6f726e;
-}
-
-.crt-meter {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 4px;
-}
-
-.crt-meter button {
-  height: 12px;
-  padding: 0;
-  border: 1px solid #3a3d3a;
-}
-
-.crt-meter button.is-on {
-  border-color: var(--crt-hi);
-  background: var(--crt-hi);
-}
-
-/* BOSS SELECT: the four engineering notes as portraits rasterized from their own schematics. */
-.crt-bosses {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-
-.crt-boss {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 104px;
-  padding: 0;
-  border: 1px solid #3a3d3a;
-}
-
-.crt-boss.is-on {
-  border: 2px solid var(--crt-hi);
-}
-
-.crt-boss-n {
-  position: absolute;
-  top: 5px;
-  left: 6px;
-  font: 11px/1 var(--pixel);
-  color: #6f726e;
-}
-
-.crt-boss.is-on .crt-boss-n {
-  color: var(--crt-hi);
-}
-
-.crt-portrait canvas {
-  display: block;
-  width: 128px;
-  height: 80px;
-  image-rendering: pixelated;
-}
-
-/* CONTINUE?: the countdown stops at 1, the cat from the hood asleep on it. */
-.crt-count {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.crt-count .crt-title {
-  color: var(--crt-text);
-  font-size: 22px;
-}
-
-.crt-count-art {
-  position: relative;
-  width: 120px;
-  height: 150px;
-}
-
-.crt-count-n {
-  position: absolute;
-  bottom: 0;
-  left: 22px;
-  font: 700 112px/1 var(--pixel);
-  color: var(--crt-hi);
-}
-
-.crt-count-cat {
-  position: absolute;
-  top: 13px;
-  left: 44px;
-}
-
-/* The typed screens: NAME ENTRY seats player 2, INSERT COIN has the coin door, PLAYER 1 a class card, FREE PLAY opens up. */
-.crt-k {
-  display: block;
-  font: 10px/1.2 var(--pixel);
-  color: #6f726e;
-  letter-spacing: 0.06em;
-}
-
-.crt-players {
-  display: grid;
-  gap: 10px;
-}
-
-.crt-players > * {
-  display: grid;
-  grid-template-columns: 40px 1fr auto;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border: 1px solid #3a3d3a;
-  font: 16px/1 var(--pixel);
-}
-
-.crt-players .is-on {
-  padding: 9px 11px;
-  border: 2px solid var(--crt-hi);
-}
-
-.crt-players b {
-  font-weight: 700;
-  color: #6f726e;
-}
-
-.crt-players .is-on b {
-  color: var(--crt-hi);
-}
-
-.crt-players i {
-  font: 10px/1 var(--pixel);
-  font-style: normal;
-  color: #6f726e;
-}
-
-.crt-players input,
-.crt-class input {
-  min-width: 0;
-  padding: 2px 0;
-  border: 0;
-  background: none;
-  color: var(--crt-hi);
-  font: 16px/1.2 var(--pixel);
-  text-transform: uppercase;
-  caret-color: var(--crt-hi);
-}
-
-.crt-players input:focus,
-.crt-class input:focus {
-  outline: none;
-}
-
-.crt-players input::placeholder,
-.crt-class input::placeholder {
-  color: #6f726e;
-  font: 13px/1.3 var(--mono);
-  text-transform: none;
-}
-
-.crt-class {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: end;
-  gap: 16px;
-  padding: 14px;
-  border: 2px solid var(--crt-hi);
-}
-
-.crt-class > div {
-  min-width: 0;
-}
-
-.crt-class b {
-  display: block;
-  margin: 4px 0 14px;
-  font: 700 22px/1 var(--pixel);
-  color: var(--crt-hi);
-}
-
-.crt-class input {
-  width: 100%;
-  border-bottom: 1px solid #2c2f2c;
-}
-
-.crt-class input:focus {
-  border-bottom-color: var(--crt-hi);
-}
-
-.crt-door {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  margin-bottom: 10px;
-  padding: 16px;
-  border: 2px solid #3a3d3a;
-}
-
-.crt-door span {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 6px;
-  border: 1px solid #2c2f2c;
-  background: #151815;
-}
-
-.crt-door i {
-  width: 8px;
-  height: 34px;
-  border: 2px solid #3a3d3a;
-  background: #000;
-}
-
-.crt-door b {
-  padding: 3px 6px;
-  background: var(--crt-hi);
-  color: var(--crt);
-  font: 400 10px/1 var(--pixel);
-}
-
-.crt-credit {
-  margin: 8px 0 0;
-  font: 12px/1 var(--pixel);
-  color: var(--crt-hi);
-  text-align: right;
-}
-
-.crt-open input,
-.crt-open input:focus {
-  border-bottom-color: transparent;
-}
-
-/* Art beside a plain menu: LOADOUT's kit, SELECT MODE's loading bar, the ROUNDS tower. */
-.crt-with-art {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-height: 0;
-}
-
-.crt-with-art.is-tower {
-  display: grid;
-  grid-template-columns: 130px 1fr;
-  align-items: end;
-  gap: 14px;
-}
-
-.crt-kit {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-}
-
-.crt-kit > span:not(.crt-k) {
-  padding: 4px 7px;
-  border: 1px solid var(--crt-text);
-  font: 10px/1 var(--pixel);
-  text-transform: uppercase;
-}
-
-.crt-loading {
-  display: grid;
-  gap: 6px;
-}
-
-.crt-loading > div {
-  display: grid;
-  grid-auto-columns: 1fr;
-  grid-auto-flow: column;
-  gap: 3px;
-  padding: 3px;
-  border: 2px solid #3a3d3a;
-}
-
-.crt-loading i {
-  padding: 7px 4px;
-  background: #2c2f2c;
-  font: 10px/1 var(--pixel);
-  font-style: normal;
-  text-align: center;
-  text-transform: uppercase;
-}
-
-.crt-loading i.is-on {
-  background: var(--crt-hi);
-  color: var(--crt);
-}
-
-.crt-loading .crt-k {
-  text-align: right;
-  text-transform: uppercase;
-}
-
-.crt-tower {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.crt-tower span {
-  padding: 7px 4px;
-  border: 1px solid #3a3d3a;
-  font: 10px/1 var(--pixel);
-  text-align: center;
-}
-
-.crt-tower .is-top {
-  border-color: var(--crt-hi);
-  background: var(--crt-hi);
-  color: var(--crt);
-}
-
-.crt-tower .is-th {
-  border: 1px dashed var(--crt-hi);
-  color: var(--crt-hi);
-}
-
-/* BONUS STAGE: the topics as a board of the cabinet's stickers. The facts: a format where the line has one, a sticker otherwise. */
-.crt-px .px-k {
-  fill: var(--crt);
-}
-
-.crt-type {
-  font-family: var(--pixel);
-  font-weight: 700;
-  line-height: 1;
-  color: var(--crt-text);
-}
-
-.crt-type.is-modena {
-  padding: 0.12em 0.45em;
-  border: 0.14em solid var(--crt-text);
-  border-radius: 50%;
-}
-
-.crt-type.is-tools {
-  color: var(--crt-hi);
-}
-
-.crt-type.is-sport {
-  color: #6f726e;
-}
-
-.crt-board {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-}
-
-.crt-board button {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  height: 46px;
-  padding: 0 8px;
-  border: 1px solid #3a3d3a;
-  background: none;
-  color: var(--crt-text);
-  font: 10px/1.2 var(--pixel);
-  text-align: left;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-.crt-board button.is-on {
-  padding: 0 7px;
-  border: 2px solid var(--crt-hi);
-  color: var(--crt-hi);
-}
-
-.crt-board button:focus-visible {
-  outline: 1px dashed var(--crt-hi);
-  outline-offset: 2px;
-}
-
-.crt-board-art {
-  display: inline-flex;
-  flex: none;
-  justify-content: center;
-  width: 36px;
-}
-
-.crt-fact-art {
-  display: flex;
-  justify-content: center;
-  padding: 6px 0;
-}
-
-.crt .crt-k {
-  margin: 0;
-}
-
-.crt-term {
-  padding: 10px 12px;
-  border: 1px solid #3a3d3a;
-  background: #050605;
-}
-
-.crt-term p {
-  margin: 0 0 6px;
-}
-
-.crt-term span {
-  color: var(--crt-hi);
-}
-
-.crt-panel {
-  padding: 14px;
-  border: 3px solid var(--crt-text);
-}
-
-.crt-speech {
-  margin: 0;
-  padding: 14px 16px;
-  border-radius: 18px;
-  background: var(--crt-text);
-  color: var(--crt);
-  font-size: 14px;
-  line-height: 1.45;
-  white-space: pre-wrap;
-}
-
-.room-caption {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 6px 22px;
-  margin: 14px 0 0;
+  justify-content: flex-end;
+  gap: 18px;
+  margin: 0 0 12px;
   color: var(--ink-faint);
   font-family: var(--mono);
   font-size: 12px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
 }
 
-@media (max-width: 720px) {
-  /* A phone stands at the cabinet from the start; the tube fills the width, so the type inside grows to compensate the scale. */
-  .room[data-stage="attract"] .cab-hero {
+.acc-scene {
+  display: grid;
+  grid-template-columns: 470px minmax(0, 1fr) 150px;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "keys main side"
+    "card main side";
+  column-gap: 36px;
+  row-gap: 30px;
+  padding-bottom: 64px;
+}
+
+.acc-main {
+  grid-area: main;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The sign and the TURNO display. */
+.acc-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.acc-sign {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 236px;
+  height: 52px;
+  margin-top: 12px;
+  border: 2px solid #f6f4ee;
+  border-radius: 8px;
+  outline: 2px solid #1d3f8f;
+  outline-offset: -6px;
+  background: #f6f4ee;
+  box-shadow: 0 3px 6px rgba(60, 40, 20, 0.25);
+  color: #1d3f8f;
+  font: 700 21px/1 var(--display);
+  letter-spacing: 0.14em;
+}
+
+.acc-sign::before,
+.acc-sign::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: #9aa0a0;
+}
+
+.acc-sign::before {
+  left: 10px;
+}
+
+.acc-sign::after {
+  right: 10px;
+}
+
+.acc-turno {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 26px 12px 10px;
+  border-radius: 6px;
+  background: #161614;
+  box-shadow: 0 4px 8px rgba(60, 40, 20, 0.3);
+}
+
+.acc-turno small {
+  position: absolute;
+  top: 9px;
+  left: 12px;
+  color: #cfcac0;
+  font: 600 10px/1 var(--sans);
+  letter-spacing: 0.12em;
+}
+
+.acc-turno span svg {
+  display: block;
+  width: 60px;
+  height: 46px;
+}
+
+.acc-turno em {
+  margin-bottom: 5px;
+  color: #c25a48;
+  font: 500 13px/1 var(--mono);
+  font-style: normal;
+}
+
+/* Davide's question, large on the wall, and the rest of his line under it. */
+.acc-ask {
+  margin-top: 34px;
+}
+
+.acc-ask h2 {
+  font: 600 40px/1.06 var(--display);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.acc-ask p {
+  margin: 12px 0 0;
+  color: #4c4b44;
+  font-size: 16px;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+/* The key board: plywood, a screw in each corner, brass hooks. */
+.acc-keys {
+  grid-area: keys;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  height: 290px;
+  padding: 14px;
+  border-radius: 3px;
+  background:
+    radial-gradient(circle at 12px 12px, #8d918f 3px, transparent 4px),
+    radial-gradient(circle at calc(100% - 12px) 12px, #8d918f 3px, transparent 4px),
+    radial-gradient(circle at 12px calc(100% - 12px), #8d918f 3px, transparent 4px),
+    radial-gradient(circle at calc(100% - 12px) calc(100% - 12px), #8d918f 3px, transparent 4px),
+    repeating-linear-gradient(0deg, #dcc59f 0 9px, #d3b98e 9px 11px, #dfcaa6 11px 23px, #d6bd93 23px 24px);
+  box-shadow: 0 10px 18px rgba(70, 50, 30, 0.28);
+}
+
+.acc-slot {
+  position: relative;
+}
+
+.acc-hook {
+  position: absolute;
+  left: 50px;
+  top: 4px;
+  width: 40px;
+  height: 80px;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.acc-tag {
+  position: absolute;
+  left: 0;
+  top: 30px;
+  width: 64px;
+  padding: 4px;
+  border: 0;
+  border-radius: 6px;
+  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.25);
+  text-align: left;
+  transform: rotate(calc(4deg + var(--k) * 2deg));
+  transform-origin: 100% 0;
+  transition: translate 160ms ease-out;
+}
+
+/* The tag's hole, under the key's split ring. */
+.acc-tag::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #9c8456;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.45);
+}
+
+.acc-tag b {
+  display: block;
+  padding: 4px 5px 0;
+  border-radius: 3px 3px 0 0;
+  background: #f2e9cf;
+  color: #8a7c62;
+  font: 700 10px/1 var(--mono);
+}
+
+.acc-tag span {
+  display: block;
+  padding: 3px 5px 4px;
+  border-radius: 0 0 3px 3px;
+  background: #f2e9cf;
+  color: var(--ink-pen);
+  font-size: 10.5px;
+  line-height: 1.2;
+  /* the tags are the recruiter's questions; "headphones?" is wider than a tag */
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+
+button.acc-tag {
+  cursor: pointer;
+}
+
+button.acc-tag:hover {
+  translate: 0 4px;
+}
+
+button.acc-tag:focus-visible {
+  outline: 2px solid var(--pencil-red);
+  outline-offset: 3px;
+}
+
+/* The drafting board: green vinyl, a taped sheet with a frame and a title block, the parallel rule. */
+.acc-board {
+  position: relative;
+  margin-top: 26px;
+  padding: 12px 12px 60px;
+  border: solid #dcdcd6;
+  border-width: 7px 9px;
+  border-radius: 3px;
+  background: linear-gradient(160deg, #bfd0b9, #b0c3aa);
+  box-shadow: 0 10px 18px rgba(70, 50, 30, 0.26);
+}
+
+.acc-paper {
+  position: relative;
+  padding: 9px;
+  background: #fbfaf3;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
+}
+
+.acc-frame {
+  position: relative;
+  min-height: 236px;
+  padding: 16px 18px 50px;
+  border: 1.4px solid #55554f;
+}
+
+.acc-tape {
+  position: absolute;
+  width: 34px;
+  height: 14px;
+  background: rgba(231, 219, 176, 0.9);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+}
+
+.acc-tape:nth-of-type(1) { left: -12px; top: -2px; rotate: -38deg; }
+.acc-tape:nth-of-type(2) { right: -12px; top: -2px; rotate: 38deg; }
+.acc-tape:nth-of-type(3) { left: -12px; bottom: -2px; rotate: 38deg; }
+.acc-tape:nth-of-type(4) { right: -12px; bottom: -2px; rotate: -38deg; }
+
+.acc-rule {
+  position: absolute;
+  left: -9px;
+  right: -9px;
+  bottom: 14px;
+  height: 32px;
+  border-top: 3px solid #2c2c29;
+  background:
+    repeating-linear-gradient(90deg, #2c2c29 0 1px, transparent 1px 40px) 16px 0 / calc(100% - 32px) 12px no-repeat,
+    repeating-linear-gradient(90deg, #2c2c29 0 1px, transparent 1px 8px) 16px 0 / calc(100% - 32px) 6px no-repeat,
+    linear-gradient(90deg, #2c2c29 14px, transparent 14px calc(100% - 14px), #2c2c29 calc(100% - 14px)),
+    linear-gradient(rgba(252, 252, 246, 0.7), rgba(226, 230, 222, 0.55));
+  box-shadow: 0 3px 4px rgba(40, 50, 40, 0.22);
+}
+
+.acc-pencils {
+  position: absolute;
+  right: 30px;
+  bottom: 30px;
+  width: 210px;
+  pointer-events: none;
+}
+
+.acc-pencils svg,
+.acc-window svg,
+.acc-clock svg,
+.acc-bell svg,
+.acc-cat svg,
+.acc-pen svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* The answers: numbered balloons. The one picked gets a ring in red pencil, drawn by hand. */
+.acc-opts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.acc-opts li {
+  position: relative;
+}
+
+.acc-opts button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 3px 6px 3px 0;
+  border: 0;
+  background: none;
+  color: #36362f;
+  font: 14.5px/1.25 var(--sans);
+  text-align: left;
+  cursor: pointer;
+}
+
+.acc-opts b {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1.3px solid #45453f;
+  border-radius: 50%;
+  color: #45453f;
+  font: 500 10.5px/1 var(--mono);
+}
+
+.acc-opts button:hover span {
+  text-decoration: underline;
+  text-decoration-color: var(--pencil-red);
+  text-underline-offset: 4px;
+}
+
+.acc-opts button:focus-visible {
+  outline: 1.5px dashed #6b6a64;
+  outline-offset: 3px;
+}
+
+.acc-opts button:disabled {
+  cursor: default;
+}
+
+.acc-opts .is-picked button {
+  font-weight: 600;
+}
+
+.acc-ring {
+  position: absolute;
+  left: -14px;
+  top: -9px;
+  width: calc(100% + 28px);
+  height: calc(100% + 18px);
+  overflow: visible;
+  pointer-events: none;
+  rotate: -1.5deg;
+}
+
+.acc-ring path {
+  fill: none;
+  stroke: var(--pencil-red);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  vector-effect: non-scaling-stroke;
+  animation: acc-draw 380ms ease-out forwards;
+}
+
+.acc-ring path + path {
+  animation-delay: 90ms;
+}
+
+@keyframes acc-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* A typed answer is lettered on the sheet in the job card's ink. */
+.acc-field {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.acc-field span,
+.acc-cart,
+.acc-fit dt {
+  color: #6b6a64;
+  font: 500 10.5px/1 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.acc-field input {
+  width: 100%;
+  padding: 4px 0 6px;
+  border: 0;
+  border-bottom: 1.4px solid #45453f;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink-pen);
+  font: 17px/1.3 var(--mono);
+}
+
+.acc-field input:focus {
+  outline: none;
+  border-bottom: 2.5px solid var(--pencil-red);
+}
+
+.acc-field input::placeholder {
+  color: #a6a59c;
+}
+
+.acc-written {
+  margin: 0 0 16px;
+  max-width: 36ch;
+  color: #36362f;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.acc-note {
+  margin: 12px 0 0;
+  color: var(--pencil-red);
+  font-size: 14px;
+}
+
+.acc-back {
+  margin-top: 16px;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+/* The fit at the end: one plain row per criterion and a plain sum. */
+.acc-fit {
+  margin: 0;
+}
+
+.acc-fit div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 0;
+  border-bottom: 1px dotted #a99f8a;
+}
+
+.acc-fit dt {
+  align-self: center;
+}
+
+.acc-fit dd {
+  margin: 0;
+  color: var(--ink-pen);
+  font-family: var(--mono);
+  font-size: 13px;
+  text-align: right;
+}
+
+.acc-sum {
+  margin: 10px 0 16px;
+  font: 600 15px/1.3 var(--display);
+}
+
+/* The title block, bottom right of the frame. */
+.acc-cart {
+  position: absolute;
+  right: -1.4px;
+  bottom: -1.4px;
+  display: grid;
+  grid-template-columns: auto auto;
+  border: 1.4px solid #55554f;
+  background: #fbfaf3;
+  color: #45453f;
+  font-size: 8.5px;
+  letter-spacing: 0.04em;
+}
+
+.acc-cart span {
+  padding: 5px 7px;
+  border-right: 1px solid #8a897f;
+  border-bottom: 1px solid #8a897f;
+}
+
+/* The window onto Modena and the clock. */
+.acc-side {
+  grid-area: side;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  padding-top: 92px;
+}
+
+.acc-window {
+  width: 150px;
+}
+
+.acc-clock {
+  width: 98px;
+  filter: drop-shadow(0 3px 4px rgba(60, 40, 20, 0.25));
+}
+
+/* The job card on its clipboard, the carbon copy behind it, the pen clipped on. It hangs over the counter. */
+.acc-card {
+  grid-area: card;
+  position: relative;
+  z-index: 3;
+  margin-bottom: -210px;
+}
+
+.acc-peek {
+  display: none;
+}
+
+.acc-clip {
+  position: relative;
+  padding: 16px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #9a7148, #83603b);
+  box-shadow: 0 18px 26px rgba(70, 40, 10, 0.35);
+  rotate: -1.4deg;
+}
+
+.acc-jaw {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  z-index: 3;
+  width: 150px;
+  height: 40px;
+  margin-left: -75px;
+  border-radius: 7px 7px 4px 4px;
+  background: linear-gradient(#ececea, #9a9c9b 70%, #7d7f7e);
+  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.35);
+}
+
+.acc-jaw::after {
+  content: "";
+  position: absolute;
+  top: 9px;
+  left: 50%;
+  width: 40px;
+  height: 10px;
+  margin-left: -20px;
+  border-radius: 5px;
+  background: #6d6f6e;
+}
+
+.acc-carbon {
+  position: absolute;
+  inset: 26px 6px 6px 24px;
+  background: #f5dd7a;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  rotate: 1.2deg;
+}
+
+.acc-sheet {
+  position: relative;
+  padding: 30px 26px 18px;
+  background: #fffdf6;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.acc-sheet header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #1b1b18;
+}
+
+.acc-sheet h3 {
+  font: 700 21px/1.1 var(--display);
+}
+
+.acc-sheet header p {
+  margin: 3px 0 0;
+  color: #68665e;
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+.acc-stamp {
+  max-width: 6em;
+  margin: 2px 0 0;
+  padding: 4px 7px;
+  border: 2px solid #c2362b;
+  border-radius: 4px;
+  color: #c2362b;
+  font: 700 12px/1.1 var(--mono);
+  letter-spacing: 0.06em;
+  text-align: center;
+  opacity: 0.82;
+  rotate: -7deg;
+}
+
+.acc-sheet dl {
+  margin: 0;
+}
+
+.acc-sheet dl div {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 8px;
+  align-items: end;
+  height: 31px;
+  border-bottom: 1px dotted #a99f8a;
+}
+
+.acc-sheet dt {
+  padding-bottom: 6px;
+  color: #68665e;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.acc-sheet dd {
+  margin: 0;
+  padding-bottom: 5px;
+  overflow: hidden;
+  color: var(--ink-pen);
+  font: 500 14px/1 var(--mono);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.acc-sheet .is-now {
+  border-bottom: 2px solid #d8352a;
+}
+
+.acc-sheet .is-now dt {
+  color: #d8352a;
+  font-weight: 600;
+}
+
+.acc-pen {
+  position: absolute;
+  top: -8px;
+  right: -6px;
+  z-index: 4;
+  width: 26px;
+  rotate: 9deg;
+}
+
+/* The counter, full bleed: the plywood top with the sun on it, the edge, the stickered front. */
+.acc-counter {
+  position: relative;
+  z-index: 1;
+  height: 224px;
+  margin-inline: calc(50% - 50vw);
+  background:
+    linear-gradient(#cfb78d, #dcc59f 18px, #d5bc92 60px, #b39466 61px, #b8955f 62px, #a07c4a 74px, transparent 74px),
+    var(--plywood);
+  box-shadow: inset 0 80px 14px -60px rgba(90, 60, 30, 0.12);
+}
+
+.acc-counter-in {
+  position: relative;
+  width: min(var(--canvas), 100% - 48px);
+  height: 100%;
+  margin-inline: auto;
+}
+
+/* The afternoon sun from the window, lying on the counter top. */
+.acc-sun {
+  position: absolute;
+  top: 0;
+  right: -60px;
+  width: 300px;
+  height: 62px;
+  background: linear-gradient(90deg, rgba(255, 244, 214, 0), rgba(255, 244, 214, 0.75) 18%, rgba(255, 244, 214, 0.75) 82%, rgba(255, 244, 214, 0));
+  clip-path: polygon(14% 0, 100% 0, 86% 100%, 0 100%);
+}
+
+.acc-coffee {
+  position: absolute;
+  top: 14px;
+  left: 690px;
+  width: 70px;
+  height: 24px;
+  border: 5px solid rgba(120, 70, 30, 0.16);
+  border-radius: 50%;
+}
+
+.acc-bell {
+  position: absolute;
+  top: -38px;
+  left: 548px;
+  width: 108px;
+}
+
+.acc-cat {
+  position: absolute;
+  top: -72px;
+  right: -40px;
+  width: 250px;
+}
+
+.acc-stickers {
+  position: absolute;
+  top: 92px;
+  left: 506px;
+  width: 600px;
+  height: 130px;
+}
+
+.acc-stickers span {
+  position: absolute;
+  line-height: 0;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.25));
+}
+
+/* The cotto floor is the footer. */
+html.js body:has(.meet-wrap[data-mode="desk"]) .site-footer {
+  position: relative;
+  z-index: 0;
+  margin-top: 0;
+  border-top: 0;
+  color: #f6e4d2;
+}
+
+html.js body:has(.meet-wrap[data-mode="desk"]) .site-footer::before {
+  content: "";
+  position: absolute;
+  inset: 0 calc(50% - 50vw);
+  z-index: -1;
+  background:
+    linear-gradient(90deg, #8e3f22 0 2px, transparent 2px) 0 0 / 96px 100%,
+    linear-gradient(#b5532f, #9b4627);
+}
+
+html.js body:has(.meet-wrap[data-mode="desk"]) .site-footer a {
+  color: #fff3e6;
+}
+
+/* A laptop: the window and the clock step aside so the question keeps its width. */
+@media (min-width: 901px) and (max-width: 1139px) {
+  .acc-scene {
+    grid-template-columns: 470px minmax(0, 1fr);
+    grid-template-areas:
+      "keys main"
+      "card main";
+  }
+
+  .acc-side {
+    display: none;
+  }
+}
+
+/* A phone: one column, the keys only on the recruiter's turn, the job card a tab at the bottom. */
+@media (max-width: 900px) {
+  .meet-wrap {
+    width: min(var(--canvas), 100% - 32px);
+  }
+
+  /* No keyboard to speak of: only text mode stays in the caption. */
+  .acc-caption span {
     display: none;
   }
 
-  .room[data-stage="attract"] .cab-view {
+  .acc-scene {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-template-areas: "head" "ask" "keys" "board";
+    row-gap: 0;
+    padding-bottom: 56px;
+  }
+
+  .acc-main {
+    display: contents;
+  }
+
+  .acc-head { grid-area: head; justify-content: space-between; }
+  .acc-ask { grid-area: ask; margin-top: 22px; }
+  .acc-board { grid-area: board; }
+
+  .acc-sign {
+    width: 170px;
+    height: 40px;
+    margin-top: 6px;
+    font-size: 15px;
+  }
+
+  .acc-turno span svg {
+    width: 47px;
+    height: 36px;
+  }
+
+  .acc-ask h2 {
+    font-size: 30px;
+  }
+
+  .acc-ask p {
+    font-size: 15px;
+  }
+
+  .acc-keys {
+    display: none;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(5, 92px);
+    height: auto;
+    margin-top: 22px;
+    padding: 12px;
+  }
+
+  .acc[data-turn="ask"] .acc-keys {
+    display: grid;
+  }
+
+  .acc-hook {
+    left: 126px;
+    top: 2px;
+  }
+
+  .acc-tag {
+    left: 12px;
+    top: 28px;
+    width: 128px;
+    transform: rotate(calc(1deg + var(--k) * 1deg));
+  }
+
+  .acc-side {
+    display: none;
+  }
+
+  .acc-card {
+    position: fixed;
+    right: 12px;
+    bottom: 0;
+    left: 12px;
+    z-index: 50;
+    margin: 0;
+  }
+
+  .acc-peek {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 48px;
+    padding: 0 14px;
+    border: 10px solid #8a6440;
+    border-bottom: 0;
+    border-radius: 8px 8px 0 0;
+    background: #fffdf6;
+    box-shadow: 0 -6px 14px rgba(70, 40, 10, 0.18);
+    color: #1b1b18;
+    cursor: pointer;
+  }
+
+  .acc-peek b {
+    font: 700 15px/1 var(--display);
+  }
+
+  .acc-peek span {
+    color: var(--ink-pen);
+    font: 500 12px/1 var(--mono);
+  }
+
+  .acc-card:not([data-open="true"]) .acc-clip {
+    display: none;
+  }
+
+  .acc-clip {
+    max-height: 70vh;
+    overflow: auto;
+    border-radius: 0;
+    rotate: none;
+  }
+
+  .acc-jaw,
+  .acc-pen {
+    display: none;
+  }
+
+  .acc-sheet dl div {
+    grid-template-columns: 116px minmax(0, 1fr);
+  }
+
+  /* At the end the job card is the brief, laid on the page. */
+  .acc[data-turn="over"] .acc-scene {
+    grid-template-areas: "head" "ask" "board" "card";
+  }
+
+  .acc[data-turn="over"] .acc-card {
+    position: static;
+    margin-top: 30px;
+  }
+
+  .acc[data-turn="over"] .acc-peek {
+    display: none;
+  }
+
+  .acc[data-turn="over"] .acc-clip {
     display: block;
+    max-height: none;
   }
 
-  .cab-view {
-    height: min(78vh, 680px);
+  .acc-counter {
+    height: 104px;
   }
 
-  .crt {
-    font-size: 16px;
+  .acc-counter-in {
+    width: min(var(--canvas), 100% - 32px);
   }
 
-  .crt-menu {
-    font-size: 13.5px;
+  .acc-counter {
+    background:
+      linear-gradient(#cfb78d, #dcc59f 12px, #d5bc92 43px, #b39466 44px, #b8955f 44px, #a07c4a 54px, transparent 54px),
+      var(--plywood);
   }
 
-  .crt-menu button {
-    padding-block: 8px;
+  .acc-sun {
+    right: -20px;
+    width: 200px;
+    height: 44px;
   }
 
-  .crt-title {
-    font-size: 17px;
+  .acc-coffee,
+  .acc-stickers {
+    display: none;
   }
 
-  .crt-screen {
-    font-size: 12px;
+  .acc-bell {
+    top: -26px;
+    left: 18px;
+    width: 64px;
   }
 
-  .crt-ask {
-    font-size: 23px;
+  .acc-cat {
+    top: -44px;
+    right: -8px;
+    width: 150px;
   }
 
-  .crt-side {
-    font-size: 14px;
-  }
-
-  .crt-foot,
-  .crt-hud,
-  .crt-round-hud {
-    font-size: 12px;
-  }
-
-  .crt-rung {
-    font-size: 16px;
-  }
-
-  .crt-aside {
-    font-size: 12px;
-  }
-
-  .crt-tile-t span {
-    font-size: 11px;
-  }
-
-  .crt-caption-px {
-    font-size: 13px;
-  }
-
-  .crt-tally,
-  .crt-tally-sum {
-    font-size: 11px;
-  }
-
-  .crt-btns button {
-    font-size: 12px;
-  }
-
-  .crt-with-art .crt-menu button {
-    padding-block: 5px;
-  }
-
-  .crt-k,
-  .crt-players i,
-  .crt-door b,
-  .crt-kit > span:not(.crt-k),
-  .crt-loading i,
-  .crt-tower span,
-  .crt-board button {
-    font-size: 11px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .crt-blink {
-    animation: none;
-  }
-}
-
-@media (max-width: 340px) {
-  /* Below a small phone the text-mode status line wraps instead of scrolling the page sideways. */
-  .meet-status span:last-child {
-    white-space: normal;
+  html.js body:has(.meet-wrap[data-mode="desk"]) .site-footer {
+    padding-bottom: 84px;
   }
 }

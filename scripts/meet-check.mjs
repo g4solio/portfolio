@@ -2,7 +2,7 @@
 // (Node strips the types from data/meet.ts itself; no build step.)
 import assert from "node:assert/strict";
 
-const { moves, scope, facts, factCount, verdicts, scoreOf, briefText, mailtoHref, rounds, gameOverLine } = await import("../data/meet.ts");
+const { moves, scope, facts, factCount, verdicts, scoreOf, briefText, mailtoHref, doneLine, askLine } = await import("../data/meet.ts");
 
 const globalCommands = ["help", "look", "scope", "score", "inventory", "back", "send", "copy", "cv", "cast", "fireball", "magic missile", "skip"];
 
@@ -84,54 +84,17 @@ assert.ok(mailtoHref(longest).length <= 6000, `mailto too long: ${mailtoHref(lon
 assert.ok(mailtoHref(ideal).startsWith("mailto:david3gozz1@gmail.com?subject=Role%20brief%20for%20Davide%20Gozzi%3A%20Senior%20backend%20engineer%20%C2%B7%20Acme%20Robotics&body="));
 assert.ok(mailtoHref(ideal).includes("%0D%0A"), "mailto body uses CRLF");
 
-// The cabinet: every move has a screen name that fits the tube's title line; every round names a topic whose first fact is its own.
-const screens = moves.map((m) => m.screen);
-assert.equal(new Set(screens).size, screens.length, "duplicate screen name");
-for (const m of moves) assert.ok(m.screen && m.screen.length <= 16, `${m.key}: screen name missing or too long`);
-for (const [topic, game] of Object.entries(rounds)) assert.ok(facts.some((t) => t.cmd === topic), `round ${game}: unknown topic ${topic}`);
-assert.ok(facts.find((t) => t.cmd === "code").lines[0].includes("enumerated more than once"), "the runner's fact leads code");
-assert.ok(facts.find((t) => t.cmd === "work").lines[0].includes("Galactic Fighters"), "the shooter's fact leads work");
-// The fact screens read two lines as charts; a reworded line would quietly fall back to plain text.
-assert.match(facts.find((t) => t.cmd === "games").lines[0], /top three: (.+), (.+), (.+)\.$/, "the games top three keeps its chart shape");
-assert.match(facts.find((t) => t.cmd === "music").lines[0], /^(.+), (.+) and (.+) have been my top three on Spotify for years\.$/, "the music top three keeps its chart shape");
-assert.equal(gameOverLine("Marta").ask, "Thanks, Marta. That’s everything.");
+// The desk: every sheet has its own name that fits the title block.
+const tavole = moves.map((m) => m.tavola);
+assert.equal(new Set(tavole).size, tavole.length, "duplicate sheet name");
+for (const m of moves) assert.ok(m.tavola && m.tavola.length <= 16, `${m.key}: sheet name missing or too long`);
+assert.equal(doneLine("Marta").ask, "Thanks, Marta. That’s everything.");
 // The ask turn: the rule once, after the first answer; a last call after the thirteenth; short nudges between.
-const { askLine } = await import("../data/meet.ts");
-assert.match(askLine("Marta", 1).line, /^Nice to meet you, Marta\..*quick games\.$/);
+assert.match(askLine("Marta", 1).line, /^Nice to meet you, Marta\. Now it’s your turn\.$/);
 assert.deepEqual(askLine("", moves.length), { ask: "Anything else before we wrap up?", line: "" });
 for (let i = 2; i < moves.length; i++) assert.ok(askLine("Marta", i).ask.length <= 30 && !askLine("Marta", i).line, `ask ${i}: a short nudge`);
 
-// The laid-out screens: a layout holds its slots in data order and the rest sit aside; what it prints fits.
-const { layoutSlots, typedLayouts, menuLayouts } = await import("../data/meet.ts");
-const { chapters } = await import("../data/portfolio.ts");
-const schematics = new Set(chapters.flatMap((c) => (c.decision ? [c.decision.schematic] : [])));
-for (const m of moves) {
-  // Every part of a short (a tile's mode and place, a tower's floor) fits the tube on its own.
-  for (const c of m.choices ?? []) for (const part of c.short?.split(" · ") ?? []) assert.ok(part.length <= 24, `${m.key}/${c.cmd}: "${part}" too long for the tube`);
-  assert.ok(!m.art || menuLayouts.includes(m.layout), `${m.key}: art without a menu layout to print it`);
-}
-for (const m of moves.filter((x) => x.layout)) {
-  if (typedLayouts.includes(m.layout)) {
-    assert.ok(m.typed, `${m.key}: the ${m.layout} dresses a typed field`);
-    continue;
-  }
-  if (menuLayouts.includes(m.layout)) {
-    assert.ok(m.choices, `${m.key}: the ${m.layout} sits beside a menu`);
-    // Content truth: what the art prints is what the line says.
-    if (m.layout === "kit") for (const a of m.art) assert.ok(m.line.toLowerCase().includes(a.toLowerCase()), `${m.key}: "${a}" is not in the line`);
-    if (m.layout === "loading") assert.ok(m.art.length >= 3 && m.line.includes(m.art.at(-1)), `${m.key}: the bar needs segments and a caption from the line`);
-    if (m.layout === "tower") for (const c of m.choices) assert.ok(c.short, `${m.key}/${c.cmd}: the tower prints a short`);
-    continue;
-  }
-  const slots = layoutSlots[m.layout];
-  assert.ok(slots, `${m.key}: unknown layout ${m.layout}`);
-  assert.ok(m.choices && m.choices.length > slots, `${m.key}: the ${m.layout} holds ${slots} choices and sets at least one aside`);
-  const held = m.choices.slice(0, slots);
-  if (m.layout === "stages" || m.layout === "counter") for (const c of held) assert.ok(c.short, `${m.key}/${c.cmd}: the ${m.layout} prints a short`);
-  if (m.layout === "stages") for (const c of held) assert.ok(["REMOTE", "HYBRID", "ON SITE"].includes(c.short.split(" · ")[0]), `${m.key}/${c.cmd}: a stage names its mode first`);
-  if (m.layout === "bosses") for (const c of held) assert.ok(schematics.has(c.cmd), `${m.key}/${c.cmd}: a boss is an engineering note's schematic`);
-}
-// Up is up: the ladder's top rung and the counter's top band come first.
+// Top first: the seniority's top rung and the pay's top band lead the sheet.
 const order = (key) => moves.find((m) => m.key === key).choices.slice(0, 5).map((c) => c.cmd);
 assert.deepEqual(order("seniority"), ["principal", "lead", "senior", "mid", "junior"]);
 assert.deepEqual(order("pay"), ["75-plus", "65-75", "60-65", "50-60", "under-50"]);

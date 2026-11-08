@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Mark } from "@/components/Mark";
-import { MeetArcade } from "@/components/MeetArcade";
+import { Meet } from "@/components/Meet";
 import { meetDescription, meetTitle, siteUrl } from "@/data/meet";
 
 const title = `${meetTitle} — Davide Gozzi`;
@@ -23,8 +23,8 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title, description: meetDescription, images: [image] },
 };
 
-/** /meet/ — the recruiters' arcade cabinet, with the transcript as text mode. No boot: a headhunter arriving cold lands on the point. */
-export default function Meet() {
+/** /meet/ — the recruiters' intake desk, with the transcript as text mode. No boot: a headhunter arriving cold lands on the point. */
+export default function MeetPage() {
   return (
     <>
       <a className="skip-link" href="#main">Skip to content</a>
@@ -42,7 +42,7 @@ export default function Meet() {
         </header>
 
         <main id="main">
-          <MeetArcade />
+          <Meet />
         </main>
 
         <footer className="site-footer">

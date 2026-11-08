@@ -1,4 +1,4 @@
-// /meet/ — the arcade cabinet for recruiters: the scope, the thirteen moves in Davide's voice,
+// /meet/ — the intake desk for recruiters: the scope, the thirteen moves in Davide's voice,
 // the facts about him the recruiter asks for between moves, and the brief they mail back.
 // Facts only (PRODUCT.md, content truth rules): every line here was confirmed by Davide on 2026-11-07.
 // Imports carry the .ts extension so `node scripts/meet-check.mjs` can load this file directly.
@@ -7,7 +7,7 @@ import { chapters } from "./portfolio.ts";
 export const meetEmail = "david3gozz1@gmail.com";
 export const meetTitle = "Let’s get to know each other";
 export const meetDescription =
-  "Tell me about the role, I’ll tell you about me, and you leave with a short brief to send me. A small arcade game for recruiters.";
+  "For recruiters: tell me about the role, I’ll tell you about me, and you leave with a short brief to send me.";
 export const siteUrl = "https://g4solio.github.io/portfolio/";
 
 export type CriterionKey = "location" | "seniority" | "stack" | "pay" | "relocation";
@@ -36,35 +36,19 @@ export type Choice = {
   label: string;
   /** What this answer says about the scope; absent when the move is not judged. */
   verdicts?: Partial<Record<CriterionKey, Verdict>>;
-  /** What a laid-out screen prints for this choice: a stage tile's "MODE · WHERE", the counter's readout, an aside button. */
-  short?: string;
 };
 
-/**
- * The layouts that replace a move's menu, and how many of its choices each holds; the choices after
- * those sit aside, as buttons below. Data order is screen order, top to bottom and left to right, so the
- * arrows keep their meaning on every screen.
- */
-export const layoutSlots = { stages: 6, ladder: 5, counter: 5, bosses: 4 } as const;
-/**
- * How the cabinet lays a move's screen out: a slot layout above, art beside a plain menu, or one that
- * dresses a typed field. No layout: the plain menu or field.
- */
-export type Layout = keyof typeof layoutSlots | "kit" | "loading" | "tower" | "countdown" | "players" | "coin" | "class" | "open";
-export const menuLayouts: Layout[] = ["kit", "loading", "tower"];
-export const typedLayouts: Layout[] = ["countdown", "players", "coin", "class", "open"];
-
-/** What a screen says: the question (or the one thing to do) big, and the side information under it. */
+/** What Davide says: the question big, and his side of it under it. */
 export type Said = { ask: string; line: string };
-/** A screen's words as one text-mode entry: the question on its own line, then the rest. */
+/** Davide's words as one text-mode entry: the question on its own line, then the rest. */
 export const spoken = (s: Said) => (s.line ? `${s.ask}\n${s.line}` : s.ask);
 
 export type Move = {
   key: string;
   /** Status-line topic. */
   topic: string;
-  /** The cabinet screen this move plays as: the arcade's name for the question. */
-  screen: string;
+  /** The sheet's name in the drafting board's title block, in Italian like the rest of the officina. */
+  tavola: string;
   /** The question, drawn big. */
   ask: string;
   /** Davide's side of it, drawn small under the question. */
@@ -74,9 +58,6 @@ export type Move = {
   typed?: { hint: string; max: number; optional?: boolean };
   /** Label in the brief. */
   brief: string;
-  layout?: Layout;
-  /** What the art beside the menu prints, all from the line: LOADOUT's kit; SELECT MODE's bar segments, then its caption. */
-  art?: string[];
 };
 
 const inside = (keys: CriterionKey[]) => Object.fromEntries(keys.map((k) => [k, "inside"])) as Partial<Record<CriterionKey, Verdict>>;
@@ -85,61 +66,56 @@ export const moves: Move[] = [
   {
     key: "name",
     topic: "Hello",
-    screen: "NAME ENTRY",
+    tavola: "PRESENTAZIONI",
     ask: "Hi, I’m Davide. What should I call you?",
     line: "Let’s take turns: you tell me about the role, I tell you about me. At the end you get a short brief to send me.",
     typed: { hint: "your first name, or skip", max: 40, optional: true },
     brief: "From",
-    layout: "players",
   },
   {
     key: "company",
     topic: "Company",
-    screen: "INSERT COIN",
+    tavola: "AZIENDA",
     ask: "Who’s hiring?",
     line: "If you can’t say yet, “confidential” is fine.",
     typed: { hint: "company name, or confidential", max: 80 },
     brief: "Company",
-    layout: "coin",
   },
   {
     key: "role",
     topic: "Role",
-    screen: "PLAYER 1",
+    tavola: "RUOLO",
     ask: "What’s the job title?",
     line: "I’m happiest on the backend of software that has to keep working: distributed services, legacy platforms, things wired to real machines.",
     typed: { hint: "job title", max: 80 },
     brief: "Role",
-    layout: "class",
   },
   {
     key: "location",
     topic: "Location",
-    screen: "STAGE SELECT",
+    tavola: "SEDE",
     ask: "Where’s the job based?",
     line:
       "I live in Modena. Remote suits me if the team works European hours. Hybrid works too, if the office is close and it’s two days a week at most.",
     choices: [
-      // A 3 × 2 stage grid: one row per mode, the stage within reach of Modena first.
-      { cmd: "remote-eu", label: "fully remote, team on European hours", verdicts: inside(["location", "relocation"]), short: "REMOTE · EU HOURS" },
-      { cmd: "remote", label: "fully remote, team elsewhere", verdicts: { location: "outside", relocation: "inside" }, short: "REMOTE · TEAM ELSEWHERE" },
-      { cmd: "hybrid-modena", label: "hybrid, within reach of Modena", verdicts: inside(["location", "relocation"]), short: "HYBRID · NEAR MODENA" },
-      { cmd: "hybrid", label: "hybrid, elsewhere in Italy", verdicts: { location: "outside", relocation: "outside" }, short: "HYBRID · REST OF ITALY" },
-      { cmd: "onsite-modena", label: "on site, within reach of Modena", verdicts: { location: "outside", relocation: "inside" }, short: "ON SITE · NEAR MODENA" },
-      { cmd: "onsite", label: "on site, elsewhere", verdicts: { location: "outside", relocation: "outside" }, short: "ON SITE · ELSEWHERE" },
+      { cmd: "remote-eu", label: "fully remote, team on European hours", verdicts: inside(["location", "relocation"]) },
+      { cmd: "remote", label: "fully remote, team elsewhere", verdicts: { location: "outside", relocation: "inside" } },
+      { cmd: "hybrid-modena", label: "hybrid, within reach of Modena", verdicts: inside(["location", "relocation"]) },
+      { cmd: "hybrid", label: "hybrid, elsewhere in Italy", verdicts: { location: "outside", relocation: "outside" } },
+      { cmd: "onsite-modena", label: "on site, within reach of Modena", verdicts: { location: "outside", relocation: "inside" } },
+      { cmd: "onsite", label: "on site, elsewhere", verdicts: { location: "outside", relocation: "outside" } },
       { cmd: "unknown", label: "not decided yet" },
     ],
     brief: "Location",
-    layout: "stages",
   },
   {
     key: "seniority",
     topic: "Seniority",
-    screen: "DIFFICULTY",
+    tavola: "LIVELLO",
     ask: "How senior is the role?",
     line: "I’ve been doing this professionally for seven years and got the senior title at MSC in 2021, so I’m looking at senior roles and up.",
     choices: [
-      // The ladder, top rung first.
+      // Top rung first.
       { cmd: "principal", label: "principal, or head of", verdicts: inside(["seniority"]) },
       { cmd: "lead", label: "lead or staff", verdicts: inside(["seniority"]) },
       { cmd: "senior", label: "senior", verdicts: inside(["seniority"]) },
@@ -148,12 +124,11 @@ export const moves: Move[] = [
       { cmd: "unknown", label: "not defined yet" },
     ],
     brief: "Seniority",
-    layout: "ladder",
   },
   {
     key: "stack",
     topic: "Stack",
-    screen: "LOADOUT",
+    tavola: "STACK",
     ask: "What’s the stack?",
     line:
       "I’m a .NET backend developer: C#, Redis, RabbitMQ, SQL, and the protocols machines speak. Full-stack .NET is fine too. AI agents do most of my typing now, but the architecture and the review are still mine.",
@@ -166,32 +141,29 @@ export const moves: Move[] = [
       { cmd: "unknown", label: "not sure" },
     ],
     brief: "Stack",
-    layout: "kit",
-    art: ["C#", ".NET", "Redis", "RabbitMQ", "SQL", "protocols", "AI agents"],
   },
   {
     key: "pay",
     topic: "Compensation",
-    screen: "CREDITS",
+    tavola: "COMPENSO",
     ask: "What does it pay?",
     line: "I’m aiming for a RAL of €65k or more, and €60k is my floor.",
     choices: [
-      // The credit counter, top band first, so up is a band up.
-      { cmd: "75-plus", label: "€75k and above", verdicts: inside(["pay"]), short: "€75K +" },
-      { cmd: "65-75", label: "€65k to €75k", verdicts: inside(["pay"]), short: "€65–75K" },
-      { cmd: "60-65", label: "€60k to €65k", verdicts: inside(["pay"]), short: "€60–65K" },
-      { cmd: "50-60", label: "€50k to €60k", verdicts: { pay: "outside" }, short: "€50–60K" },
-      { cmd: "under-50", label: "under €50k", verdicts: { pay: "outside" }, short: "< €50K" },
-      { cmd: "consulting", label: "a consulting rate; the figure goes in the notes", short: "consulting rate" },
+      // Top band first.
+      { cmd: "75-plus", label: "€75k and above", verdicts: inside(["pay"]) },
+      { cmd: "65-75", label: "€65k to €75k", verdicts: inside(["pay"]) },
+      { cmd: "60-65", label: "€60k to €65k", verdicts: inside(["pay"]) },
+      { cmd: "50-60", label: "€50k to €60k", verdicts: { pay: "outside" } },
+      { cmd: "under-50", label: "under €50k", verdicts: { pay: "outside" } },
+      { cmd: "consulting", label: "a consulting rate; the figure goes in the notes" },
       { cmd: "undisclosed", label: "not disclosed" },
     ],
     brief: "Compensation",
-    layout: "counter",
   },
   {
     key: "contract",
     topic: "Contract",
-    screen: "SELECT MODE",
+    tavola: "CONTRATTO",
     ask: "What kind of contract is it?",
     line: "Whatever it is, I can start about two months after signing: one month of notice, then one to recharge so I show up at my best.",
     choices: [
@@ -202,13 +174,11 @@ export const moves: Move[] = [
       { cmd: "unknown", label: "not decided yet" },
     ],
     brief: "Contract",
-    layout: "loading",
-    art: ["notice · 1 month", "recharge · 1 month", "about two months after signing"],
   },
   {
     key: "note",
     topic: "Engineering note",
-    screen: "BOSS SELECT",
+    tavola: "NOTA TECNICA",
     ask: "Which of these is closest to the job?",
     line: "Each one is an engineering note from my portfolio, about a real decision and what it taught me.",
     choices: [
@@ -216,39 +186,35 @@ export const moves: Move[] = [
       { cmd: "none", label: "none of them" },
     ],
     brief: "Closest engineering note",
-    layout: "bosses",
   },
   {
     key: "process",
     topic: "Process",
-    screen: "ROUNDS",
+    tavola: "SELEZIONE",
     ask: "What’s the hiring process like?",
     line:
       "I do best when I meet the engineering lead by round two and work on a real problem from your codebase instead of a puzzle. Take-homes are fine if they fit in two hours, and I’d love a decision within three weeks.",
     choices: [
-      // The tower prints the rounds of the choice under the cursor, bottom floor first.
-      { cmd: "short", label: "up to three rounds, no take-home", short: "ROUND 1 · ROUND 2 · ROUND 3" },
-      { cmd: "take-home", label: "includes a take-home", short: "ROUND 1 · TAKE-HOME · …" },
-      { cmd: "long", label: "four rounds or more", short: "ROUND 1 · ROUND 2 · ROUND 3 · ROUND 4 +" },
-      { cmd: "unknown", label: "not defined yet", short: "?" },
+      { cmd: "short", label: "up to three rounds, no take-home" },
+      { cmd: "take-home", label: "includes a take-home" },
+      { cmd: "long", label: "four rounds or more" },
+      { cmd: "unknown", label: "not defined yet" },
     ],
     brief: "Process",
-    layout: "tower",
   },
   {
     key: "notes",
     topic: "Notes",
-    screen: "FREE PLAY",
+    tavola: "NOTE",
     ask: "Anything I didn’t ask about?",
     line: "A link to the job ad helps a lot, and so does the team size or why the position is open.",
     typed: { hint: "job ad link, notes, or skip", max: 200, optional: true },
     brief: "Notes",
-    layout: "open",
   },
   {
     key: "feedback-exchange",
     topic: "Feedback",
-    screen: "RATE THIS GAME",
+    tavola: "IMPRESSIONI",
     ask: "What would have made this better?",
     line: "Two quick ones for me now. Both are optional.",
     typed: { hint: "what to change, or skip", max: 200, optional: true },
@@ -257,12 +223,11 @@ export const moves: Move[] = [
   {
     key: "feedback-profile",
     topic: "Feedback",
-    screen: "CONTINUE?",
+    tavola: "PROFILO",
     ask: "What’s missing from my profile for this role?",
     line: "Last one. Be honest, it’s the one I learn the most from.",
     typed: { hint: "what’s missing, or skip", max: 200, optional: true },
     brief: "What my profile is missing",
-    layout: "countdown",
   },
 ];
 
@@ -339,20 +304,20 @@ export const factCount = facts.reduce((n, t) => n + t.lines.length, 0);
  */
 export function askLine(name: string, answered: number): Said {
   const n = name ? `, ${name}` : "";
-  if (answered <= 1) return { ask: "What do you want to know?", line: `Nice to meet you${n}. Now it’s your turn. Three of these are quick games.` };
+  if (answered <= 1) return { ask: "What do you want to know?", line: `Nice to meet you${n}. Now it’s your turn.` };
   if (answered >= moves.length) return { ask: `Anything else before we wrap up${n}?`, line: "" };
   return { ask: [`Your turn${n}.`, "Ask me something.", `Your pick${n}.`, "Curious about anything?", "Anything else?"][answered % 5], line: "" };
 }
 export const closingLine = (name: string) =>
   `That’s everything${name ? `, ${name}` : ""}, thanks. Type score to see how the role lines up with what I’m looking for, inventory to read the brief, or send to email it to me. look still has whatever you didn’t ask.`;
 export const exhaustedLine = `You’ve heard all ${factCount}. Ask me the rest in person.`;
-/** The cabinet's last screen, above the brief. */
-export const gameOverLine = (name: string): Said => ({
+/** The desk's turn rule: the topics are the keys on the board. */
+export const keysLine = "Take a key off the board, or skip to the next question.";
+/** The desk's last words, above the fit and the job card. */
+export const doneLine = (name: string): Said => ({
   ask: `Thanks${name ? `, ${name}` : ""}. That’s everything.`,
   line: "Here’s how the role lines up with what I’m looking for, and a brief you can email me. It only goes out if you send it.",
 });
-/** Topics whose first fact arrives as a round of its own game: the runner for the bug, the shooter for Galactic Fighters, the pounce for the cats. */
-export const rounds: Record<string, "runner" | "shooter" | "pounce"> = { code: "runner", work: "shooter", cats: "pounce" };
 export const unknownLine = "I didn’t catch that. The commands are listed above.";
 /** For cast, fireball and the like: the mage stays in character, once. */
 export const mageLine = "The designated mage declines. Spell slots are for the table; here the commands are help, look and score.";
