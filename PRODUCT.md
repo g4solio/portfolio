@@ -91,17 +91,25 @@ named on the site with its real figures.
   projected corners. A key or a tap inserts the coin; phones stand at the cabinet from
   the start. Thirteen moves as cabinet screens (NAME ENTRY, INSERT COIN, PLAYER 1,
   STAGE SELECT, DIFFICULTY, LOADOUT, CREDITS, SELECT MODE, BOSS SELECT, ROUNDS, FREE
-  PLAY, RATE THIS GAME, CONTINUE?), in his voice, the last three optional. Five have a
-  layout of their own (picked from rendered candidates 2026-11-08): STAGE SELECT a 3 × 2
-  stage grid, mode by row, with the Ghirlandina behind the stages within reach of
-  Modena; DIFFICULTY a ladder with a rank insignia per rung; CREDITS a credit counter
-  where up is a band up and no band is coloured by fit; BOSS SELECT the four
-  engineering notes as portraits rasterized at runtime from their own schematics;
-  CONTINUE? a countdown stopped at 1 with the hood's cat asleep on it. The others keep
-  the menu. The layout, the choices it holds and the short labels live in
-  `data/meet.ts`, where data order is screen order. After every
-  answer it is the recruiter's BONUS STAGE: one topic from the pool of seventeen facts,
-  or skip. The first fact of three topics is a twenty-second one-button round whose
+  PLAY, RATE THIS GAME, CONTINUE?), in his voice, the last three optional. Each screen
+  reads as what it is named (picked from rendered candidates 2026-11-08, issue #6):
+  NAME ENTRY seats the recruiter as 2P beside Davide as 1P; INSERT COIN has the
+  cabinet's coin door, CREDIT turning 1 once a name is typed; PLAYER 1 writes the role
+  as the designated Mage's class; STAGE SELECT a 3 × 2 stage grid, mode by row, with
+  the Ghirlandina behind the stages within reach of Modena; DIFFICULTY a ladder with a
+  rank insignia per rung; LOADOUT the kit from his line above the menu; CREDITS a
+  credit counter where up is a band up and no band is coloured by fit; SELECT MODE a
+  loading bar, the notice and a month to recharge; BOSS SELECT the four engineering
+  notes as portraits rasterized at runtime from their own schematics; ROUNDS a tower
+  of the process under the cursor up to OFFER; FREE PLAY an open field; CONTINUE? a
+  countdown stopped at 1 with the hood's cat asleep on it. RATE THIS GAME keeps the
+  plain field: decorative stars were rejected as a button that isn't one. The layouts,
+  the choices they hold, the short labels and the art live in `data/meet.ts`, where
+  data order is screen order. After every answer it is the recruiter's BONUS STAGE: a
+  board of the cabinet's stickers, one per topic from the pool of seventeen facts, or
+  skip. A fact whose line has a shape gets a format (the games and music top threes as
+  charts, the tools at the text mode's prompt, comics in a speech bubble); every other
+  fact sits under its topic's sticker. The first fact of three topics is a twenty-second one-button round whose
   fact arrives whatever the score: the runner where every obstacle is enumerated twice
   (code), the sweep-and-fire shooter for Galactic Fighters (work), the pounce (cats).
   The HUD shows KNOWN and MOVE only; the fit against the scope and the brief appear at
