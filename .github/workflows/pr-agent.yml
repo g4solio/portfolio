@@ -4,6 +4,7 @@ on:
   pull_request:
     types: [opened, reopened, ready_for_review]
   issue_comment: # /review, /describe, /improve, /ask ... in a PR comment
+    types: [created]
 
 permissions:
   contents: read
@@ -12,8 +13,14 @@ permissions:
 
 jobs:
   pr_agent:
-    if: ${{ github.event.sender.type != 'Bot' }}
+    # Public repo: comment commands spend the API key, so only trusted commenters on PRs.
+    if: >-
+      github.event.sender.type != 'Bot' &&
+      (github.event_name == 'pull_request' ||
+       (github.event.issue.pull_request &&
+        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)))
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       # pragent/pr-agent:0.50.0-github_action, pinned by digest
       - uses: docker://pragent/pr-agent@sha256:548e894a88071180832b2f4233f734d0acd0db1a879e2fcbaa70bac8b8372ebe
