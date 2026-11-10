@@ -1,0 +1,36 @@
+name: PR Agent
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review]
+  issue_comment: # /review, /describe, /improve, /ask ... in a PR comment
+    types: [created]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  pr_agent:
+    # Public repo: comment commands spend the API key, so only trusted commenters on PRs.
+    if: >-
+      github.event.sender.type != 'Bot' &&
+      (github.event_name == 'pull_request' ||
+       (github.event.issue.pull_request &&
+        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)))
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # pragent/pr-agent:0.50.0-github_action, pinned by digest
+      - uses: docker://pragent/pr-agent@sha256:548e894a88071180832b2f4233f734d0acd0db1a879e2fcbaa70bac8b8372ebe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC__KEY: ${{ secrets.ANTHROPIC_KEY }}
+          CONFIG__MODEL: anthropic/claude-opus-5-5
+          CONFIG__FALLBACK_MODELS: '[]'
+          CONFIG__ENABLE_CLAUDE_ADAPTIVE_THINKING: 'true' # needed for the effort below to be sent
+          CONFIG__REASONING_EFFORT: high # Opus 5.5 defaults to medium
+          github_action_config.auto_review: 'true'
+          github_action_config.auto_describe: 'true'
+          github_action_config.auto_improve: 'true'
